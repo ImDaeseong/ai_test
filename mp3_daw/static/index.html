@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suno DAW — 로컬 오디오 처리 시스템</title>
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0d0d0f; color: #e0e0e0; min-height: 100vh; padding: 24px; }
+    h1 { font-size: 1.6rem; color: #a78bfa; margin-bottom: 4px; }
+    .subtitle { font-size: 0.85rem; color: #6b7280; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 20px; }
+    .card h2 { font-size: 1rem; color: #c4b5fd; margin-bottom: 14px; }
+
+    /* 드롭존 */
+    .drop-zone {
+      border: 2px dashed #3f3f46; border-radius: 10px; padding: 16px 14px;
+      text-align: center; cursor: pointer; transition: border-color .2s, background .2s;
+      margin-bottom: 12px; position: relative;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: #7c3aed; background: #1c1028; }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-zone .dz-icon { font-size: 1.6rem; margin-bottom: 4px; }
+    .drop-zone .dz-label { font-size: 0.82rem; color: #71717a; }
+    .drop-zone .dz-filename { font-size: 0.8rem; color: #a78bfa; margin-top: 4px; font-weight: 600; word-break: break-all; }
+
+    button {
+      background: #7c3aed; color: #fff; border: none; border-radius: 8px;
+      padding: 8px 18px; font-size: 0.88rem; cursor: pointer; transition: background .2s;
+      margin-right: 6px; margin-bottom: 8px;
+    }
+    button:hover { background: #6d28d9; }
+    button:disabled { background: #3f3f46; color: #71717a; cursor: not-allowed; }
+    button.sec { background: #1d4ed8; }
+    button.sec:hover { background: #1e40af; }
+
+    /* 진행 상태 표시 */
+    .job-status {
+      display: none; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 8px; margin-bottom: 10px;
+      font-size: 0.82rem;
+    }
+    .job-status.queued  { display: flex; background: #1c1c1e; color: #a1a1aa; }
+    .job-status.running { display: flex; background: #1a1a2e; color: #93c5fd; }
+    .job-status.done    { display: flex; background: #14290f; color: #86efac; }
+    .job-status.error   { display: flex; background: #2a0f0f; color: #fca5a5; }
+    .spinner {
+      width: 16px; height: 16px; border: 2px solid #3f3f46;
+      border-top-color: #7c3aed; border-radius: 50%;
+      animation: spin .7s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 결과 박스 */
+    .result-box {
+      background: #09090b; border: 1px solid #27272a; border-radius: 8px;
+      padding: 12px; font-size: 0.76rem; font-family: monospace;
+      max-height: 280px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+    }
+
+    /* 파형 */
+    #waveform { margin-top: 12px; border-radius: 8px; overflow: hidden; min-height: 80px; background: #09090b; }
+    #controls { margin-top: 10px; display: flex; align-items: center; }
+
+    /* 분석 통계 */
+    .stat-row { display: flex; align-items: center; margin-bottom: 5px; font-size: 0.8rem; }
+    .stat-label { color: #71717a; width: 175px; flex-shrink: 0; }
+    .stat-val { color: #e4e4e7; font-variant-numeric: tabular-nums; margin-left: auto; }
+    .bar-wrap { background: #27272a; border-radius: 4px; height: 6px; flex: 1; margin: 0 8px; }
+    .bar { height: 6px; border-radius: 4px; background: #7c3aed; }
+
+    /* 배지 */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-right: 4px; }
+    .badge-done      { background: #14532d; color: #86efac; }
+    .badge-running   { background: #1e3a5f; color: #93c5fd; }
+    .badge-queued    { background: #27272a; color: #a1a1aa; }
+    .badge-error     { background: #7f1d1d; color: #fca5a5; }
+
+    .jobs-list { list-style: none; }
+    .jobs-list li { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px solid #27272a; font-size: 0.8rem; }
+    .jobs-list li .jname { flex: 1; color: #a1a1aa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .jobs-list li .jop { font-size: 0.68rem; color: #52525b; margin-left: 6px; }
+
+    select {
+      background: #09090b; border: 1px solid #3f3f46; border-radius: 8px;
+      color: #e0e0e0; padding: 7px 10px; font-size: 0.84rem; margin-bottom: 10px; width: 100%;
+    }
+    input[type="text"] {
+      background: #09090b; border: 1px solid #3f3f46; border-radius: 8px;
+      color: #e0e0e0; padding: 7px 12px; font-size: 0.84rem; margin-bottom: 8px; width: 100%;
+    }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>🎛️ Suno DAW</h1>
+  <p class="subtitle">로컬 오디오 처리 시스템 — 분석 · 마스터링 · Stem 분리</p>
+
+  <div class="grid">
+
+    <!-- ① 파형 뷰어 -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2>🎵 파형 뷰어</h2>
+      <div class="drop-zone" id="waveDrop"
+           ondragover="event.preventDefault(); this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleWaveDrop(event)">
+        <input type="file" accept="audio/*" onchange="loadWaveFromFile(this.files[0])" />
+        <div class="dz-icon">🎵</div>
+        <div class="dz-label">클릭하거나 오디오 파일을 여기에 끌어놓으세요</div>
+        <div class="dz-filename" id="waveFileName">파일 미선택</div>
+      </div>
+      <div id="waveform"></div>
+      <div id="controls">
+        <button onclick="ws && ws.playPause()">▶ / ⏸</button>
+        <button class="sec" onclick="ws && ws.stop()">⏹</button>
+        <span id="timeDisplay" style="font-size:0.8rem;color:#71717a;margin-left:10px;"></span>
+      </div>
+    </div>
+
+    <!-- ② 분석 -->
+    <div class="card">
+      <h2>🔍 오디오 분석</h2>
+      <div class="drop-zone" id="analyzeDrop"
+           ondragover="event.preventDefault(); this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleDrop(event,'analyze')">
+        <input type="file" accept="audio/*" onchange="onFileChosen('analyze', this.files[0])" />
+        <div class="dz-icon">📂</div>
+        <div class="dz-label">분석할 파일 선택</div>
+        <div class="dz-filename" id="analyzeFileName">파일 미선택</div>
+      </div>
+      <button id="analyzeBtn" onclick="runAnalyze()" disabled>분석 실행</button>
+      <div class="job-status" id="analyzeStatus"></div>
+      <div id="analyzeStats" style="margin-top:10px;"></div>
+      <div class="result-box" id="analyzeResult">파일을 선택하면 분석 가능합니다.</div>
+    </div>
+
+    <!-- ③ 마스터링 -->
+    <div class="card">
+      <h2>🎛️ 마스터링</h2>
+      <div class="drop-zone" id="masterDrop"
+           ondragover="event.preventDefault(); this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleDrop(event,'master')">
+        <input type="file" accept="audio/*" onchange="onFileChosen('master', this.files[0])" />
+        <div class="dz-icon">📂</div>
+        <div class="dz-label">마스터링할 파일 선택</div>
+        <div class="dz-filename" id="masterFileName">파일 미선택</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <label style="font-size:0.82rem;color:#71717a;white-space:nowrap;">타겟 LUFS</label>
+        <input type="text" id="masterLufs" value="-14" style="width:80px;margin:0;" />
+      </div>
+      <button id="masterBtn" onclick="runMaster()" disabled>마스터링 실행</button>
+      <div class="job-status" id="masterStatus"></div>
+      <div class="result-box" id="masterResult">파일을 선택하면 마스터링 가능합니다.</div>
+    </div>
+
+    <!-- ④ Stem 분리 -->
+    <div class="card">
+      <h2>🎚️ Stem 분리 (Demucs)</h2>
+      <div class="drop-zone" id="stemDrop"
+           ondragover="event.preventDefault(); this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleDrop(event,'stem')">
+        <input type="file" accept="audio/*" onchange="onFileChosen('stem', this.files[0])" />
+        <div class="dz-icon">📂</div>
+        <div class="dz-label">분리할 파일 선택</div>
+        <div class="dz-filename" id="stemFileName">파일 미선택</div>
+      </div>
+      <select id="stemModel">
+        <option value="htdemucs">htdemucs (권장)</option>
+        <option value="htdemucs_ft">htdemucs_ft (고품질)</option>
+        <option value="mdx">mdx</option>
+      </select>
+      <button id="stemBtn" onclick="runSeparate()" disabled>Stem 분리 실행</button>
+      <div class="job-status" id="stemStatus"></div>
+      <div class="result-box" id="stemResult">파일을 선택하면 Stem 분리 가능합니다.</div>
+    </div>
+
+    <!-- ⑤ 작업 목록 -->
+    <div class="card">
+      <h2>📋 전체 작업 목록</h2>
+      <button onclick="loadJobs()">새로고침</button>
+      <button class="sec" onclick="toggleAutoRefresh()">자동 갱신</button>
+      <ul class="jobs-list" id="jobsList" style="margin-top:12px;"><li><span class="jname" style="color:#52525b;">로딩 중...</span></li></ul>
+    </div>
+
+    <!-- ⑥ 시스템 상태 -->
+    <div class="card">
+      <h2>🔧 시스템 상태</h2>
+      <button onclick="runCheck()">의존성 확인</button>
+      <div class="result-box" id="checkResult" style="margin-top:10px;">확인 버튼을 누르세요.</div>
+    </div>
+
+  </div>
+
+  <script>
+    let ws = null;
+    let autoRefreshTimer = null;
+
+    // 패널별 서버 파일 경로
+    const serverPaths = { analyze: null, master: null, stem: null };
+    // 패널별 폴링 타이머
+    const pollTimers  = { master: null, stem: null };
+
+    // ─────────────────────────────────────
+    // 파형 뷰어
+    // ─────────────────────────────────────
+    function loadWaveFromFile(file) {
+      if (!file) return;
+      document.getElementById('waveFileName').textContent = file.name;
+      document.getElementById('waveDrop').classList.remove('drag-over');
+      const url = URL.createObjectURL(file);
+      if (ws) { ws.destroy(); ws = null; }
+      ws = WaveSurfer.create({
+        container: '#waveform', waveColor: '#7c3aed',
+        progressColor: '#c4b5fd', height: 80, normalize: true,
+      });
+      ws.on('timeupdate', t => {
+        document.getElementById('timeDisplay').textContent =
+          `${fmt(t)} / ${fmt(ws.getDuration())}`;
+      });
+      ws.load(url);
+    }
+    function handleWaveDrop(e) {
+      e.preventDefault();
+      document.getElementById('waveDrop').classList.remove('drag-over');
+      const f = e.dataTransfer.files[0];
+      if (f) loadWaveFromFile(f);
+    }
+    function fmt(s) {
+      s = s || 0;
+      return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+    }
+
+    // ─────────────────────────────────────
+    // 파일 업로드 → 서버 경로 수신
+    // ─────────────────────────────────────
+    async function uploadFile(panel, file) {
+      const fd = new FormData();
+      fd.append('file', file);
+      const r = await fetch('/api/upload', { method: 'POST', body: fd });
+      if (!r.ok) throw new Error(await r.text());
+      return r.json(); // { path, filename, size }
+    }
+
+    function onFileChosen(panel, file) {
+      if (!file) return;
+      const mb = (file.size / 1024 / 1024).toFixed(1);
+      document.getElementById(`${panel}FileName`).textContent = `${file.name} (${mb} MB)`;
+      const btn = document.getElementById(`${panel}Btn`);
+      btn.disabled = true;
+      btn.textContent = '⏫ 업로드 중...';
+      setStatus(panel, 'queued', '서버에 업로드 중...');
+
+      uploadFile(panel, file).then(d => {
+        serverPaths[panel] = d.path;
+        btn.disabled = false;
+        btn.textContent = { analyze: '분석 실행', master: '마스터링 실행', stem: 'Stem 분리 실행' }[panel];
+        setStatus(panel, 'done', `업로드 완료 → ${d.filename}`);
+      }).catch(e => {
+        btn.textContent = { analyze: '분석 실행', master: '마스터링 실행', stem: 'Stem 분리 실행' }[panel];
+        setStatus(panel, 'error', '업로드 실패: ' + e.message);
+      });
+    }
+
+    function handleDrop(e, panel) {
+      e.preventDefault();
+      document.getElementById(`${panel}Drop`).classList.remove('drag-over');
+      const f = e.dataTransfer.files[0];
+      if (f) onFileChosen(panel, f);
+    }
+
+    // ─────────────────────────────────────
+    // Job 상태 표시
+    // ─────────────────────────────────────
+    function setStatus(panel, state, msg) {
+      const el = document.getElementById(`${panel}Status`);
+      el.className = 'job-status ' + state;
+      const spinner = (state === 'running' || state === 'queued')
+        ? '<div class="spinner"></div>' : '';
+      const icons = { queued: '⏳', running: '⚙️', done: '✅', error: '❌' };
+      el.innerHTML = `${spinner}<span>${icons[state] || ''} ${msg}</span>`;
+    }
+
+    function hideStatus(panel) {
+      document.getElementById(`${panel}Status`).className = 'job-status';
+    }
+
+    // ─────────────────────────────────────
+    // Job 폴링 (비동기 작업용)
+    // ─────────────────────────────────────
+    function startPolling(panel, jobId, onDone) {
+      if (pollTimers[panel]) clearInterval(pollTimers[panel]);
+      pollTimers[panel] = setInterval(async () => {
+        try {
+          const r = await fetch(`/api/job/${jobId}`);
+          if (!r.ok) return;
+          const j = await r.json();
+
+          if (j.state === 'running') {
+            const elapsed = ((Date.now() - new Date(j.started_at)) / 1000).toFixed(0);
+            setStatus(panel, 'running', `처리 중... (${elapsed}초 경과)`);
+          } else if (j.state === 'done') {
+            clearInterval(pollTimers[panel]);
+            onDone(j.result);
+          } else if (j.state === 'error') {
+            clearInterval(pollTimers[panel]);
+            setStatus(panel, 'error', '오류: ' + j.error);
+            document.getElementById(`${panel}Result`).textContent = '❌ ' + j.error;
+          }
+        } catch (e) { /* 네트워크 오류 무시 */ }
+      }, 1500);
+    }
+
+    // ─────────────────────────────────────
+    // 분석 (동기)
+    // ─────────────────────────────────────
+    async function runAnalyze() {
+      const file = serverPaths.analyze;
+      if (!file) { alert('먼저 파일을 선택하세요.'); return; }
+      const box = document.getElementById('analyzeResult');
+      document.getElementById('analyzeStats').innerHTML = '';
+      box.textContent = '';
+      setStatus('analyze', 'running', '분석 중...');
+      document.getElementById('analyzeBtn').disabled = true;
+
+      try {
+        const r = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file }),
+        });
+        const d = await r.json();
+        renderAnalyzeResult(d);
+        setStatus('analyze', 'done', `완료 — BPM: ${d.bpm}, 키: ${d.key}, LUFS: ${d.lufs_integrated}`);
+      } catch (e) {
+        setStatus('analyze', 'error', '오류: ' + e.message);
+        box.textContent = '❌ ' + e.message;
+      } finally {
+        document.getElementById('analyzeBtn').disabled = false;
+      }
+    }
+
+    function renderAnalyzeResult(d) {
+      const box = document.getElementById('analyzeResult');
+      const stats = document.getElementById('analyzeStats');
+      box.textContent = JSON.stringify(d, null, 2);
+
+      if (!d.bpm) return;
+      const bands = d.frequency_bands || {};
+      const maxBand = Math.max(...Object.values(bands), 0.0001);
+      const bandHtml = Object.entries(bands).map(([k, v]) => {
+        const pct = Math.round((v / maxBand) * 100);
+        return `<div class="stat-row">
+          <span class="stat-label">${k.replace(/_/g,' ')}</span>
+          <div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div>
+          <span class="stat-val">${v.toFixed(4)}</span>
+        </div>`;
+      }).join('');
+
+      stats.innerHTML = `
+        <div class="stat-row"><span class="stat-label">BPM</span><span class="stat-val">${d.bpm}</span></div>
+        <div class="stat-row"><span class="stat-label">키</span><span class="stat-val">${d.key}</span></div>
+        <div class="stat-row"><span class="stat-label">LUFS</span><span class="stat-val">${d.lufs_integrated} LUFS</span></div>
+        <div class="stat-row"><span class="stat-label">길이</span><span class="stat-val">${(d.duration_sec||0).toFixed(1)}초</span></div>
+        <div style="margin-top:8px;border-top:1px solid #27272a;padding-top:8px;">${bandHtml}</div>
+      `;
+    }
+
+    // ─────────────────────────────────────
+    // 마스터링 (비동기 + 폴링)
+    // ─────────────────────────────────────
+    async function runMaster() {
+      const file = serverPaths.master;
+      if (!file) { alert('먼저 파일을 선택하세요.'); return; }
+      const lufs = parseFloat(document.getElementById('masterLufs').value) || -14;
+      const box = document.getElementById('masterResult');
+      const btn = document.getElementById('masterBtn');
+
+      box.textContent = '';
+      btn.disabled = true;
+      setStatus('master', 'queued', '마스터링 요청 중...');
+
+      try {
+        const r = await fetch('/api/master', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file, lufs }),
+        });
+        const d = await r.json();
+        if (!d.job_id) throw new Error(d.error || '응답 오류');
+
+        setStatus('master', 'running', `마스터링 처리 중... (Job #${d.job_id})`);
+
+        startPolling('master', d.job_id, (result) => {
+          btn.disabled = false;
+          try {
+            const parsed = typeof result === 'string' ? JSON.parse(result) : result;
+            box.textContent = JSON.stringify(parsed, null, 2);
+            setStatus('master', 'done',
+              `완료 — ${parsed.original_lufs} LUFS → ${parsed.final_lufs} LUFS`);
+          } catch {
+            box.textContent = JSON.stringify(result, null, 2);
+            setStatus('master', 'done', '마스터링 완료');
+          }
+        });
+      } catch (e) {
+        btn.disabled = false;
+        setStatus('master', 'error', '오류: ' + e.message);
+        box.textContent = '❌ ' + e.message;
+      }
+    }
+
+    // ─────────────────────────────────────
+    // Stem 분리 (비동기 + 폴링)
+    // ─────────────────────────────────────
+    async function runSeparate() {
+      const file = serverPaths.stem;
+      if (!file) { alert('먼저 파일을 선택하세요.'); return; }
+      const model = document.getElementById('stemModel').value;
+      const box = document.getElementById('stemResult');
+      const btn = document.getElementById('stemBtn');
+
+      box.textContent = '';
+      btn.disabled = true;
+      setStatus('stem', 'queued', 'Stem 분리 요청 중...');
+
+      try {
+        const r = await fetch('/api/separate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file, model }),
+        });
+        const d = await r.json();
+        if (!d.job_id) throw new Error(d.error || '응답 오류');
+
+        setStatus('stem', 'running',
+          `Stem 분리 중... (Job #${d.job_id}) — 최초 실행 시 모델 다운로드로 수 분 소요`);
+
+        startPolling('stem', d.job_id, (result) => {
+          btn.disabled = false;
+          try {
+            const parsed = typeof result === 'string' ? JSON.parse(result) : result;
+            const stems = parsed.stems || {};
+            const stemList = Object.entries(stems)
+              .map(([k, v]) => `  ${k}: ${v}`).join('\n');
+            box.textContent = `✅ 분리 완료\n\n${stemList}\n\n` + JSON.stringify(parsed, null, 2);
+            setStatus('stem', 'done', `완료 — ${Object.keys(stems).join(', ')} 트랙 생성`);
+          } catch {
+            box.textContent = JSON.stringify(result, null, 2);
+            setStatus('stem', 'done', 'Stem 분리 완료');
+          }
+        });
+      } catch (e) {
+        btn.disabled = false;
+        setStatus('stem', 'error', '오류: ' + e.message);
+        box.textContent = '❌ ' + e.message;
+      }
+    }
+
+    // ─────────────────────────────────────
+    // 작업 목록
+    // ─────────────────────────────────────
+    async function loadJobs() {
+      const el = document.getElementById('jobsList');
+      try {
+        const d = await fetch('/api/jobs').then(r => r.json());
+        if (!d.jobs || d.jobs.length === 0) {
+          el.innerHTML = '<li><span class="jname" style="color:#52525b;">처리된 작업 없음</span></li>';
+          return;
+        }
+        // 최신순 정렬
+        const sorted = [...d.jobs].sort((a, b) =>
+          new Date(b.started_at) - new Date(a.started_at));
+        el.innerHTML = sorted.map(j => {
+          const name = j.file.split(/[\\/]/).pop();
+          const elapsed = j.state === 'done' || j.state === 'error'
+            ? ` (${((new Date(j.updated_at) - new Date(j.started_at))/1000).toFixed(0)}초)` : '';
+          return `<li>
+            <span class="badge badge-${j.state}">${j.state}</span>
+            <span class="jname" title="${j.file}">${name}${elapsed}</span>
+            <span class="jop">${j.operation}</span>
+          </li>`;
+        }).join('');
+      } catch (e) { el.innerHTML = '<li><span class="jname">❌ 로드 실패</span></li>'; }
+    }
+
+    function toggleAutoRefresh() {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      } else {
+        autoRefreshTimer = setInterval(loadJobs, 2000);
+        loadJobs();
+      }
+    }
+
+    // ─────────────────────────────────────
+    // 의존성 확인
+    // ─────────────────────────────────────
+    async function runCheck() {
+      const box = document.getElementById('checkResult');
+      box.textContent = '⏳ 확인 중...';
+      try {
+        const d = await fetch('/api/check').then(r => r.json());
+        box.textContent = JSON.stringify(d, null, 2);
+      } catch (e) { box.textContent = '❌ 오류: ' + e.message; }
+    }
+
+    loadJobs();
+  </script>
+</body>
+</html>
