@@ -45,8 +45,9 @@ import shutil
 from urllib.parse import urljoin
 from pathlib import Path
 
-# 프로젝트 폴더의 ffmpeg.exe 우선 사용, 없으면 PATH에서 탐색
-_LOCAL_FFMPEG = Path(__file__).parent / "ffmpeg.exe"
+# 실행 파일(.exe) 위치 기준 경로 계산 (PyInstaller 환경 대응)
+_EXE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
+_LOCAL_FFMPEG = _EXE_DIR / "ffmpeg.exe"
 FFMPEG_BIN = str(_LOCAL_FFMPEG) if _LOCAL_FFMPEG.exists() else (shutil.which("ffmpeg") or "ffmpeg")
 
 import httpx
@@ -57,7 +58,7 @@ from playwright.async_api import async_playwright
 # 0. 경로 설정 및 의존성 체크
 # ──────────────────────────────────────────────
 # 실행 파일 기준의 downloads 폴더 설정
-DOWNLOAD_DIR = Path(__file__).parent / "downloads"
+DOWNLOAD_DIR = _EXE_DIR / "downloads"
 
 def prepare_env():
     """환경 준비: 폴더 생성 및 ffmpeg 체크"""

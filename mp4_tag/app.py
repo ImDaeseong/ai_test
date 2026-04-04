@@ -7,8 +7,9 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urljoin
 
-# 프로젝트 폴더의 ffmpeg.exe 우선 사용, 없으면 PATH에서 탐색
-_LOCAL_FFMPEG = Path(__file__).parent / "ffmpeg.exe"
+# 실행 파일(.exe) 위치 기준 경로 계산 (PyInstaller 환경 대응)
+_EXE_DIR = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
+_LOCAL_FFMPEG = _EXE_DIR / "ffmpeg.exe"
 FFMPEG_BIN = str(_LOCAL_FFMPEG) if _LOCAL_FFMPEG.exists() else (shutil.which("ffmpeg") or "ffmpeg")
 
 import httpx
@@ -19,7 +20,7 @@ from playwright.async_api import async_playwright
 # ──────────────────────────────────────────────
 # CONFIG
 # ──────────────────────────────────────────────
-DOWNLOAD_DIR = Path(__file__).parent / "downloads"
+DOWNLOAD_DIR = _EXE_DIR / "downloads"
 
 
 # ──────────────────────────────────────────────
