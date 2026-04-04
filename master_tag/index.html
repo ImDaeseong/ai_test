@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suno AI Mastering</title>
+<style>
+  :root {
+    --bg:      #0b0b10;
+    --card:    #13131c;
+    --border:  #1e1e2e;
+    --accent:  #7c3aed;
+    --accent2: #06b6d4;
+    --green:   #10b981;
+    --red:     #ef4444;
+    --text:    #e2e8f0;
+    --muted:   #64748b;
+    --radius:  12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 80px;
+  }
+
+  /* ── 헤더 ── */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+  header p { color: var(--muted); margin-top: 6px; font-size: 0.9rem; }
+
+  /* ── 메인 컨테이너 ── */
+  .container { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── 드래그 드롭 존 ── */
+  #dropzone {
+    background: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 60px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    position: relative;
+  }
+  #dropzone.hover {
+    border-color: var(--accent);
+    background: #17172b;
+  }
+  #dropzone.has-file {
+    border-color: var(--accent2);
+    border-style: solid;
+  }
+  #dropzone svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: .5; }
+  #dropzone .drop-label { font-size: 1rem; color: var(--muted); }
+  #dropzone .drop-label span { color: var(--accent); font-weight: 600; }
+  #dropzone .file-info {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  #dropzone .file-info .fname {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent2);
+    word-break: break-all;
+  }
+  #dropzone .file-info .fsize { font-size: 0.8rem; color: var(--muted); }
+  #file-input { display: none; }
+
+  /* ── 버튼 ── */
+  #start-btn {
+    background: linear-gradient(135deg, var(--accent), #6d28d9);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: opacity .2s, transform .1s;
+    display: none;
+  }
+  #start-btn:hover { opacity: .9; transform: translateY(-1px); }
+  #start-btn:active { transform: translateY(0); }
+  #start-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  /* ── 진행 카드 ── */
+  #progress-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: none;
+  }
+  #progress-card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 20px; }
+
+  .step-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .step-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--border);
+    color: var(--muted);
+    transition: background .3s, color .3s;
+  }
+  .step-item.active   .step-icon { background: var(--accent); color: #fff; animation: pulse 1.2s infinite; }
+  .step-item.done     .step-icon { background: var(--green);  color: #fff; animation: none; }
+  .step-item.error    .step-icon { background: var(--red);    color: #fff; animation: none; }
+
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,.6); }
+    50%      { box-shadow: 0 0 0 8px rgba(124,58,237,0); }
+  }
+
+  .step-text { padding-top: 4px; }
+  .step-text .label { font-size: 0.95rem; font-weight: 600; }
+  .step-text .detail { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── 분석 결과 카드 ── */
+  #stats-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: none;
+  }
+  #stats-card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 16px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat-box .key { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+  .stat-box .val { font-size: 1.3rem; font-weight: 700; }
+  .stat-box .val.green { color: var(--green); }
+  .stat-box .val.cyan  { color: var(--accent2); }
+  .stat-box .val.purple { color: var(--accent); }
+
+  /* LUFS 비교 */
+  .lufs-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .lufs-row .lufs-val { font-size: 1.2rem; font-weight: 700; }
+  .lufs-row .arrow { color: var(--muted); font-size: 1.2rem; flex: 1; text-align: center; }
+  .lufs-row .key { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+
+  /* ── 다운로드 버튼 ── */
+  #download-btn {
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: opacity .2s, transform .1s;
+    display: none;
+    text-decoration: none;
+    text-align: center;
+  }
+  #download-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+  /* ── 오류 배너 ── */
+  #error-banner {
+    background: #2d0f0f;
+    border: 1px solid #7f1d1d;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    color: #fca5a5;
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  /* ── 리셋 버튼 ── */
+  #reset-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+    padding: 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: none;
+    transition: border-color .2s, color .2s;
+  }
+  #reset-btn:hover { border-color: var(--muted); color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ Suno AI Mastering</h1>
+  <p>드래그 & 드롭으로 음원을 올리면 자동으로 마스터링합니다</p>
+</header>
+
+<div class="container">
+
+  <!-- 드래그 드롭 -->
+  <div id="dropzone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
+    </svg>
+    <div class="drop-label">파일을 여기에 <span>드롭</span>하거나 클릭하여 선택<br><small style="font-size:.75rem;opacity:.6">MP3 · WAV · FLAC · M4A</small></div>
+    <div class="file-info" id="file-info">
+      <div class="fname" id="fname"></div>
+      <div class="fsize" id="fsize"></div>
+    </div>
+    <input type="file" id="file-input" accept="audio/*">
+  </div>
+
+  <!-- 시작 버튼 -->
+  <button id="start-btn">🎛️ 마스터링 시작</button>
+
+  <!-- 오류 -->
+  <div id="error-banner"></div>
+
+  <!-- 진행 카드 -->
+  <div id="progress-card">
+    <h2>처리 진행</h2>
+    <div class="step-list" id="step-list">
+      <div class="step-item" id="s1">
+        <div class="step-icon">1</div>
+        <div class="step-text"><div class="label">오디오 분석</div><div class="detail" id="d1">FFT, Peak/RMS 측정</div></div>
+      </div>
+      <div class="step-item" id="s2">
+        <div class="step-icon">2</div>
+        <div class="step-text"><div class="label">Gain Staging</div><div class="detail" id="d2">헤드룸 확보 (-6 dBFS)</div></div>
+      </div>
+      <div class="step-item" id="s3">
+        <div class="step-icon">3</div>
+        <div class="step-text"><div class="label">DSP 체인 적용</div><div class="detail" id="d3">HPF → EQ × 4 → Compressor → Limiter</div></div>
+      </div>
+      <div class="step-item" id="s4">
+        <div class="step-icon">4</div>
+        <div class="step-text"><div class="label">LUFS 정규화</div><div class="detail" id="d4">목표: -14 LUFS (YouTube 표준)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 분석 결과 -->
+  <div id="stats-card">
+    <h2>분석 결과</h2>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="key">Peak 레벨</div>
+        <div class="val purple" id="stat-peak">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="key">RMS 레벨</div>
+        <div class="val cyan" id="stat-rms">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="key">재생 시간</div>
+        <div class="val" id="stat-dur">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="key">샘플레이트</div>
+        <div class="val" id="stat-sr">—</div>
+      </div>
+    </div>
+    <div class="lufs-row" id="lufs-row" style="display:none">
+      <div>
+        <div class="key">변환 전</div>
+        <div class="lufs-val" id="lufs-before" style="color:var(--red)">—</div>
+      </div>
+      <div class="arrow">→</div>
+      <div>
+        <div class="key">변환 후</div>
+        <div class="lufs-val" id="lufs-after" style="color:var(--green)">—</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="key">LUFS</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:4px">ITU-R BS.1770-4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 다운로드 -->
+  <a id="download-btn">⬇️ 마스터링 완료 — 다운로드</a>
+
+  <!-- 리셋 -->
+  <button id="reset-btn">↩ 새 파일 처리하기</button>
+
+</div><!-- /container -->
+
+<script>
+const dropzone   = document.getElementById('dropzone');
+const fileInput  = document.getElementById('file-input');
+const fileInfo   = document.getElementById('file-info');
+const dropLabel  = dropzone.querySelector('.drop-label');
+const startBtn   = document.getElementById('start-btn');
+const progressCard = document.getElementById('progress-card');
+const statsCard  = document.getElementById('stats-card');
+const downloadBtn = document.getElementById('download-btn');
+const resetBtn   = document.getElementById('reset-btn');
+const errorBanner = document.getElementById('error-banner');
+
+let selectedFile = null;
+
+/* ── 파일 선택 ── */
+dropzone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('hover'); });
+dropzone.addEventListener('dragleave', ()  => dropzone.classList.remove('hover'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('hover');
+  setFile(e.dataTransfer.files[0]);
+});
+
+function setFile(f) {
+  if (!f) return;
+  selectedFile = f;
+  dropzone.classList.add('has-file');
+  dropLabel.style.display = 'none';
+  fileInfo.style.display = 'flex';
+  document.getElementById('fname').textContent = f.name;
+  document.getElementById('fsize').textContent = formatSize(f.size);
+  startBtn.style.display = 'block';
+}
+
+function formatSize(b) {
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(1) + ' MB';
+}
+
+/* ── 마스터링 시작 ── */
+startBtn.addEventListener('click', async () => {
+  if (!selectedFile) return;
+
+  startBtn.disabled = true;
+  progressCard.style.display = 'block';
+  statsCard.style.display = 'none';
+  errorBanner.style.display = 'none';
+  downloadBtn.style.display = 'none';
+  resetBtn.style.display = 'none';
+  resetSteps();
+
+  const fd = new FormData();
+  fd.append('file', selectedFile);
+
+  let jobId;
+  try {
+    const res = await fetch('/master', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    jobId = data.job_id;
+  } catch (e) {
+    showError(e.message);
+    return;
+  }
+
+  // SSE 스트림 수신
+  const es = new EventSource(`/progress/${jobId}`);
+  es.onmessage = (e) => {
+    const ev = JSON.parse(e.data);
+    handleEvent(ev, jobId, es);
+  };
+  es.onerror = () => {
+    es.close();
+    showError('서버 연결이 끊겼습니다.');
+  };
+});
+
+function handleEvent(ev, jobId, es) {
+  if (ev.type === 'heartbeat') return;
+
+  if (ev.type === 'step') {
+    setStepActive(ev.step, ev.detail);
+  }
+
+  if (ev.type === 'analysis') {
+    statsCard.style.display = 'block';
+    document.getElementById('stat-peak').textContent = ev.peak_db + ' dBFS';
+    document.getElementById('stat-rms').textContent  = ev.rms_db  + ' dBFS';
+    document.getElementById('stat-dur').textContent  = formatDuration(ev.duration);
+    document.getElementById('stat-sr').textContent   = (ev.sample_rate / 1000).toFixed(1) + ' kHz';
+  }
+
+  if (ev.type === 'lufs' && ev.before !== null) {
+    const row = document.getElementById('lufs-row');
+    row.style.display = 'flex';
+    document.getElementById('lufs-before').textContent = ev.before + ' LUFS';
+    document.getElementById('lufs-after').textContent  = ev.after  + ' LUFS';
+  }
+
+  if (ev.type === 'done') {
+    es.close();
+    setStepDone(1); setStepDone(2); setStepDone(3); setStepDone(4);
+    downloadBtn.href = `/download/${jobId}`;
+    downloadBtn.setAttribute('download', ev.filename || 'mastered.wav');
+    downloadBtn.style.display = 'block';
+    resetBtn.style.display = 'block';
+    startBtn.disabled = false;
+  }
+
+  if (ev.type === 'error') {
+    es.close();
+    showError(ev.message);
+  }
+}
+
+/* ── 스텝 상태 ── */
+function resetSteps() {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById(`s${i}`);
+    el.classList.remove('active', 'done', 'error');
+  }
+}
+function setStepActive(n, detail) {
+  for (let i = 1; i < n; i++) setStepDone(i);
+  const el = document.getElementById(`s${n}`);
+  el.classList.remove('done', 'error');
+  el.classList.add('active');
+  if (detail) document.getElementById(`d${n}`).textContent = detail;
+}
+function setStepDone(n) {
+  const el = document.getElementById(`s${n}`);
+  el.classList.remove('active', 'error');
+  el.classList.add('done');
+  el.querySelector('.step-icon').textContent = '✓';
+}
+
+/* ── 오류 표시 ── */
+function showError(msg) {
+  errorBanner.textContent = '오류: ' + msg;
+  errorBanner.style.display = 'block';
+  startBtn.disabled = false;
+  resetBtn.style.display = 'block';
+}
+
+/* ── 시간 포맷 ── */
+function formatDuration(s) {
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+/* ── 리셋 ── */
+resetBtn.addEventListener('click', () => {
+  selectedFile = null;
+  fileInput.value = '';
+  dropzone.classList.remove('has-file', 'hover');
+  dropLabel.style.display = '';
+  fileInfo.style.display = 'none';
+  startBtn.style.display = 'none';
+  startBtn.disabled = false;
+  progressCard.style.display = 'none';
+  statsCard.style.display = 'none';
+  downloadBtn.style.display = 'none';
+  resetBtn.style.display = 'none';
+  errorBanner.style.display = 'none';
+  resetSteps();
+  for (let i = 1; i <= 4; i++)
+    document.getElementById(`s${i}`).querySelector('.step-icon').textContent = i;
+});
+</script>
+</body>
+</html>
