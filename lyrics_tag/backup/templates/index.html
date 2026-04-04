@@ -18,10 +18,12 @@
       </label>
       <div id="file-info"></div>
       <div id="lyrics-input-wrap">
-        <label for="lyrics-input">가사 텍스트 (한 줄씩 입력)</label>
-        <textarea id="lyrics-input" rows="8" placeholder="가사를 한 줄씩 붙여넣으세요"></textarea>
+        <label for="lyrics-input">가사 텍스트 (선택 — 입력 시 정렬 정확도 향상)</label>
+        <textarea id="lyrics-input" rows="8"
+          placeholder="가사를 한 줄씩 붙여넣으세요&#10;(비워두면 Whisper 자동 전사만 사용)"></textarea>
       </div>
-      <button id="load-btn" disabled>가사 불러오기</button>
+      <button id="transcribe-btn" disabled>전사 시작 (Whisper)</button>
+      <div id="status"></div>
     </section>
 
     <!-- 오디오 플레이어 -->
@@ -31,10 +33,10 @@
         <span id="current-time">0:00.000</span> / <span id="duration">0:00.000</span>
       </div>
       <div id="shortcuts-hint">
-        <b>클릭 / Space</b> 현재 시간 입력 &amp; 다음 줄 &nbsp;|&nbsp;
+        <b>Space</b> 현재 시간 입력 &nbsp;|&nbsp;
+        <b>Enter</b> 다음 줄 &nbsp;|&nbsp;
         <b>P</b> 재생/정지 &nbsp;|&nbsp;
-        <b>← →</b> 2초 이동 &nbsp;|&nbsp;
-        <b>↑ ↓</b> 줄 이동
+        <b>← →</b> 2초 이동
       </div>
     </section>
 
