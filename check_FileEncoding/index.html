@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일 인코딩 검사 도구</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #1a73e8;
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+        header h1 { font-size: 20px; font-weight: 600; }
+        header p  { font-size: 13px; opacity: 0.85; margin-top: 3px; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            padding: 20px;
+        }
+
+        /* ── 입력 영역 ── */
+        .scan-row { display: flex; gap: 10px; align-items: center; }
+
+        #pathInput {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            transition: border-color .15s;
+        }
+        #pathInput:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,.15); }
+
+        /* ── 버튼 ── */
+        .btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background .15s;
+            white-space: nowrap;
+        }
+        .btn-primary  { background: #1a73e8; color: white; }
+        .btn-primary:hover { background: #1558b0; }
+        .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+        .btn-success  { background: #34a853; color: white; }
+        .btn-success:hover { background: #2d9248; }
+
+        /* ── 로딩 ── */
+        .loading { display: none; align-items: center; gap: 10px; color: #1a73e8; font-size: 14px; margin-top: 14px; }
+        .loading.active { display: flex; }
+        .spinner {
+            width: 20px; height: 20px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── 오류 알림 ── */
+        .error-alert {
+            background: #fce8e6; color: #c5221f;
+            border-left: 4px solid #ea4335;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+        }
+        .error-alert.active { display: block; }
+
+        /* ── 요약 카드 ── */
+        .summary-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+        .summary-item {
+            flex: 1; min-width: 130px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 14px 16px;
+            text-align: center;
+            border-left: 4px solid #ddd;
+            cursor: pointer;
+            transition: box-shadow .15s;
+        }
+        .summary-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+        .summary-item.s-total      { border-left-color: #1a73e8; }
+        .summary-item.s-utf8-bom   { border-left-color: #34a853; }
+        .summary-item.s-utf8-nobom { border-left-color: #81c995; }
+        .summary-item.s-utf16-le   { border-left-color: #fbbc04; }
+        .summary-item.s-utf16-be   { border-left-color: #ff9800; }
+        .summary-item.s-euckr      { border-left-color: #ea4335; }
+        .summary-item.s-error      { border-left-color: #9e9e9e; }
+        .s-count { font-size: 30px; font-weight: 700; color: #222; line-height: 1; }
+        .s-label { font-size: 11px; color: #888; margin-top: 4px; }
+
+        /* ── 툴바 (필터 + 다운로드) ── */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 5px 14px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all .15s;
+        }
+        .filter-btn:hover { background: #f0f2f5; }
+        .filter-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+        .right-toolbar { display: flex; gap: 10px; align-items: center; }
+        #resultCount { font-size: 13px; color: #888; }
+
+        /* ── 테이블 ── */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th {
+            background: #f8f9fa;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid #e0e0e0;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        tr:hover td { background: #f5f8ff; }
+        tr.row-error td { background: #fff8f8; }
+
+        .col-name { white-space: nowrap; font-weight: 500; }
+        .col-path {
+            max-width: 420px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: #555;
+        }
+
+        /* ── 인코딩 뱃지 ── */
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .b-utf8-bom   { background: #e6f4ea; color: #1e7e34; }
+        .b-utf8-nobom { background: #d4edda; color: #155724; }
+        .b-utf16-le   { background: #fff3cd; color: #856404; }
+        .b-utf16-be   { background: #ffeeba; color: #7d6608; }
+        .b-euckr      { background: #fce8e6; color: #c5221f; }
+        .b-error      { background: #f0f0f0; color: #666; }
+
+        .bom-yes { color: #1a73e8; font-weight: 600; }
+        .bom-no  { color: #bbb; }
+
+        .note-error {
+            color: #c5221f;
+            font-size: 12px;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── 빈 상태 ── */
+        .empty-state { text-align: center; padding: 50px 20px; color: #bbb; }
+        .empty-state .icon { font-size: 44px; }
+        .empty-state p { margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>파일 인코딩 검사 도구</h1>
+    <p>C/C++ 소스 파일 (.cpp .h .hpp .c .rc) 의 인코딩을 분석합니다 — Read Only, 파일 수정 없음</p>
+</header>
+
+<div class="container">
+
+    <!-- 입력 카드 -->
+    <div class="card">
+        <div class="scan-row">
+            <input type="text" id="pathInput"
+                   placeholder="스캔할 폴더 경로를 입력하세요  (예: C:\MyMFCProject)"
+                   autocomplete="off">
+            <button class="btn btn-primary" id="scanBtn" onclick="startScan()">스캔</button>
+        </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <span id="loadingText">파일 스캔 중...</span>
+        </div>
+        <div class="error-alert" id="errorAlert"></div>
+    </div>
+
+    <!-- 요약 카드 -->
+    <div class="card" id="summaryCard" style="display:none">
+        <div class="summary-grid" id="summaryGrid"></div>
+    </div>
+
+    <!-- 결과 카드 -->
+    <div class="card" id="resultsCard" style="display:none">
+        <div class="toolbar">
+            <div class="filter-group">
+                <button class="filter-btn active" id="filter-all"      onclick="setFilter('all')">전체</button>
+                <button class="filter-btn"         id="filter-utf8bom"  onclick="setFilter('utf8bom')">UTF-8 BOM</button>
+                <button class="filter-btn"         id="filter-utf8"     onclick="setFilter('utf8nobom')">UTF-8 (No BOM)</button>
+                <button class="filter-btn"         id="filter-utf16le"  onclick="setFilter('utf16le')">UTF-16 LE</button>
+                <button class="filter-btn"         id="filter-utf16be"  onclick="setFilter('utf16be')">UTF-16 BE</button>
+                <button class="filter-btn"         id="filter-euckr"    onclick="setFilter('euckr')">EUC-KR</button>
+                <button class="filter-btn"         id="filter-error"    onclick="setFilter('error')" style="display:none">오류</button>
+            </div>
+            <div class="right-toolbar">
+                <span id="resultCount"></span>
+                <button class="btn btn-success" id="csvBtn" onclick="downloadCSV()" style="display:none">
+                    ▼ CSV 다운로드
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:180px">파일명</th>
+                        <th>전체 경로</th>
+                        <th style="width:150px">인코딩</th>
+                        <th style="width:60px;text-align:center">BOM</th>
+                        <th style="width:200px">비고</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display:none">
+            <div class="icon">📂</div>
+            <p>해당 조건의 파일이 없습니다.</p>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+'use strict';
+
+let allResults   = [];
+let currentFilter = 'all';
+
+/* ── 유틸 ── */
+function esc(s) {
+    return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function badgeClass(enc) {
+    if (!enc)                        return 'b-error';
+    if (enc === 'UTF-8 BOM')         return 'b-utf8-bom';
+    if (enc === 'UTF-8 (No BOM)')    return 'b-utf8-nobom';
+    if (enc === 'UTF-16 LE')         return 'b-utf16-le';
+    if (enc === 'UTF-16 BE')         return 'b-utf16-be';
+    if (enc === 'EUC-KR (CP949)')    return 'b-euckr';
+    return 'b-error';
+}
+
+/* ── 스캔 ── */
+async function startScan() {
+    const path = document.getElementById('pathInput').value.trim();
+    if (!path) { alert('폴더 경로를 입력하세요.'); return; }
+
+    setLoading(true);
+    hideError();
+    document.getElementById('summaryCard').style.display = 'none';
+    document.getElementById('resultsCard').style.display = 'none';
+    document.getElementById('csvBtn').style.display     = 'none';
+
+    try {
+        const res = await fetch('/scan', {
+            method : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify({ path })
+        });
+
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || `HTTP ${res.status}`);
+        }
+
+        allResults    = await res.json();
+        currentFilter = 'all';
+
+        /* 필터 버튼 초기화 */
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('filter-all').classList.add('active');
+
+        /* 오류 파일이 있으면 [오류] 필터 버튼 표시 */
+        const hasErr = allResults.some(r => r.error);
+        document.getElementById('filter-error').style.display = hasErr ? 'inline-block' : 'none';
+
+        renderSummary(allResults);
+        renderTable(applyFilter(allResults, 'all'));
+
+        document.getElementById('summaryCard').style.display = 'block';
+        document.getElementById('resultsCard').style.display = 'block';
+        if (allResults.length > 0) {
+            document.getElementById('csvBtn').style.display = 'inline-block';
+        }
+
+    } catch (e) {
+        showError('스캔 오류: ' + e.message);
+    } finally {
+        setLoading(false);
+    }
+}
+
+/* ── 필터 ── */
+function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+
+    /* 필터 ID 매핑 */
+    const idMap = {
+        all      : 'filter-all',
+        utf8bom  : 'filter-utf8bom',
+        utf8nobom: 'filter-utf8',
+        utf16le  : 'filter-utf16le',
+        utf16be  : 'filter-utf16be',
+        euckr    : 'filter-euckr',
+        error    : 'filter-error',
+    };
+    const btnId = idMap[f];
+    if (btnId) document.getElementById(btnId).classList.add('active');
+
+    renderTable(applyFilter(allResults, f));
+}
+
+function applyFilter(results, f) {
+    switch (f) {
+        case 'utf8bom'  : return results.filter(r => r.encoding === 'UTF-8 BOM');
+        case 'utf8nobom': return results.filter(r => r.encoding === 'UTF-8 (No BOM)');
+        case 'utf16le'  : return results.filter(r => r.encoding === 'UTF-16 LE');
+        case 'utf16be'  : return results.filter(r => r.encoding === 'UTF-16 BE');
+        case 'euckr'    : return results.filter(r => r.encoding === 'EUC-KR (CP949)');
+        case 'error'    : return results.filter(r => r.error);
+        default         : return results;
+    }
+}
+
+/* ── 요약 렌더링 ── */
+function renderSummary(results) {
+    const cnt = {
+        total     : results.length,
+        utf8bom   : 0,
+        utf8nobom : 0,
+        utf16le   : 0,
+        utf16be   : 0,
+        euckr     : 0,
+        error     : 0,
+    };
+    results.forEach(r => {
+        if (r.error)                           cnt.error++;
+        else if (r.encoding === 'UTF-8 BOM')         cnt.utf8bom++;
+        else if (r.encoding === 'UTF-8 (No BOM)')    cnt.utf8nobom++;
+        else if (r.encoding === 'UTF-16 LE')         cnt.utf16le++;
+        else if (r.encoding === 'UTF-16 BE')         cnt.utf16be++;
+        else if (r.encoding === 'EUC-KR (CP949)')    cnt.euckr++;
+    });
+
+    const items = [
+        { label:'전체',           cls:'s-total',      n:cnt.total,     f:'all'      },
+        { label:'UTF-8 BOM',      cls:'s-utf8-bom',   n:cnt.utf8bom,   f:'utf8bom'  },
+        { label:'UTF-8 (No BOM)', cls:'s-utf8-nobom', n:cnt.utf8nobom, f:'utf8nobom'},
+        { label:'UTF-16 LE',      cls:'s-utf16-le',   n:cnt.utf16le,   f:'utf16le'  },
+        { label:'UTF-16 BE',      cls:'s-utf16-be',   n:cnt.utf16be,   f:'utf16be'  },
+        { label:'EUC-KR (CP949)', cls:'s-euckr',      n:cnt.euckr,     f:'euckr'    },
+    ];
+    if (cnt.error > 0) {
+        items.push({ label:'오류', cls:'s-error', n:cnt.error, f:'error' });
+    }
+
+    document.getElementById('summaryGrid').innerHTML = items.map(it => `
+        <div class="summary-item ${it.cls}" onclick="setFilter('${it.f}')" title="${esc(it.label)} 필터">
+            <div class="s-count">${it.n}</div>
+            <div class="s-label">${esc(it.label)}</div>
+        </div>
+    `).join('');
+}
+
+/* ── 테이블 렌더링 ── */
+function renderTable(results) {
+    const tbody  = document.getElementById('resultsBody');
+    const empty  = document.getElementById('emptyState');
+    document.getElementById('resultCount').textContent = results.length + '개 파일';
+
+    if (results.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = results.map(r => {
+        const bc    = badgeClass(r.error ? '' : r.encoding);
+        const encTx = r.error ? '읽기 실패' : esc(r.encoding);
+        const bomTx = r.bom
+            ? '<span class="bom-yes">Yes</span>'
+            : '<span class="bom-no">—</span>';
+        const note  = r.error
+            ? `<span class="note-error" title="${esc(r.error)}">⚠ ${esc(r.error)}</span>`
+            : '—';
+        return `<tr class="${r.error ? 'row-error' : ''}">
+            <td class="col-name">${esc(r.name)}</td>
+            <td class="col-path" title="${esc(r.path)}">${esc(r.path)}</td>
+            <td><span class="badge ${bc}">${encTx}</span></td>
+            <td style="text-align:center">${bomTx}</td>
+            <td>${note}</td>
+        </tr>`;
+    }).join('');
+}
+
+/* ── CSV 다운로드 ── */
+function downloadCSV() {
+    const header = ['파일명','전체 경로','인코딩','BOM','비고'];
+    const rows   = allResults.map(r => [
+        r.name     || '',
+        r.path     || '',
+        r.encoding || '',
+        r.bom ? 'Yes' : 'No',
+        r.error    || '',
+    ]);
+
+    const csv = [header, ...rows]
+        .map(row => row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(','))
+        .join('\r\n');
+
+    /* UTF-8 BOM 추가 → Excel에서 한글 정상 표시 */
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'encoding_report.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+/* ── UI 헬퍼 ── */
+function setLoading(on) {
+    document.getElementById('loading').className = on ? 'loading active' : 'loading';
+    const btn = document.getElementById('scanBtn');
+    btn.disabled    = on;
+    btn.textContent = on ? '스캔 중…' : '스캔';
+}
+function showError(msg) {
+    const el = document.getElementById('errorAlert');
+    el.textContent = msg;
+    el.className = 'error-alert active';
+}
+function hideError() {
+    document.getElementById('errorAlert').className = 'error-alert';
+}
+
+/* Enter 키로 스캔 실행 */
+document.getElementById('pathInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') startScan();
+});
+</script>
+
+</body>
+</html>
