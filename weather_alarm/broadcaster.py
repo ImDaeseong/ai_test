@@ -116,13 +116,7 @@ class BroadcastDispatcher:
 
     @staticmethod
     def _is_permanent_failure(exc: Exception) -> bool:
-        if isinstance(exc, (Forbidden, BadRequest, discord.Forbidden, discord.NotFound)):
-            return True
-        if isinstance(exc, TelegramError):
-            return False
-        if isinstance(exc, discord.HTTPException):
-            return False
-        return False
+        return isinstance(exc, (Forbidden, BadRequest, discord.Forbidden, discord.NotFound))
 
 
 def build_telegram_sender(bot) -> SendFunc:
@@ -135,7 +129,8 @@ def build_telegram_sender(bot) -> SendFunc:
 def build_discord_sender(client: discord.Client) -> SendFunc:
     async def _send(target_id: str, message_text: str) -> None:
         await client.wait_until_ready()
-        channel = await client.fetch_channel(int(target_id))
+        channel_id = int(target_id)
+        channel = client.get_channel(channel_id) or await client.fetch_channel(channel_id)
         await channel.send(message_text)
 
     return _send

@@ -7,7 +7,6 @@ engine.py — Suno AI 음원 처리 엔진
 
 import sys
 import json
-import os
 import time
 import shutil
 import logging
@@ -130,8 +129,9 @@ def analyze_audio(file_path: str) -> dict:
     y, y_mono, sr = load_audio_with_retry(file_path)
 
     # ── BPM 감지 ──
-    tempo, beat_frames = librosa.beat.beat_track(y=y_mono, sr=sr)
-    bpm = float(tempo)
+    beat_result = librosa.beat.beat_track(y=y_mono, sr=sr)
+    tempo = beat_result[0] if isinstance(beat_result, (tuple, list)) else beat_result
+    bpm = float(np.mean(tempo))
     log.info("  🥁 BPM: %.1f", bpm)
 
     # ── Key / Chroma 분석 ──
@@ -207,12 +207,18 @@ def _compute_waveform_peaks(y_mono: np.ndarray, num_points: int = 1000) -> list:
 # 2. Stem 분리 (Demucs)
 # ──────────────────────────────────────────────
 
+_VALID_DEMUCS_MODELS = {"htdemucs", "htdemucs_ft", "mdx", "mdx_extra"}
+
+
 def separate_stems(file_path: str, output_dir: str = None, model: str = "htdemucs") -> dict:
     """
     로컬 Demucs 모델로 보컬/드럼/베이스/기타 트랙 분리.
     최초 실행 시 모델 가중치 자동 다운로드 (~1.5 GB).
     """
     import subprocess
+
+    if model not in _VALID_DEMUCS_MODELS:
+        raise ValueError(f"지원하지 않는 모델: {model}. 사용 가능: {', '.join(sorted(_VALID_DEMUCS_MODELS))}")
 
     log.info("🎚️  [Stem 분리 시작] 모델: %s", model)
     log.info("  ℹ️  최초 실행 시 Demucs 모델 다운로드가 필요합니다 (~1.5 GB).")
@@ -238,16 +244,34 @@ def separate_stems(file_path: str, output_dir: str = None, model: str = "htdemuc
     if proc.returncode != 0:
         raise RuntimeError(f"Demucs 실패 (반환코드={proc.returncode})")
 
-    # 출력 파일 경로 수집
+    # demucs 출력 → 한국어 접두사 파일명으로 이동
     stem_dir = out_path / model / src.stem
+    stem_labels = {
+        "vocals": "보컬",
+        "drums":  "드럼",
+        "bass":   "베이스",
+        "other":  "기타",
+    }
     stems = {}
-    for stem_name in ["vocals", "drums", "bass", "other"]:
-        p = stem_dir / f"{stem_name}.wav"
-        if p.exists():
-            stems[stem_name] = str(p)
-            log.info("  ✅ %s → %s", stem_name, p)
+    for stem_name, label in stem_labels.items():
+        src_p = stem_dir / f"{stem_name}.wav"
+        if src_p.exists():
+            dst_p = out_path / f"{label}_{src.stem}.wav"
+            shutil.move(str(src_p), str(dst_p))
+            stems[stem_name] = str(dst_p)
+            log.info("  ✅ %s → %s", stem_name, dst_p.name)
         else:
             log.warning("  ⚠️  %s 파일 없음", stem_name)
+
+    # 빈 demucs 임시 디렉토리 정리
+    try:
+        if stem_dir.exists():
+            shutil.rmtree(str(stem_dir))
+        model_dir = out_path / model
+        if model_dir.exists() and not any(model_dir.iterdir()):
+            model_dir.rmdir()
+    except Exception as e:
+        log.warning("  ⚠️  임시 디렉토리 정리 실패: %s", e)
 
     log.info("✅ [Stem 분리 완료] 총 %d 트랙", len(stems))
     return {
@@ -264,70 +288,141 @@ def separate_stems(file_path: str, output_dir: str = None, model: str = "htdemuc
 
 def apply_mastering(file_path: str, target_lufs: float = -14.0, output_path: str = None) -> dict:
     """
-    Pedalboard로 EQ + 컴프레서 적용 후 pyloudnorm으로 -14 LUFS 정규화.
-    유튜브 최적화 타겟 (-14 LUFS).
+    개선된 마스터링 체인:
+      1. HPF 20Hz  — DC + 초저역 제거
+      2. 적응형 EQ — 곡 스펙트럼 분석 후 LowShelf / HighShelf / Presence 자동 조정
+      3. 글루 컴프레서 — 2:1 투명 압축 (트랜지언트 보존)
+      4. M/S 스테레오 처리 — 사이드 채널 컴프레션으로 스테레오 폭 안정화
+      5. pyloudnorm LUFS 정규화
+      6. 브릭월 리미터 — -1.0 dBFS 천장 (스트리밍 플랫폼 기준)
     """
+    import math
+    import librosa
     import soundfile as sf
     import pyloudnorm as pyln
-    from pedalboard import Pedalboard, HighpassFilter, LowpassFilter, Compressor
+    from pedalboard import (
+        Pedalboard, HighpassFilter, LowpassFilter,
+        LowShelfFilter, HighShelfFilter, PeakFilter,
+        Compressor, Limiter,
+    )
+
+    if not (-30.0 <= target_lufs <= 0.0):
+        raise ValueError(f"target_lufs {target_lufs:.1f} 은 -30.0 ~ 0.0 범위여야 합니다")
 
     log.info("🎛️  [마스터링 시작] 타겟: %.1f LUFS", target_lufs)
 
     src = Path(file_path)
     if output_path is None:
-        output_path = str(src.parent / f"{src.stem}_mastered.wav")
+        output_path = str(src.parent / f"마스터링_{src.stem}.wav")
 
-    # 오디오 로드 (soundfile: float32, (samples, channels))
     audio, sr = sf.read(str(src), always_2d=True)
-    log.info("  📥 원본 로드 — %d Hz, %.2f 초", sr, len(audio) / sr)
+    is_stereo = audio.shape[1] >= 2
+    log.info("  📥 원본 로드 — %d Hz, %.2f 초, %s",
+             sr, len(audio) / sr, "스테레오" if is_stereo else "모노")
 
-    # ── Pedalboard 체인 ──
-    board = Pedalboard([
-        HighpassFilter(cutoff_frequency_hz=30.0),    # 30 Hz 이하 컷 (불필요한 저역 노이즈 제거)
-        LowpassFilter(cutoff_frequency_hz=15000.0),  # 15 kHz 이상 컷 (에일리어싱 방지)
+    # ── 1. 사전 스펙트럼 분석 (적응형 EQ 파라미터 결정) ──
+    y_mono = audio.mean(axis=1).astype(np.float32)
+    n_fft = 2048
+    D = np.abs(librosa.stft(y_mono, n_fft=n_fft))
+    freqs = librosa.fft_frequencies(sr=sr, n_fft=n_fft)
+
+    def band_energy(f_low, f_high):
+        mask = (freqs >= f_low) & (freqs < f_high)
+        return float(np.mean(D[mask, :])) if mask.any() else 0.0
+
+    sub_bass_e   = band_energy(20, 60)
+    bass_e       = band_energy(60, 250)
+    mid_e        = band_energy(500, 2000)
+    presence_e   = band_energy(4000, 8000)
+    brilliance_e = band_energy(8000, 16000)
+
+    # 저역 비율 → 과다 시 컷, 부족 시 부스트
+    bass_ratio   = (sub_bass_e + bass_e) / (mid_e + 1e-9)
+    low_shelf_db = -2.0 if bass_ratio > 2.5 else (1.0 if bass_ratio < 0.8 else 0.0)
+
+    # 에어 밴드 (12 kHz 셀빙) → 고역 어두운 곡 보정
+    air_ratio      = brilliance_e / (presence_e + 1e-9)
+    high_shelf_db  = 1.5 if air_ratio < 0.6 else 0.0
+
+    # 프레즌스 (3 kHz 피크) → 존재감 부족 시 부스트
+    presence_ratio = presence_e / (mid_e + 1e-9)
+    presence_db    = 1.0 if presence_ratio < 0.5 else 0.0
+
+    log.info("  📊 적응형 EQ — LowShelf@80Hz: %+.1fdB  HighShelf@12kHz: %+.1fdB  Presence@3kHz: %+.1fdB",
+             low_shelf_db, high_shelf_db, presence_db)
+
+    # ── 2. EQ + 글루 컴프레서 ──
+    eq_chain = [
+        HighpassFilter(cutoff_frequency_hz=20.0),
+        LowpassFilter(cutoff_frequency_hz=20000.0),
+        LowShelfFilter(cutoff_frequency_hz=80.0, gain_db=low_shelf_db),
+        HighShelfFilter(cutoff_frequency_hz=12000.0, gain_db=high_shelf_db),
+    ]
+    if presence_db != 0.0:
+        eq_chain.append(PeakFilter(cutoff_frequency_hz=3000.0, gain_db=presence_db, q=0.8))
+    eq_chain.append(
         Compressor(
-            threshold_db=-18.0,
-            ratio=3.0,
-            attack_ms=10.0,
-            release_ms=150.0,
-        ),
-    ])
+            threshold_db=-16.0,  # 기존 -18 → -16 (자연스러운 글루)
+            ratio=2.0,           # 기존 3:1 → 2:1 (투명한 압축)
+            attack_ms=20.0,      # 기존 10ms → 20ms (트랜지언트 보존)
+            release_ms=200.0,    # 기존 150ms → 200ms
+        )
+    )
+    board = Pedalboard(eq_chain)
+    processed = board(audio.T.astype(np.float32), sr).T
+    log.info("  ✅ EQ + 글루 컴프레서 완료")
 
-    # pedalboard는 (channels, samples) float32 필요
-    audio_cb = audio.T.astype(np.float32)
-    processed = board(audio_cb, sr)
-    # 다시 (samples, channels)로
-    processed = processed.T
-    log.info("  ✅ EQ + 컴프레서 적용 완료")
+    # ── 3. M/S 스테레오 처리 (스테레오 전용) ──
+    if is_stereo and processed.shape[1] >= 2:
+        k = 1.0 / np.sqrt(2)
+        mid_ch  = (processed[:, 0] + processed[:, 1]) * k
+        side_ch = (processed[:, 0] - processed[:, 1]) * k
 
-    # ── pyloudnorm LUFS 정규화 ──
+        side_board = Pedalboard([
+            Compressor(threshold_db=-20.0, ratio=2.5, attack_ms=15.0, release_ms=100.0)
+        ])
+        side_proc = side_board(side_ch[np.newaxis, :].astype(np.float32), sr)[0]
+
+        processed = np.column_stack([
+            (mid_ch + side_proc) * k,
+            (mid_ch - side_proc) * k,
+        ])
+        log.info("  🔀 M/S 스테레오 처리 완료")
+
+    # ── 4. LUFS 정규화 ──
     meter = pyln.Meter(sr)
     current_lufs = meter.integrated_loudness(processed)
-    log.info("  📢 처리 후 라우드니스: %.2f LUFS → 타겟: %.2f LUFS", current_lufs, target_lufs)
+    if math.isinf(current_lufs):
+        log.warning("  ⚠️  라우드니스 측정 불가 (무음 또는 너무 짧은 파일) — 정규화 스킵")
+        normalized = processed
+    else:
+        log.info("  📢 %.2f LUFS → %.2f LUFS", current_lufs, target_lufs)
+        normalized = pyln.normalize.loudness(processed, current_lufs, target_lufs)
 
-    normalized = pyln.normalize.loudness(processed, current_lufs, target_lufs)
+    # ── 5. 브릭월 리미터 (기존 크루드 피크 클램프 대체) ──
+    limiter = Pedalboard([Limiter(threshold_db=-1.0, release_ms=100.0)])
+    limited = limiter(normalized.T.astype(np.float32), sr).T
+    log.info("  🔒 브릭월 리미터 완료 (-1.0 dBFS)")
 
-    # 클리핑 방지 (피크 -0.1 dBFS)
-    peak = np.max(np.abs(normalized))
-    if peak > 0.989:
-        normalized = normalized * (0.989 / peak)
-        log.info("  🔒 피크 클리핑 방지 처리 적용")
+    # ── 6. 저장 ──
+    sf.write(output_path, limited, sr, subtype="PCM_24")
+    log.info("  💾 저장: %s", output_path)
 
-    # ── 저장 ──
-    sf.write(output_path, normalized, sr, subtype="PCM_24")
-    log.info("  💾 마스터 파일 저장: %s", output_path)
-
-    # 최종 LUFS 확인
-    final_lufs = meter.integrated_loudness(normalized)
+    final_lufs = meter.integrated_loudness(limited)
     log.info("✅ [마스터링 완료] 최종 라우드니스: %.2f LUFS", final_lufs)
 
     return {
         "file": str(file_path),
         "output": output_path,
-        "original_lufs": round(current_lufs, 2),
+        "original_lufs": round(current_lufs, 2) if not math.isinf(current_lufs) else None,
         "final_lufs": round(final_lufs, 2),
         "target_lufs": target_lufs,
         "sample_rate": sr,
+        "eq_adjustments": {
+            "low_shelf_db": low_shelf_db,
+            "high_shelf_db": high_shelf_db,
+            "presence_db": presence_db,
+        },
         "status": "mastered",
     }
 

@@ -198,6 +198,22 @@
         .empty-state { text-align: center; padding: 50px 20px; color: #bbb; }
         .empty-state .icon { font-size: 44px; }
         .empty-state p { margin-top: 10px; font-size: 14px; }
+
+        /* ── 취소 버튼 ── */
+        .btn-cancel { background: #ea4335; color: white; padding: 5px 14px; font-size: 12px; }
+        .btn-cancel:hover { background: #c5221f; }
+
+        /* ── 페이지네이션 ── */
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            gap: 10px; padding: 14px 0 4px; font-size: 13px; color: #555;
+        }
+        .pagination button {
+            padding: 5px 14px; border: 1px solid #ddd; border-radius: 20px;
+            background: white; cursor: pointer; font-size: 13px; transition: all .15s;
+        }
+        .pagination button:hover:not(:disabled) { background: #f0f2f5; }
+        .pagination button:disabled { color: #bbb; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -220,6 +236,7 @@
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <span id="loadingText">파일 스캔 중...</span>
+            <button class="btn btn-cancel" onclick="cancelScan()">취소</button>
         </div>
         <div class="error-alert" id="errorAlert"></div>
     </div>
@@ -268,6 +285,7 @@
             <div class="icon">📂</div>
             <p>해당 조건의 파일이 없습니다.</p>
         </div>
+        <div class="pagination" id="pagination"></div>
     </div>
 
 </div><!-- /container -->
@@ -275,8 +293,13 @@
 <script>
 'use strict';
 
-let allResults   = [];
-let currentFilter = 'all';
+let allResults      = [];
+let currentFilter   = 'all';
+let filteredResults = [];
+let currentPage     = 1;
+const PAGE_SIZE     = 200;
+let abortController = null;
+let loadingTimer    = null;
 
 /* ── 유틸 ── */
 function esc(s) {
@@ -304,13 +327,22 @@ async function startScan() {
     hideError();
     document.getElementById('summaryCard').style.display = 'none';
     document.getElementById('resultsCard').style.display = 'none';
-    document.getElementById('csvBtn').style.display     = 'none';
+    document.getElementById('csvBtn').style.display      = 'none';
+
+    abortController = new AbortController();
+
+    let elapsed = 0;
+    loadingTimer = setInterval(() => {
+        elapsed++;
+        document.getElementById('loadingText').textContent = `파일 스캔 중... (${elapsed}초 경과)`;
+    }, 1000);
 
     try {
         const res = await fetch('/scan', {
             method : 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body   : JSON.stringify({ path })
+            body   : JSON.stringify({ path }),
+            signal : abortController.signal,
         });
 
         if (!res.ok) {
@@ -339,9 +371,20 @@ async function startScan() {
         }
 
     } catch (e) {
-        showError('스캔 오류: ' + e.message);
+        if (e.name !== 'AbortError') {
+            showError('스캔 오류: ' + e.message);
+        }
     } finally {
+        clearInterval(loadingTimer);
+        loadingTimer    = null;
+        abortController = null;
         setLoading(false);
+    }
+}
+
+function cancelScan() {
+    if (abortController) {
+        abortController.abort();
     }
 }
 
@@ -418,20 +461,34 @@ function renderSummary(results) {
     `).join('');
 }
 
-/* ── 테이블 렌더링 ── */
+/* ── 테이블 렌더링 (페이지네이션) ── */
 function renderTable(results) {
-    const tbody  = document.getElementById('resultsBody');
-    const empty  = document.getElementById('emptyState');
-    document.getElementById('resultCount').textContent = results.length + '개 파일';
+    filteredResults = results;
+    currentPage     = 1;
+    renderPage();
+}
 
-    if (results.length === 0) {
+function renderPage() {
+    const tbody      = document.getElementById('resultsBody');
+    const empty      = document.getElementById('emptyState');
+    const total      = filteredResults.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+    document.getElementById('resultCount').textContent = `${total}개 파일`;
+
+    if (total === 0) {
         tbody.innerHTML = '';
         empty.style.display = 'block';
+        document.getElementById('pagination').innerHTML = '';
         return;
     }
     empty.style.display = 'none';
 
-    tbody.innerHTML = results.map(r => {
+    const start     = (currentPage - 1) * PAGE_SIZE;
+    const end       = Math.min(start + PAGE_SIZE, total);
+    const pageItems = filteredResults.slice(start, end);
+
+    tbody.innerHTML = pageItems.map(r => {
         const bc    = badgeClass(r.error ? '' : r.encoding);
         const encTx = r.error ? '읽기 실패' : esc(r.encoding);
         const bomTx = r.bom
@@ -448,6 +505,21 @@ function renderTable(results) {
             <td>${note}</td>
         </tr>`;
     }).join('');
+
+    const pg = document.getElementById('pagination');
+    if (totalPages <= 1) { pg.innerHTML = ''; return; }
+    pg.innerHTML = `
+        <button onclick="changePage(-1)" ${currentPage <= 1 ? 'disabled' : ''}>◀ 이전</button>
+        <span>${currentPage} / ${totalPages} 페이지 &nbsp;(${start + 1}–${end} / ${total}개)</span>
+        <button onclick="changePage(1)" ${currentPage >= totalPages ? 'disabled' : ''}>다음 ▶</button>
+    `;
+}
+
+function changePage(delta) {
+    const totalPages = Math.ceil(filteredResults.length / PAGE_SIZE);
+    currentPage = Math.max(1, Math.min(totalPages, currentPage + delta));
+    renderPage();
+    document.querySelector('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ── CSV 다운로드 ── */
@@ -480,6 +552,7 @@ function downloadCSV() {
 /* ── UI 헬퍼 ── */
 function setLoading(on) {
     document.getElementById('loading').className = on ? 'loading active' : 'loading';
+    if (!on) document.getElementById('loadingText').textContent = '파일 스캔 중...';
     const btn = document.getElementById('scanBtn');
     btn.disabled    = on;
     btn.textContent = on ? '스캔 중…' : '스캔';

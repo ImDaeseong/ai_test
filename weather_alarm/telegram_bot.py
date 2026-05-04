@@ -74,16 +74,6 @@ class TelegramWeatherBot:
         await update.message.reply_text("날씨 알림 구독을 해제했습니다.")
         logger.info(f"Telegram 구독 해제: chat_id={update.effective_chat.id}")
 
-    async def send_notification(self, message: str):
-        if not self.chat_id:
-            logger.warning("TELEGRAM_CHAT_ID가 없어 알림을 보낼 수 없습니다.")
-            return
-        try:
-            await self.app.bot.send_message(chat_id=self.chat_id, text=message)
-            logger.info(f"Telegram 알림 전송 완료: chat_id={self.chat_id}")
-        except Exception as e:
-            logger.error(f"Telegram 알림 전송 실패: {e}")
-
     async def run(self, stop_event: Optional[asyncio.Event] = None):
         stop_event = stop_event or asyncio.Event()
         async with self.app:
@@ -99,3 +89,46 @@ class TelegramWeatherBot:
                     await self.app.updater.stop()
                 if self.app.running:
                     await self.app.stop()
+
+
+if __name__ == "__main__":
+    import io
+    import os
+    import sys
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    if hasattr(sys.stdout, "buffer"):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
+    os.makedirs("logs", exist_ok=True)
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan> - <level>{message}</level>",
+        level="INFO",
+    )
+    logger.add("logs/telegram_bot.log", mode="w", level="DEBUG", encoding="utf-8")
+
+    from notification_store import NotificationStore
+    from weather_client import WeatherClient
+
+    async def main():
+        token = os.getenv("TELEGRAM_TOKEN", "")
+        chat_id = os.getenv("TELEGRAM_CHAT_ID", "")
+        postgres_dsn = os.getenv("POSTGRES_DSN", "")
+        weather_key = os.getenv("WEATHER_SERVICE_KEY", "")
+        if not token:
+            logger.error("TELEGRAM_TOKEN이 설정되지 않았습니다")
+            sys.exit(1)
+        store = NotificationStore(postgres_dsn)
+        async with WeatherClient(weather_key) as weather_client:
+            bot = TelegramWeatherBot(token, chat_id, weather_client, store)
+            await bot.run()
+
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("사용자 요청으로 Telegram 봇을 종료합니다")

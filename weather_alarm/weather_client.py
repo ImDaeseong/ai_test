@@ -1,10 +1,13 @@
+import asyncio
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 from typing import Any, Optional
 
 import aiohttp
 from loguru import logger
+
+_KST = timezone(timedelta(hours=9))
 
 WEATHER_API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst"
 NX, NY = 58, 125  # 서울 가산동 격자 좌표
@@ -73,7 +76,7 @@ class WeatherClient:
         self._owns_session = session is None
         self._cache: Optional[WeatherData] = None
         self._cache_expires_at = 0.0
-        self._fetch_lock = None
+        self._fetch_lock = asyncio.Lock()
 
     async def __aenter__(self) -> "WeatherClient":
         await self._get_session()
@@ -85,7 +88,7 @@ class WeatherClient:
     @staticmethod
     def _get_base_datetime(now: Optional[datetime] = None) -> tuple[str, str]:
         # 초단기실황 API의 발표시각은 정시 단위입니다. 지연을 고려해 10분 전 정시를 조회합니다.
-        target = (now or datetime.now()) - timedelta(minutes=10)
+        target = (now or datetime.now(_KST)) - timedelta(minutes=10)
         base = target.replace(minute=0, second=0, microsecond=0)
         return base.strftime("%Y%m%d"), base.strftime("%H%M")
 
@@ -169,11 +172,6 @@ class WeatherClient:
             await self._session.close()
 
     async def fetch(self, force_refresh: bool = False) -> Optional[WeatherData]:
-        if self._fetch_lock is None:
-            import asyncio
-
-            self._fetch_lock = asyncio.Lock()
-
         if not force_refresh and self._cache and time.monotonic() < self._cache_expires_at:
             logger.debug("날씨 캐시 사용")
             return self._cache

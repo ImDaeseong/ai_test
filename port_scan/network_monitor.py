@@ -12,8 +12,10 @@ import os
 import argparse
 import threading
 import concurrent.futures
+from collections import deque
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
+from urllib.parse import urlsplit, urlunsplit
 
 # ──────────────────────────────────────────
 # 설정
@@ -23,10 +25,18 @@ DISPLAY_INTERVAL = 5                    # 터미널 출력 주기 (초)
 PROTO_TIMEOUT    = 0.4                  # 프로토콜 탐지 소켓 타임아웃
 MAX_WORKERS      = 20                   # 병렬 스캔 스레드 수
 MAX_LOG_BYTES    = 10 * 1024 * 1024     # 로그 rotate 기준 (10 MB)
+MAX_HISTORY      = 20_000               # 세션 연결 이력 최대 보관 건수
+MAX_HTTP_LOG     = 5_000                # HTTP/HTTPS 캡처 이력 최대 보관 건수
+ACTIVE_PROBE     = False                # 서비스에 직접 접속하는 웹 탐지 기본 비활성화
+ENABLE_SNIFFER   = True                 # raw socket HTTP/HTTPS 캡처 사용 여부
+ENABLE_RDNS      = True                 # 원격 IP reverse DNS 조회 사용 여부
+JSONL_LOG        = False                # 스냅샷을 JSON Lines append 로그로 저장
+REDACT_URL_QUERY = False                # URL query 문자열 마스킹
 
 BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
 LOG_TEXT  = os.path.join(BASE_DIR, "network_monitor.log")
 LOG_JSON  = os.path.join(BASE_DIR, "network_log.json")
+LOG_JSONL = os.path.join(BASE_DIR, "network_log.jsonl")
 
 # Windows 시스템 프로세스 이름 (소문자) — 기본적으로 모니터링 제외
 SYSTEM_PROCESS_NAMES = {
@@ -44,6 +54,18 @@ SYSTEM_PROCESS_NAMES = {
 }
 
 _WINDIR = os.environ.get('WINDIR', 'C:\\Windows').lower()
+
+
+def _configure_console_encoding() -> None:
+    """Windows 콘솔에서 한글/유니코드 출력이 예외를 내지 않도록 보정한다."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
+
+_configure_console_encoding()
 
 
 # ──────────────────────────────────────────
@@ -95,9 +117,11 @@ def _is_system_process(name: str, exe: str, pid: int) -> bool:
 # ──────────────────────────────────────────
 def check_web_protocol(ip: str, port: int, timeout: float = PROTO_TIMEOUT) -> str | None:
     """실제 소켓 통신으로 HTTP 또는 HTTPS 여부를 판별한다."""
-    # HTTPS (SSL/TLS)
+    # HTTPS (SSL/TLS) — 공개 API 사용, 인증서 검증 비활성화
     try:
-        ctx = ssl._create_unverified_context()
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
         with socket.create_connection((ip, port), timeout=timeout) as raw:
             with ctx.wrap_socket(raw, server_hostname=ip):
                 return "HTTPS"
@@ -152,19 +176,31 @@ def _build_proc_cache() -> dict[int, dict]:
 # ──────────────────────────────────────────
 _lock         = threading.Lock()
 _accumulated: dict[tuple, dict] = {}  # 수집된 연결 누적 (5초마다 초기화)
-_history:     list[dict] = []         # 세션 전체 연결 이력 (누적)
-_http_log:    list[dict] = []         # HTTP 요청 이력 (스니퍼 캡처)
+_history:     deque[dict] = deque(maxlen=MAX_HISTORY)   # 세션 연결 이력 (상한 보관)
+_http_log:    deque[dict] = deque(maxlen=MAX_HTTP_LOG)   # HTTP 요청 이력 (상한 보관)
+_http_lock    = threading.Lock()
 _web_lock     = threading.Lock()
 _web_cache:   dict[str, str] = {}     # "ip:port" -> "HTTP"|"HTTPS" (확인된 것만)
 _web_pending: set[str] = set()        # 현재 탐지 중인 포트 키
+_dns_lock     = threading.Lock()
+_dns_cache:   dict[str, str | None] = {}
+_dns_pending: set[str] = set()
 _stop_event   = threading.Event()
 
 HTTP_METHODS = {b'GET ', b'POST', b'PUT ', b'PATC', b'DELE', b'HEAD', b'OPTI'}
 
-# 웹 프로토콜 탐지 전용 스레드풀 (수집 스레드와 분리)
-_web_executor = concurrent.futures.ThreadPoolExecutor(
-    max_workers=MAX_WORKERS, thread_name_prefix="web-check"
-)
+# import 시 부작용 방지: 스레드풀은 main()에서 초기화
+_web_executor:  concurrent.futures.ThreadPoolExecutor | None = None
+_rdns_executor: concurrent.futures.ThreadPoolExecutor | None = None
+
+
+def _redact_url_query(url: str) -> str:
+    if not REDACT_URL_QUERY:
+        return url
+    parts = urlsplit(url)
+    if not parts.query:
+        return url
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, "REDACTED", parts.fragment))
 
 
 # ──────────────────────────────────────────
@@ -220,6 +256,7 @@ def _parse_http_request(data: bytes) -> dict | None:
                 host = line.split(':', 1)[1].strip()
                 break
 
+        url = _redact_url_query(f"http://{host}{path}")
         return {
             'timestamp': datetime.now().isoformat(timespec='milliseconds'),
             'scheme':    'http',
@@ -230,7 +267,7 @@ def _parse_http_request(data: bytes) -> dict | None:
             'method':    method,
             'host':      host,
             'path':      path,
-            'url':       f"http://{host}{path}",
+            'url':       url,
         }
     except Exception:
         return None
@@ -333,14 +370,16 @@ def _sniff_on(bind_ip: str) -> None:
                 raw, _ = sock.recvfrom(65535)
             except socket.timeout:
                 continue
-            except Exception:
+            except OSError:
+                # 소켓이 닫혔거나 인터페이스가 사라진 경우
                 break
 
             entry = _parse_http_request(raw) or _parse_tls_sni(raw)
             if entry is None:
                 continue
 
-            _http_log.append(entry)
+            with _http_lock:
+                _http_log.append(entry)
             scheme = entry['scheme'].upper()
             if scheme == 'HTTP':
                 logger.info(
@@ -363,10 +402,8 @@ def _sniff_on(bind_ip: str) -> None:
 
 def _http_sniffer() -> None:
     """loopback + 외부 인터페이스 모두 캡처하는 스니퍼를 시작한다."""
-    # 캡처 대상 인터페이스 수집
     bind_ips: list[str] = ['127.0.0.1']
     try:
-        # 호스트의 외부 IP 추가
         hostname = socket.gethostname()
         for info in socket.getaddrinfo(hostname, None, socket.AF_INET):
             ip = info[4][0]
@@ -382,9 +419,9 @@ def _http_sniffer() -> None:
         t.start()
         threads.append(t)
 
-    # 모든 하위 스레드가 끝날 때까지 대기 (stop_event로 종료됨)
+    # stop_event로 종료됨; 최대 3초 대기해 무한 블록 방지
     for t in threads:
-        t.join()
+        t.join(timeout=3)
 
 
 # ──────────────────────────────────────────
@@ -395,10 +432,14 @@ def _normalize_filters(names: list[str] | None) -> set[str] | None:
         return None
     result: set[str] = set()
     for n in names:
-        n = n.lower()
+        n = n.strip().lower()
+        if not n:
+            continue
         result.add(n)
-        result.add(n + '.exe')
-    return result
+        if not n.endswith('.exe'):
+            result.add(n + '.exe')
+    # 공백만 전달된 경우 빈 set 대신 None 반환 (호출부의 falsy 검사와 일관성 유지)
+    return result or None
 
 
 def _check_and_cache(ip: str, port: int) -> None:
@@ -418,12 +459,57 @@ def _check_and_cache(ip: str, port: int) -> None:
 
 def _submit_web_check(ip: str, port: int) -> None:
     """캐시·진행 중이 아닌 포트만 웹 탐지 태스크를 제출한다."""
+    if not ACTIVE_PROBE or _web_executor is None:
+        return
     key = f"{ip}:{port}"
     with _web_lock:
         if key in _web_cache or key in _web_pending:
             return
         _web_pending.add(key)
-    _web_executor.submit(_check_and_cache, ip, port)
+    try:
+        _web_executor.submit(_check_and_cache, ip, port)
+    except Exception:
+        # submit 실패 시 pending에서 제거해 영구 오염 방지
+        with _web_lock:
+            _web_pending.discard(key)
+
+
+def _reverse_dns(ip: str) -> str | None:
+    """원격 IP의 cached reverse DNS를 반환하고, 필요하면 백그라운드 조회를 예약한다."""
+    if not ENABLE_RDNS or _rdns_executor is None:
+        return None
+    if any(ip.startswith(pfx) for pfx in ('127.', '10.', '192.168.', '172.16.', '172.17.',
+                                          '172.18.', '172.19.', '172.20.', '172.21.',
+                                          '172.22.', '172.23.', '172.24.', '172.25.',
+                                          '172.26.', '172.27.', '172.28.', '172.29.',
+                                          '172.30.', '172.31.', 'fe80')):
+        return None
+
+    with _dns_lock:
+        if ip in _dns_cache:
+            return _dns_cache[ip]
+        if ip in _dns_pending:
+            return None
+        _dns_pending.add(ip)
+
+    try:
+        _rdns_executor.submit(_resolve_dns_worker, ip)
+    except Exception:
+        # submit 실패 시 pending에서 제거해 영구 오염 방지
+        with _dns_lock:
+            _dns_pending.discard(ip)
+    return None
+
+
+def _resolve_dns_worker(ip: str) -> None:
+    try:
+        domain = socket.gethostbyaddr(ip)[0]
+    except Exception:
+        domain = None
+
+    with _dns_lock:
+        _dns_cache[ip] = domain
+        _dns_pending.discard(ip)
 
 
 # ──────────────────────────────────────────
@@ -433,12 +519,11 @@ def _submit_web_check(ip: str, port: int) -> None:
 # ──────────────────────────────────────────
 def _collector(filter_names: list[str] | None, include_system: bool) -> None:
     filters = _normalize_filters(filter_names)
-    proc_cache: dict[int, dict] = _build_proc_cache()  # 시작 즉시 초기화
+    proc_cache: dict[int, dict] = _build_proc_cache()
     proc_refresh_counter = 0
 
     while not _stop_event.is_set():
         try:
-            # 프로세스 캐시는 5회(2.5초)마다 갱신
             proc_refresh_counter += 1
             if proc_refresh_counter >= 5:
                 proc_cache = _build_proc_cache()
@@ -446,7 +531,9 @@ def _collector(filter_names: list[str] | None, include_system: bool) -> None:
 
             conns = psutil.net_connections(kind="inet")
             now = datetime.now().isoformat(timespec='seconds')
-            new_listen: list[tuple[str, int]] = []  # 이번 사이클에 새로 발견한 LISTEN 포트
+            new_listen: list[tuple[str, int]] = []
+            # 락 밖에서 처리할 로그 메시지 버퍼 — 락 내부 I/O 방지
+            log_msgs: list[str] = []
 
             with _lock:
                 for c in conns:
@@ -486,24 +573,24 @@ def _collector(filter_names: list[str] | None, include_system: bool) -> None:
                             'last_seen':   now,
                         }
                         _accumulated[key] = entry
-                        _history.append(entry)   # 세션 이력에 즉시 기록
+                        _history.append(entry)
 
-                        # 텍스트 로그에 즉시 기록 — 단기 연결도 누락 없이 남김
                         proto_str = 'TCP' if is_tcp else 'UDP'
                         laddr_str = f"{c.laddr.ip}:{c.laddr.port}"
                         raddr_str = (f"{c.raddr.ip}:{c.raddr.port}" if c.raddr else "-")
-                        logger.info(
+                        log_msgs.append(
                             f"[NEW] {proc['name']}({pid}) "
                             f"{proto_str} {laddr_str} -> {raddr_str} [{c.status}]"
                         )
 
-                        # 새 TCP LISTEN 포트 → 웹 탐지 예약
                         if is_tcp and c.status == 'LISTEN':
                             new_listen.append((c.laddr.ip, c.laddr.port))
                     else:
                         _accumulated[key]['last_seen'] = now
 
-            # 락 밖에서 비동기 웹 탐지 제출 (수집 지연 없음)
+            # 락 밖에서 I/O 처리 — 잠금 경합 최소화
+            for msg in log_msgs:
+                logger.info(msg)
             for ip, port in new_listen:
                 _submit_web_check(ip, port)
 
@@ -556,12 +643,7 @@ def _snapshot_and_group() -> dict[int, dict]:
 
         elif row['proto'] == 'TCP' and row['status'] == 'ESTABLISHED' and row['remote_ip']:
             rip = row['remote_ip']
-            domain = None
-            if not any(rip.startswith(pfx) for pfx in ('127.', '10.', '192.168.', 'fe80')):
-                try:
-                    domain = socket.gethostbyaddr(rip)[0]
-                except Exception:
-                    pass
+            domain = _reverse_dns(rip)
             g['tcp_estab'].append({
                 'local_ip':    row['local_ip'],
                 'local_port':  row['local_port'],
@@ -583,13 +665,22 @@ def _snapshot_and_group() -> dict[int, dict]:
 # ──────────────────────────────────────────
 # JSON 로그 저장
 # ──────────────────────────────────────────
-def save_json_log(data: dict[int, dict], scan_count: int, started_at: str) -> None:
-    if os.path.exists(LOG_JSON) and os.path.getsize(LOG_JSON) > MAX_LOG_BYTES:
-        rotated = LOG_JSON.replace(".json", f"_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
-        os.rename(LOG_JSON, rotated)
+def _rotate_if_needed(path: str) -> None:
+    if os.path.exists(path) and os.path.getsize(path) > MAX_LOG_BYTES:
+        stem, ext = os.path.splitext(path)
+        rotated = f"{stem}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ext}"
+        os.rename(path, rotated)
         logger.info(f"로그 rotate: {os.path.basename(rotated)}")
 
-    payload = {
+
+def _build_log_payload(data: dict[int, dict], scan_count: int, started_at: str) -> dict:
+    # _lock으로 _history를, _http_lock으로 _http_log를 보호해 레이스 컨디션 방지
+    with _lock:
+        history_snapshot = list(_history)
+    with _http_lock:
+        http_snapshot = list(_http_log)
+
+    return {
         "meta": {
             "started_at":         started_at,
             "hostname":           socket.gethostname(),
@@ -597,13 +688,35 @@ def save_json_log(data: dict[int, dict], scan_count: int, started_at: str) -> No
             "total_scans":        scan_count,
             "display_interval_s": DISPLAY_INTERVAL,
             "collect_interval_s": COLLECT_INTERVAL,
+            "active_probe":       ACTIVE_PROBE,
+            "sniffer":            ENABLE_SNIFFER,
+            "reverse_dns":        ENABLE_RDNS,
+            "jsonl":              JSONL_LOG,
+            "redact_url_query":   REDACT_URL_QUERY,
+            "history_limit":      MAX_HISTORY,
+            "http_log_limit":     MAX_HTTP_LOG,
         },
-        "current": list(data.values()),   # 최근 5초 윈도우의 프로세스 요약
-        "history": list(_history),        # 세션 시작 이후 발견된 모든 연결 이력
-        "http_requests": list(_http_log), # 캡처된 HTTP 요청 URL 이력
+        "current":       list(data.values()),
+        "history":       history_snapshot,
+        "http_requests": http_snapshot,
     }
-    with open(LOG_JSON, "w", encoding="utf-8") as f:
+
+
+def save_json_log(data: dict[int, dict], scan_count: int, started_at: str) -> None:
+    payload = _build_log_payload(data, scan_count, started_at)
+
+    if JSONL_LOG:
+        _rotate_if_needed(LOG_JSONL)
+        with open(LOG_JSONL, "a", encoding="utf-8") as f:
+            f.write(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+            f.write("\n")
+        return
+
+    _rotate_if_needed(LOG_JSON)
+    tmp_path = LOG_JSON + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, LOG_JSON)
 
 
 # ──────────────────────────────────────────
@@ -659,8 +772,10 @@ def print_results(data: dict[int, dict], scan_count: int) -> None:
                 print(f"  {'':10}   ... 외 {len(estab)-5}건")
 
     # HTTP / HTTPS 요청 이력 출력 (최근 20건)
-    if _http_log:
-        recent = _http_log[-20:]
+    with _http_lock:
+        recent = list(_http_log)[-20:]
+
+    if recent:
         print(f"\n[HTTP/HTTPS 요청 — 최근 {len(recent)}건]")
         print(f"  {'TIME':<26} {'SRC':<22} {'METHOD':<8} URL")
         print(f"  {'-'*80}")
@@ -705,6 +820,31 @@ def _parse_args() -> argparse.Namespace:
         metavar="SEC",
         help=f"백그라운드 수집 주기(초, 기본값: {COLLECT_INTERVAL})",
     )
+    parser.add_argument(
+        "--active-probe",
+        action="store_true",
+        help="LISTEN 포트에 직접 접속해 HTTP/HTTPS 여부를 탐지",
+    )
+    parser.add_argument(
+        "--no-sniffer",
+        action="store_true",
+        help="raw socket HTTP/HTTPS 패킷 캡처를 비활성화",
+    )
+    parser.add_argument(
+        "--no-rdns",
+        action="store_true",
+        help="원격 IP reverse DNS 조회를 비활성화",
+    )
+    parser.add_argument(
+        "--jsonl",
+        action="store_true",
+        help="network_log.json 대신 network_log.jsonl에 스냅샷을 append 저장",
+    )
+    parser.add_argument(
+        "--redact-url-query",
+        action="store_true",
+        help="HTTP URL의 query 문자열을 로그에서 REDACTED로 마스킹",
+    )
     return parser.parse_args()
 
 
@@ -712,14 +852,35 @@ def _parse_args() -> argparse.Namespace:
 # 메인
 # ──────────────────────────────────────────
 def main() -> None:
-    global COLLECT_INTERVAL, DISPLAY_INTERVAL
+    global COLLECT_INTERVAL, DISPLAY_INTERVAL, ACTIVE_PROBE
+    global ENABLE_SNIFFER, ENABLE_RDNS, JSONL_LOG, REDACT_URL_QUERY
+    global _web_executor, _rdns_executor
+
     args = _parse_args()
     COLLECT_INTERVAL = args.collect_interval
     DISPLAY_INTERVAL = args.display_interval
+    ACTIVE_PROBE     = args.active_probe
+    ENABLE_SNIFFER   = not args.no_sniffer
+    ENABLE_RDNS      = not args.no_rdns
+    JSONL_LOG        = args.jsonl
+    REDACT_URL_QUERY = args.redact_url_query
+
+    # import 시 부작용 방지: 스레드풀을 이 시점에 생성
+    _web_executor = concurrent.futures.ThreadPoolExecutor(
+        max_workers=MAX_WORKERS, thread_name_prefix="web-check"
+    )
+    _rdns_executor = concurrent.futures.ThreadPoolExecutor(
+        max_workers=4, thread_name_prefix="rdns"
+    )
 
     print("=" * 85)
     print("  Windows Network Monitor  —  고속 수집 + 프로세스별 TCP/UDP/웹서버 탐지")
-    print(f"  수집 주기: {COLLECT_INTERVAL}s  |  표시 주기: {DISPLAY_INTERVAL}s  |  로그: {LOG_JSON}")
+    log_path = LOG_JSONL if JSONL_LOG else LOG_JSON
+    print(f"  수집 주기: {COLLECT_INTERVAL}s  |  표시 주기: {DISPLAY_INTERVAL}s  |  로그: {log_path}")
+    print(f"  웹 포트 능동 탐지: {'ON' if ACTIVE_PROBE else 'OFF'}")
+    print(f"  패킷 스니퍼: {'ON' if ENABLE_SNIFFER else 'OFF'}  |  Reverse DNS: {'ON' if ENABLE_RDNS else 'OFF'}")
+    if REDACT_URL_QUERY:
+        print("  URL query 마스킹: ON")
     if args.processes:
         print(f"  필터: {', '.join(args.processes)}")
     else:
@@ -730,7 +891,6 @@ def main() -> None:
     if not is_admin():
         logger.warning("관리자 권한 없이 실행 중 — 일부 프로세스 정보가 제한될 수 있습니다.")
 
-    # 백그라운드 수집 스레드 시작
     collector_thread = threading.Thread(
         target=_collector,
         args=(args.processes, args.include_system),
@@ -739,15 +899,20 @@ def main() -> None:
     )
     collector_thread.start()
 
-    # HTTP 스니퍼 스레드 시작 (관리자 권한 없으면 내부에서 조용히 종료)
-    sniffer_thread = threading.Thread(
-        target=_http_sniffer,
-        daemon=True,
-        name="http-sniffer",
-    )
-    sniffer_thread.start()
+    sniffer_thread = None
+    if ENABLE_SNIFFER:
+        sniffer_thread = threading.Thread(
+            target=_http_sniffer,
+            daemon=True,
+            name="http-sniffer",
+        )
+        sniffer_thread.start()
 
-    logger.info(f"수집 스레드 시작 | 수집주기: {COLLECT_INTERVAL}s | 표시주기: {DISPLAY_INTERVAL}s")
+    logger.info(
+        f"수집 스레드 시작 | 수집주기: {COLLECT_INTERVAL}s | "
+        f"표시주기: {DISPLAY_INTERVAL}s | 능동탐지: {'ON' if ACTIVE_PROBE else 'OFF'} | "
+        f"스니퍼: {'ON' if ENABLE_SNIFFER else 'OFF'} | RDNS: {'ON' if ENABLE_RDNS else 'OFF'}"
+    )
 
     started_at = datetime.now().isoformat(timespec='seconds')
     scan_count = 0
@@ -764,12 +929,19 @@ def main() -> None:
             )
             logger.info(f"표시 #{scan_count} | 프로세스 {len(data)}개 | 웹서버 {web_cnt}개")
             print_results(data, scan_count)
-
     except KeyboardInterrupt:
+        print(f"\n[종료] 총 {scan_count}회 표시 완료.")
+    finally:
+        # KeyboardInterrupt 외 SystemExit 등 모든 종료 경로에서 정리
         _stop_event.set()
         collector_thread.join(timeout=2)
+        if sniffer_thread:
+            sniffer_thread.join(timeout=2)
+        if _web_executor:
+            _web_executor.shutdown(wait=False)
+        if _rdns_executor:
+            _rdns_executor.shutdown(wait=False)
         logger.info(f"모니터 종료 | 총 {scan_count}회 표시")
-        print(f"\n[종료] 총 {scan_count}회 표시 완료.")
 
 
 if __name__ == "__main__":

@@ -274,11 +274,15 @@
       </div>
       <div class="step-item" id="s3">
         <div class="step-icon">3</div>
-        <div class="step-text"><div class="label">DSP 체인 적용</div><div class="detail" id="d3">HPF → EQ × 4 → Compressor → Limiter</div></div>
+        <div class="step-text"><div class="label">DSP 체인 적용</div><div class="detail" id="d3">HPF → EQ × 4 → Compressor</div></div>
       </div>
       <div class="step-item" id="s4">
         <div class="step-icon">4</div>
         <div class="step-text"><div class="label">LUFS 정규화</div><div class="detail" id="d4">목표: -14 LUFS (YouTube 표준)</div></div>
+      </div>
+      <div class="step-item" id="s5">
+        <div class="step-icon">5</div>
+        <div class="step-text"><div class="label">최종 리미터</div><div class="detail" id="d5">피크 보호 및 저장 준비</div></div>
       </div>
     </div>
   </div>
@@ -433,7 +437,7 @@ function handleEvent(ev, jobId, es) {
 
   if (ev.type === 'done') {
     es.close();
-    setStepDone(1); setStepDone(2); setStepDone(3); setStepDone(4);
+    setStepDone(1); setStepDone(2); setStepDone(3); setStepDone(4); setStepDone(5);
     downloadBtn.href = `/download/${jobId}`;
     downloadBtn.setAttribute('download', ev.filename || 'mastered.wav');
     downloadBtn.style.display = 'block';
@@ -449,7 +453,7 @@ function handleEvent(ev, jobId, es) {
 
 /* ── 스텝 상태 ── */
 function resetSteps() {
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const el = document.getElementById(`s${i}`);
     el.classList.remove('active', 'done', 'error');
   }
@@ -457,12 +461,15 @@ function resetSteps() {
 function setStepActive(n, detail) {
   for (let i = 1; i < n; i++) setStepDone(i);
   const el = document.getElementById(`s${n}`);
+  if (!el) return;
   el.classList.remove('done', 'error');
   el.classList.add('active');
-  if (detail) document.getElementById(`d${n}`).textContent = detail;
+  const detailEl = document.getElementById(`d${n}`);
+  if (detail && detailEl) detailEl.textContent = detail;
 }
 function setStepDone(n) {
   const el = document.getElementById(`s${n}`);
+  if (!el) return;
   el.classList.remove('active', 'error');
   el.classList.add('done');
   el.querySelector('.step-icon').textContent = '✓';
@@ -497,7 +504,7 @@ resetBtn.addEventListener('click', () => {
   resetBtn.style.display = 'none';
   errorBanner.style.display = 'none';
   resetSteps();
-  for (let i = 1; i <= 4; i++)
+  for (let i = 1; i <= 5; i++)
     document.getElementById(`s${i}`).querySelector('.step-icon').textContent = i;
 });
 </script>

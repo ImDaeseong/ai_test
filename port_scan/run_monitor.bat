@@ -1,5 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
+chcp 65001 >nul
+set PYTHONIOENCODING=utf-8
 
 title Network Monitor v5.0
 
@@ -91,6 +93,7 @@ echo        %~dp0
 echo.
 echo        network_monitor.log      - Text log (10MB rotate, backupCount=3)
 echo        network_log.json         - TCP/UDP connections + HTTP/HTTPS detection (10MB rotate)
+echo        network_log.jsonl        - Optional append snapshots when --jsonl is used
 echo.
 echo [INFO] Press Ctrl+C to stop monitoring.
 echo ============================================================
@@ -98,10 +101,11 @@ echo.
 
 :: ----------------------------------------------------------
 :: [7] Launch monitor
-::     Note: Python script itself also handles UAC elevation.
-::     Running from this elevated batch provides a clean start.
+::     Use --active-probe if you want direct HTTP/HTTPS checks
+::     against newly discovered LISTEN ports.
+::     Common options: --no-sniffer --no-rdns --jsonl --redact-url-query
 :: ----------------------------------------------------------
-python "%~dp0network_monitor.py"
+python "%~dp0network_monitor.py" %*
 
 :: ----------------------------------------------------------
 :: [8] Exit handling

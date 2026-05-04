@@ -17,6 +17,7 @@ import ssl
 import socket
 import time
 import urllib.parse
+import ipaddress
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -24,9 +25,6 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
-import urllib3
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -130,8 +128,9 @@ class BaseCheck(ABC):
 
     NAME: str = ""
 
-    def __init__(self, timeout: int = 10) -> None:
+    def __init__(self, timeout: int = 10, verify_tls: bool = True) -> None:
         self.timeout = timeout
+        self.verify_tls = verify_tls
 
     @abstractmethod
     def run(self, ctx: ScanContext) -> List[Finding]:
@@ -139,11 +138,10 @@ class BaseCheck(ABC):
 
     # Convenience: each check creates its own session for follow-up requests
     # (requests.Session is not safe to share across threads for writes)
-    @staticmethod
-    def _new_session() -> requests.Session:
+    def _new_session(self) -> requests.Session:
         s = requests.Session()
         s.headers["User-Agent"] = _UA
-        s.verify = False
+        s.verify = self.verify_tls
         return s
 
     @staticmethod
@@ -728,8 +726,13 @@ class DirectoryListingCheck(BaseCheck):
 
     NAME = "Directory Listing"
 
-    def __init__(self, timeout: int = 10, max_workers: int = 10) -> None:
-        super().__init__(timeout)
+    def __init__(
+        self,
+        timeout: int = 10,
+        max_workers: int = 10,
+        verify_tls: bool = True,
+    ) -> None:
+        super().__init__(timeout, verify_tls=verify_tls)
         self._max_workers = max_workers
 
     def run(self, ctx: ScanContext) -> List[Finding]:
@@ -746,8 +749,17 @@ class DirectoryListingCheck(BaseCheck):
                     result = future.result()
                     if result is not None:
                         findings.append(result)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    path = future_map[future]
+                    findings.append(self._finding(
+                        check=self.NAME,
+                        risk_level="Info",
+                        title=f"Path Probe Failed: {path}",
+                        detail="The path probe failed before an HTTP result could be evaluated.",
+                        recommendation="Review network connectivity and retry if this target should be reachable.",
+                        evidence=str(exc)[:180],
+                        owasp="N/A",
+                    ))
 
         return sorted(findings, key=lambda f: f.rank)
 
@@ -756,8 +768,16 @@ class DirectoryListingCheck(BaseCheck):
         try:
             session = self._new_session()
             response = session.get(url, timeout=self.timeout, allow_redirects=False)
-        except Exception:
-            return None
+        except requests.exceptions.RequestException as exc:
+            return self._finding(
+                check=self.NAME,
+                risk_level="Info",
+                title=f"Path Probe Skipped: {path}",
+                detail="The path probe could not complete because the HTTP request failed.",
+                recommendation="Review network connectivity and retry if this path should be reachable.",
+                evidence=str(exc)[:180],
+                owasp="N/A",
+            )
 
         status = response.status_code
 
@@ -1102,6 +1122,65 @@ class HttpResponseCheck(BaseCheck):
 # WebScanner — orchestrator
 # ---------------------------------------------------------------------------
 
+_MAX_REDIRECTS = 10
+
+
+def _normalize_url(url: str) -> str:
+    url = url.strip()
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
+    return url
+
+
+def _host_resolves_to_private(hostname: str) -> Tuple[bool, str]:
+    try:
+        infos = socket.getaddrinfo(hostname, None, type=socket.SOCK_STREAM)
+    except socket.gaierror as exc:
+        raise ValueError(f"Could not resolve hostname '{hostname}': {exc}") from exc
+
+    seen: List[str] = []
+    for info in infos:
+        ip = info[4][0]
+        if ip in seen:
+            continue
+        seen.append(ip)
+        addr = ipaddress.ip_address(ip)
+        if (
+            addr.is_private
+            or addr.is_loopback
+            or addr.is_link_local
+            or addr.is_multicast
+            or addr.is_unspecified
+            or addr.is_reserved
+        ):
+            return True, ip
+    return False, ", ".join(seen[:5])
+
+
+def _validate_url(
+    url: str,
+    allow_private_targets: bool = False,
+) -> urllib.parse.ParseResult:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError("Only HTTP and HTTPS URLs are supported.")
+    if not parsed.hostname:
+        raise ValueError("URL must include a hostname.")
+    if parsed.username or parsed.password:
+        raise ValueError("Credentials in URLs are not supported.")
+    if parsed.port is not None and not (1 <= parsed.port <= 65535):
+        raise ValueError("URL port must be between 1 and 65535.")
+
+    if not allow_private_targets:
+        is_private, evidence = _host_resolves_to_private(parsed.hostname)
+        if is_private:
+            raise ValueError(
+                "Target resolves to a private, local, reserved, or otherwise non-public IP "
+                f"({evidence}). Use --allow-private-targets only for trusted internal scans."
+            )
+    return parsed
+
+
 class WebScanner:
     """
     Fetches the target URL once, then runs all check classes concurrently
@@ -1111,29 +1190,34 @@ class WebScanner:
 
     def __init__(
         self,
-        timeout:     int  = 10,
-        verbose:     bool = False,
-        max_workers: int  = 4,
+        timeout:               int  = 10,
+        verbose:               bool = False,
+        max_workers:           int  = 4,
+        verify_tls:            bool = True,
+        allow_private_targets: bool = False,
     ) -> None:
-        self.timeout     = timeout
-        self.verbose     = verbose
-        self.max_workers = max_workers
+        self.timeout               = timeout
+        self.verbose               = verbose
+        self.max_workers           = max_workers
+        self.verify_tls            = verify_tls
+        self.allow_private_targets = allow_private_targets
 
     def scan(self, url: str) -> List[Dict[str, Any]]:
-        if not url.startswith(("http://", "https://")):
-            url = "https://" + url
-
-        parsed = urllib.parse.urlparse(url)
+        try:
+            url = _normalize_url(url)
+            parsed = _validate_url(url, self.allow_private_targets)
+        except ValueError as exc:
+            return [self._error_finding("Invalid or Unsafe URL", "High", str(exc), "N/A")]
 
         # --- Initial fetch (shared, read-only for all checks) ---
         session = requests.Session()
         session.headers["User-Agent"] = _UA
-        session.verify = False
+        session.verify = self.verify_tls
         session.max_redirects = 10
 
         try:
             t0       = time.monotonic()
-            response = session.get(url, timeout=self.timeout, allow_redirects=True)
+            response = self._get_with_guarded_redirects(session, url)
             elapsed  = (time.monotonic() - t0) * 1000.0
 
         except requests.exceptions.SSLError as exc:
@@ -1146,9 +1230,18 @@ class WebScanner:
                 "Connection Timed Out", "Medium",
                 f"No response within {self.timeout}s.", "N/A",
             )]
+        except requests.exceptions.TooManyRedirects as exc:
+            return [self._error_finding("Too Many Redirects", "Medium", str(exc), "N/A")]
+        except requests.exceptions.RequestException as exc:
+            return [self._error_finding("HTTP Request Failed", "Medium", str(exc), "N/A")]
+        except ValueError as exc:
+            return [self._error_finding("Unsafe Redirect Blocked", "High", str(exc), "N/A")]
+
+        final_url = response.url
+        parsed = urllib.parse.urlparse(final_url)
 
         ctx = ScanContext(
-            url=url,
+            url=final_url,
             parsed=parsed,
             response=response,
             response_time_ms=elapsed,
@@ -1157,10 +1250,14 @@ class WebScanner:
 
         # --- Run all checks concurrently ---
         checks: List[BaseCheck] = [
-            SecurityHeadersCheck(self.timeout),
-            TlsCheck(self.timeout),
-            DirectoryListingCheck(self.timeout, max_workers=10),
-            HttpResponseCheck(self.timeout),
+            SecurityHeadersCheck(self.timeout, verify_tls=self.verify_tls),
+            TlsCheck(self.timeout, verify_tls=self.verify_tls),
+            DirectoryListingCheck(
+                self.timeout,
+                max_workers=self.max_workers,
+                verify_tls=self.verify_tls,
+            ),
+            HttpResponseCheck(self.timeout, verify_tls=self.verify_tls),
         ]
 
         all_findings: List[Finding] = []
@@ -1183,6 +1280,34 @@ class WebScanner:
 
         all_findings.sort(key=lambda f: f.rank)
         return [f.to_report() for f in all_findings]
+
+    def _get_with_guarded_redirects(
+        self,
+        session: requests.Session,
+        url: str,
+    ) -> requests.Response:
+        history: List[requests.Response] = []
+        current = url
+
+        for _ in range(_MAX_REDIRECTS + 1):
+            _validate_url(current, self.allow_private_targets)
+            response = session.get(current, timeout=self.timeout, allow_redirects=False)
+
+            if not response.is_redirect:
+                response.history = history
+                return response
+
+            location = response.headers.get("Location")
+            if not location:
+                response.history = history
+                return response
+
+            history.append(response)
+            current = urllib.parse.urljoin(response.url, location)
+
+        raise requests.exceptions.TooManyRedirects(
+            f"Exceeded {_MAX_REDIRECTS} redirects while fetching {url}"
+        )
 
     @staticmethod
     def _error_finding(title: str, risk: str, evidence: str, owasp: str) -> Dict[str, Any]:

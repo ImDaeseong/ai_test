@@ -15,7 +15,6 @@ import time
 from typing import Any, Dict, List
 
 from modules.reporter import Reporter
-from modules.system_scanner import SystemScanner
 from modules.web_scanner import WebScanner
 
 _VERSION = "1.0"
@@ -160,6 +159,16 @@ Examples:
         action="store_true",
         help="Disable ANSI colour output (use when redirecting to a file)",
     )
+    opts.add_argument(
+        "--insecure",
+        action="store_true",
+        help="Disable TLS certificate verification for HTTP requests",
+    )
+    opts.add_argument(
+        "--allow-private-targets",
+        action="store_true",
+        help="Allow web scans against private, loopback, or reserved IP ranges",
+    )
 
     return parser
 
@@ -242,6 +251,8 @@ def main() -> None:
             timeout=args.timeout,
             verbose=args.verbose,
             max_workers=args.threads,
+            verify_tls=not args.insecure,
+            allow_private_targets=args.allow_private_targets,
         )
         web_findings = web_scanner.scan(args.web)
         all_findings.extend(web_findings)
@@ -254,6 +265,8 @@ def main() -> None:
 
     if args.system:
         print(reporter.info("Windows 시스템 스캔 시작 …"))
+        from modules.system_scanner import SystemScanner
+
         sys_scanner = SystemScanner(is_admin=admin, verbose=args.verbose)
         sys_findings = sys_scanner.scan()
         all_findings.extend(sys_findings)
@@ -294,6 +307,8 @@ def main() -> None:
         "timeout":      args.timeout,
         "admin_mode":   admin,
         "verbose":      args.verbose,
+        "verify_tls":   not args.insecure,
+        "allow_private_targets": args.allow_private_targets,
         "duration_s":   round(scan_duration, 2),
         **win_info,
     }

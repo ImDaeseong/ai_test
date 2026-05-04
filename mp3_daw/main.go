@@ -3,6 +3,9 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -33,19 +37,43 @@ type JobStatus struct {
 	UpdatedAt time.Time       `json:"updated_at"`
 	Result    json.RawMessage `json:"result,omitempty"`
 	Error     string          `json:"error,omitempty"`
+	OwnerID   string          `json:"-"`
+}
+
+type queuedPythonJob struct {
+	job  *JobStatus
+	args []string
+}
+
+type UploadRecord struct {
+	OwnerID   string
+	CreatedAt time.Time
 }
 
 var (
 	jobs       = make(map[string]*JobStatus)
 	jobsMu     sync.RWMutex
 	jobCounter int64
+	uploads    = make(map[string]UploadRecord)
+	uploadsMu  sync.RWMutex
 
 	// 파이프라인(자동감시) 전용 큐
-	workQueue = make(chan string, 32)
+	workQueue      = make(chan string, 32)
+	manualJobQueue = make(chan queuedPythonJob, getEnvIntOrDefault("JOB_QUEUE_SIZE", 64))
+	pythonSlots    = make(chan struct{}, getEnvIntOrDefault("MAX_PYTHON_PROCS", 2))
 
-	pythonBin = getEnvOrDefault("PYTHON_BIN", "python")
-	watchDir  = getEnvOrDefault("WATCH_DIR", "./inbox")
-	outDir    = getEnvOrDefault("OUT_DIR", "./output")
+	pythonBin  = getEnvOrDefault("PYTHON_BIN", "python")
+	watchDir   = getEnvOrDefault("WATCH_DIR", "./inbox")
+	outDir     = getEnvOrDefault("OUT_DIR", "./output")
+	corsOrigin = getEnvOrDefault("CORS_ORIGIN", "")
+)
+
+const (
+	maxUploadBytes = 200 << 20 // 200 MiB
+	pythonTimeout  = 6 * time.Hour
+	jobTTL         = 24 * time.Hour
+	uploadTTL      = 24 * time.Hour
+	clientCookie   = "mp3_daw_client_id"
 )
 
 func nextJobID() string {
@@ -53,6 +81,10 @@ func nextJobID() string {
 }
 
 func newJob(id, file, operation string) *JobStatus {
+	return newOwnedJob(id, file, operation, "")
+}
+
+func newOwnedJob(id, file, operation, ownerID string) *JobStatus {
 	now := time.Now()
 	return &JobStatus{
 		ID:        id,
@@ -61,6 +93,7 @@ func newJob(id, file, operation string) *JobStatus {
 		State:     "queued",
 		StartedAt: now,
 		UpdatedAt: now,
+		OwnerID:   ownerID,
 	}
 }
 
@@ -104,6 +137,29 @@ func getJob(id string) (*JobStatus, bool) {
 	return j, ok
 }
 
+func getJobSnapshot(id string) (JobStatus, bool) {
+	jobsMu.RLock()
+	defer jobsMu.RUnlock()
+	j, ok := jobs[id]
+	if !ok {
+		return JobStatus{}, false
+	}
+	return *j, true
+}
+
+func listJobSnapshots(ownerID string) []JobStatus {
+	jobsMu.RLock()
+	defer jobsMu.RUnlock()
+	list := make([]JobStatus, 0, len(jobs))
+	for _, j := range jobs {
+		if ownerID != "" && j.OwnerID != "" && j.OwnerID != ownerID {
+			continue
+		}
+		list = append(list, *j)
+	}
+	return list
+}
+
 // ──────────────────────────────────────────────
 // 유틸리티
 // ──────────────────────────────────────────────
@@ -115,6 +171,18 @@ func getEnvOrDefault(key, def string) string {
 	return def
 }
 
+func getEnvIntOrDefault(key string, def int) int {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil || n < 1 {
+		return def
+	}
+	return n
+}
+
 func isAudioFile(path string) bool {
 	ext := strings.ToLower(filepath.Ext(path))
 	if ext != ".mp3" && ext != ".wav" && ext != ".flac" && ext != ".m4a" {
@@ -122,7 +190,152 @@ func isAudioFile(path string) bool {
 	}
 	// 마스터링 결과물이 inbox로 돌아와 재처리되는 루프 방지
 	base := strings.ToLower(filepath.Base(path))
-	return !strings.Contains(base, "_mastered")
+	return !strings.Contains(base, "_mastered") && !strings.HasPrefix(base, "마스터링_")
+}
+
+func validateAudioPath(path string) (string, error) {
+	if !isAudioFile(path) {
+		return "", fmt.Errorf("unsupported audio file type")
+	}
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return "", err
+	}
+	watchAbs, err := filepath.Abs(watchDir)
+	if err != nil {
+		return "", err
+	}
+	rel, err := filepath.Rel(watchAbs, abs)
+	if err != nil || rel == "." || rel == ".." || filepath.IsAbs(rel) || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", fmt.Errorf("file must be inside upload directory")
+	}
+	return abs, nil
+}
+
+func safeUploadName(original string) string {
+	ext := strings.ToLower(filepath.Ext(original))
+	base := strings.TrimSuffix(filepath.Base(original), filepath.Ext(original))
+	base = strings.Map(func(r rune) rune {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+			return r
+		case r == '-', r == '_', r == '.':
+			return r
+		default:
+			return '_'
+		}
+	}, base)
+	base = strings.Trim(base, "._-")
+	if base == "" {
+		base = "audio"
+	}
+	suffix := make([]byte, 8)
+	if _, err := rand.Read(suffix); err != nil {
+		return fmt.Sprintf("%s_%d%s", base, time.Now().UnixNano(), ext)
+	}
+	return fmt.Sprintf("%s_%s%s", base, hex.EncodeToString(suffix), ext)
+}
+
+func randomHex(bytesLen int) string {
+	buf := make([]byte, bytesLen)
+	if _, err := rand.Read(buf); err != nil {
+		return fmt.Sprintf("%d", time.Now().UnixNano())
+	}
+	return hex.EncodeToString(buf)
+}
+
+func allowedCORSOrigin(requestOrigin string) string {
+	if corsOrigin != "" {
+		return corsOrigin
+	}
+	if requestOrigin == "" {
+		return "http://localhost:8080"
+	}
+	if strings.HasPrefix(requestOrigin, "http://localhost:") ||
+		strings.HasPrefix(requestOrigin, "http://127.0.0.1:") ||
+		strings.HasPrefix(requestOrigin, "http://[::1]:") {
+		return requestOrigin
+	}
+	return "http://localhost:8080"
+}
+
+func clientID(c *gin.Context) string {
+	if v, err := c.Cookie(clientCookie); err == nil && v != "" {
+		return v
+	}
+	id := randomHex(16)
+	c.SetCookie(clientCookie, id, int((30 * 24 * time.Hour).Seconds()), "/", "", false, true)
+	return id
+}
+
+func rememberUpload(path, ownerID string) {
+	uploadsMu.Lock()
+	uploads[path] = UploadRecord{OwnerID: ownerID, CreatedAt: time.Now()}
+	uploadsMu.Unlock()
+}
+
+func validateOwnedAudioPath(path, ownerID string) (string, error) {
+	abs, err := validateAudioPath(path)
+	if err != nil {
+		return "", err
+	}
+	uploadsMu.RLock()
+	record, ok := uploads[abs]
+	uploadsMu.RUnlock()
+	if ok && record.OwnerID != ownerID {
+		return "", fmt.Errorf("file does not belong to this client")
+	}
+	if !ok {
+		return "", fmt.Errorf("unknown upload; upload the file again")
+	}
+	return abs, nil
+}
+
+func enqueuePythonJob(job *JobStatus, args ...string) bool {
+	select {
+	case manualJobQueue <- queuedPythonJob{job: job, args: args}:
+		return true
+	default:
+		setJobError(job, "job queue is full")
+		return false
+	}
+}
+
+func manualJobWorker(id int) {
+	log.Printf("manual job worker #%d started", id)
+	for item := range manualJobQueue {
+		setJobState(item.job, "running")
+		result, err := runPythonEngine(item.args...)
+		if err != nil {
+			setJobError(item.job, err.Error())
+			continue
+		}
+		setJobDone(item.job, result)
+	}
+}
+
+func cleanupLoop() {
+	ticker := time.NewTicker(30 * time.Minute)
+	defer ticker.Stop()
+	for range ticker.C {
+		cutoffJob := time.Now().Add(-jobTTL)
+		jobsMu.Lock()
+		for id, job := range jobs {
+			if (job.State == "done" || job.State == "error") && job.UpdatedAt.Before(cutoffJob) {
+				delete(jobs, id)
+			}
+		}
+		jobsMu.Unlock()
+
+		cutoffUpload := time.Now().Add(-uploadTTL)
+		uploadsMu.Lock()
+		for path, upload := range uploads {
+			if upload.CreatedAt.Before(cutoffUpload) {
+				delete(uploads, path)
+			}
+		}
+		uploadsMu.Unlock()
+	}
 }
 
 func ensureDir(dir string) {
@@ -138,9 +351,15 @@ func ensureDir(dir string) {
 // runPythonEngine: engine.py를 호출하고 마지막 JSON 블록을 반환한다.
 // PYTHONUTF8=1 과 PYTHONIOENCODING=utf-8 을 설정해 한글 깨짐을 방지한다.
 func runPythonEngine(args ...string) (json.RawMessage, error) {
+	pythonSlots <- struct{}{}
+	defer func() { <-pythonSlots }()
+
+	ctx, cancel := context.WithTimeout(context.Background(), pythonTimeout)
+	defer cancel()
+
 	// -u: 출력 버퍼링 비활성화 (실시간 로그)
 	cmdArgs := append([]string{"-u", "engine.py"}, args...)
-	cmd := exec.Command(pythonBin, cmdArgs...)
+	cmd := exec.CommandContext(ctx, pythonBin, cmdArgs...)
 	cmd.Stderr = os.Stderr
 
 	// Windows CP949 → UTF-8 강제
@@ -154,6 +373,9 @@ func runPythonEngine(args ...string) (json.RawMessage, error) {
 
 	log.Printf("▶ Python: %s %s", pythonBin, strings.Join(cmdArgs, " "))
 	if err := cmd.Run(); err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return nil, fmt.Errorf("Python process timed out after %s", pythonTimeout)
+		}
 		return nil, fmt.Errorf("Python 프로세스 오류: %w", err)
 	}
 
@@ -193,15 +415,7 @@ func extractLastJSON(data []byte) json.RawMessage {
 
 // runJobAsync: job을 고루틴에서 실행하고 상태를 업데이트한다.
 func runJobAsync(job *JobStatus, pythonArgs ...string) {
-	go func() {
-		setJobState(job, "running")
-		result, err := runPythonEngine(pythonArgs...)
-		if err != nil {
-			setJobError(job, err.Error())
-			return
-		}
-		setJobDone(job, result)
-	}()
+	enqueuePythonJob(job, pythonArgs...)
 }
 
 // ──────────────────────────────────────────────
@@ -243,7 +457,7 @@ func processFile(filePath string) {
 	// 2단계: 마스터링 (출력은 output/ 폴더로 → inbox 재처리 루프 방지)
 	log.Printf("🎛️  [파이프라인 %s] 2/2 마스터링: %s", id, filepath.Base(abs))
 	stem := strings.TrimSuffix(filepath.Base(abs), filepath.Ext(abs))
-	masterOut := filepath.Join(outDir, stem+"_mastered.wav")
+	masterOut := filepath.Join(outDir, "마스터링_"+stem+".wav")
 	masterResult, err := runPythonEngine("master", abs, "--lufs", "-14", "--output", masterOut)
 	if err != nil {
 		setJobError(job, "마스터링 실패: "+err.Error())
@@ -336,9 +550,10 @@ func startServer() {
 
 	// CORS
 	r.Use(func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Origin", allowedCORSOrigin(c.Request.Header.Get("Origin")))
 		c.Header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Content-Type")
+		c.Header("Access-Control-Allow-Credentials", "true")
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
@@ -346,7 +561,6 @@ func startServer() {
 		c.Next()
 	})
 
-	r.Static("/audio", outDir)
 	r.StaticFile("/", "./static/index.html")
 	r.Static("/static", "./static")
 
@@ -354,20 +568,21 @@ func startServer() {
 
 	// GET /api/jobs — 전체 목록
 	r.GET("/api/jobs", func(c *gin.Context) {
-		jobsMu.RLock()
-		list := make([]*JobStatus, 0, len(jobs))
-		for _, j := range jobs {
-			list = append(list, j)
-		}
-		jobsMu.RUnlock()
+		ownerID := clientID(c)
+		list := listJobSnapshots(ownerID)
 		c.JSON(http.StatusOK, gin.H{"jobs": list, "total": len(list)})
 	})
 
 	// GET /api/job/:id — 단일 Job 폴링용
 	r.GET("/api/job/:id", func(c *gin.Context) {
 		id := c.Param("id")
-		job, ok := getJob(id)
+		job, ok := getJobSnapshot(id)
 		if !ok {
+			c.JSON(http.StatusNotFound, gin.H{"error": "존재하지 않는 Job ID"})
+			return
+		}
+		ownerID := clientID(c)
+		if job.OwnerID != "" && job.OwnerID != ownerID {
 			c.JSON(http.StatusNotFound, gin.H{"error": "존재하지 않는 Job ID"})
 			return
 		}
@@ -378,21 +593,28 @@ func startServer() {
 
 	// POST /api/upload
 	r.POST("/api/upload", func(c *gin.Context) {
+		ownerID := clientID(c)
+		c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxUploadBytes)
 		file, err := c.FormFile("file")
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "파일 없음: " + err.Error()})
+			return
+		}
+		if file.Size > maxUploadBytes {
+			c.JSON(http.StatusRequestEntityTooLarge, gin.H{"error": "file too large"})
 			return
 		}
 		if !isAudioFile(file.Filename) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "지원하지 않는 형식 (mp3/wav/flac/m4a)"})
 			return
 		}
-		dst := filepath.Join(watchDir, filepath.Base(file.Filename))
+		dst := filepath.Join(watchDir, safeUploadName(file.Filename))
 		if err := c.SaveUploadedFile(file, dst); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "저장 실패: " + err.Error()})
 			return
 		}
 		abs, _ := filepath.Abs(dst)
+		rememberUpload(abs, ownerID)
 		log.Printf("📤 업로드 완료: %s (%d bytes)", file.Filename, file.Size)
 		c.JSON(http.StatusOK, gin.H{"path": abs, "filename": file.Filename, "size": file.Size})
 	})
@@ -401,6 +623,7 @@ func startServer() {
 
 	// POST /api/analyze — 동기 (빠름, 수 초)
 	r.POST("/api/analyze", func(c *gin.Context) {
+		ownerID := clientID(c)
 		var req struct {
 			File string `json:"file" binding:"required"`
 		}
@@ -408,16 +631,24 @@ func startServer() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		result, err := runPythonEngine("analyze", req.File)
+		file, err := validateOwnedAudioPath(req.File, ownerID)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		c.Data(http.StatusOK, "application/json; charset=utf-8", result)
+		id := nextJobID()
+		job := newOwnedJob(id, file, "analyze", ownerID)
+		storeJob(job)
+		if !enqueuePythonJob(job, "analyze", file) {
+			c.JSON(http.StatusServiceUnavailable, gin.H{"error": "job queue is full"})
+			return
+		}
+		c.JSON(http.StatusAccepted, gin.H{"job_id": id, "status": "queued"})
 	})
 
 	// POST /api/master — 비동기 (Job ID 반환 → 클라이언트가 폴링)
 	r.POST("/api/master", func(c *gin.Context) {
+		ownerID := clientID(c)
 		var req struct {
 			File string  `json:"file" binding:"required"`
 			LUFS float64 `json:"lufs"`
@@ -427,20 +658,33 @@ func startServer() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+		if req.LUFS < -30.0 || req.LUFS > 0.0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "lufs는 -30.0 ~ 0.0 범위여야 합니다"})
+			return
+		}
+		file, err := validateOwnedAudioPath(req.File, ownerID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 		id := nextJobID()
-		job := newJob(id, req.File, "master")
+		job := newOwnedJob(id, file, "master", ownerID)
 		storeJob(job)
 
 		lufsStr := fmt.Sprintf("%.1f", req.LUFS)
-		stem := strings.TrimSuffix(filepath.Base(req.File), filepath.Ext(req.File))
-		outFile := filepath.Join(outDir, stem+"_mastered.wav")
-		runJobAsync(job, "master", req.File, "--lufs", lufsStr, "--output", outFile)
+		stem := strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
+		outFile := filepath.Join(outDir, "마스터링_"+stem+".wav")
+		if !enqueuePythonJob(job, "master", file, "--lufs", lufsStr, "--output", outFile) {
+			c.JSON(http.StatusServiceUnavailable, gin.H{"error": "job queue is full"})
+			return
+		}
 
 		c.JSON(http.StatusAccepted, gin.H{"job_id": id, "status": "queued"})
 	})
 
 	// POST /api/separate — 비동기 (Demucs는 수 분 소요)
 	r.POST("/api/separate", func(c *gin.Context) {
+		ownerID := clientID(c)
 		var req struct {
 			File  string `json:"file" binding:"required"`
 			Model string `json:"model"`
@@ -450,12 +694,25 @@ func startServer() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+		validModels := map[string]bool{"htdemucs": true, "htdemucs_ft": true, "mdx": true, "mdx_extra": true}
+		if !validModels[req.Model] {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "지원하지 않는 모델: " + req.Model})
+			return
+		}
+		file, err := validateOwnedAudioPath(req.File, ownerID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 		id := nextJobID()
-		job := newJob(id, req.File, "separate")
+		job := newOwnedJob(id, file, "separate", ownerID)
 		storeJob(job)
 
 		stemsOut := filepath.Join(outDir, "stems")
-		runJobAsync(job, "separate", req.File, "--model", req.Model, "--output", stemsOut)
+		if !enqueuePythonJob(job, "separate", file, "--model", req.Model, "--output", stemsOut) {
+			c.JSON(http.StatusServiceUnavailable, gin.H{"error": "job queue is full"})
+			return
+		}
 
 		c.JSON(http.StatusAccepted, gin.H{
 			"job_id": id,
@@ -466,6 +723,7 @@ func startServer() {
 
 	// POST /api/pipeline — 비동기 전체 파이프라인
 	r.POST("/api/pipeline", func(c *gin.Context) {
+		ownerID := clientID(c)
 		var req struct {
 			File string `json:"file" binding:"required"`
 		}
@@ -473,13 +731,14 @@ func startServer() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if !isAudioFile(req.File) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "지원하지 않는 파일 형식"})
+		file, err := validateOwnedAudioPath(req.File, ownerID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 		select {
-		case workQueue <- req.File:
-			c.JSON(http.StatusAccepted, gin.H{"status": "queued", "file": req.File})
+		case workQueue <- file:
+			c.JSON(http.StatusAccepted, gin.H{"status": "queued", "file": file})
 		default:
 			c.JSON(http.StatusServiceUnavailable, gin.H{"error": "처리 큐 가득 참"})
 		}
@@ -519,6 +778,10 @@ func main() {
 	for i := 1; i <= 2; i++ {
 		go worker(i)
 	}
+	for i := 1; i <= getEnvIntOrDefault("JOB_WORKERS", 2); i++ {
+		go manualJobWorker(i)
+	}
+	go cleanupLoop()
 
 	// 파일 감시
 	go watchFolder()

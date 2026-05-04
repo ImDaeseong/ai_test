@@ -17,17 +17,22 @@ Architecture:
 """
 
 import ipaddress
+import json
 import os
 import re
 import subprocess
 import platform
-import winreg
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, FrozenSet, List, Optional, Set, Tuple
+
+try:
+    import winreg
+except ImportError:
+    winreg = None
 
 try:
     import psutil
@@ -119,24 +124,30 @@ _SYSTEM_PROCESS_PATHS: Dict[str, FrozenSet[str]] = {
     "spoolsv.exe":   frozenset({r"c:\windows\system32\spoolsv.exe"}),
     "dwm.exe":       frozenset({r"c:\windows\system32\dwm.exe"}),
     "taskhostw.exe": frozenset({r"c:\windows\system32\taskhostw.exe"}),
-    "userinit.exe":  frozenset({r"c:\windows\system32\userinit.exe"}),
+    "userinit.exe":  frozenset({r"c:\windows\system32\userinit.exe",
+                                r"c:\windows\syswow64\userinit.exe"}),
     "conhost.exe":   frozenset({r"c:\windows\system32\conhost.exe"}),
     "audiodg.exe":   frozenset({r"c:\windows\system32\audiodg.exe"}),
-    "wscript.exe":   frozenset({r"c:\windows\system32\wscript.exe"}),
-    "cscript.exe":   frozenset({r"c:\windows\system32\cscript.exe"}),
-    "mshta.exe":     frozenset({r"c:\windows\system32\mshta.exe"}),
-    "regsvr32.exe":  frozenset({r"c:\windows\system32\regsvr32.exe"}),
-    "rundll32.exe":  frozenset({r"c:\windows\system32\rundll32.exe"}),
+    "wscript.exe":   frozenset({r"c:\windows\system32\wscript.exe",
+                                r"c:\windows\syswow64\wscript.exe"}),
+    "cscript.exe":   frozenset({r"c:\windows\system32\cscript.exe",
+                                r"c:\windows\syswow64\cscript.exe"}),
+    "mshta.exe":     frozenset({r"c:\windows\system32\mshta.exe",
+                                r"c:\windows\syswow64\mshta.exe"}),
+    "regsvr32.exe":  frozenset({r"c:\windows\system32\regsvr32.exe",
+                                r"c:\windows\syswow64\regsvr32.exe"}),
+    "rundll32.exe":  frozenset({r"c:\windows\system32\rundll32.exe",
+                                r"c:\windows\syswow64\rundll32.exe"}),
 }
 
 # Path substrings (lowercase) that indicate a suspicious executable location
 _SUSPICIOUS_PATH_FRAGS: Tuple[str, ...] = (
-    r"\temp\\",
-    r"\tmp\\",
-    r"appdata\local\temp",
-    r"\users\public\\",
-    r"\downloads\\",
-    r"\windows\temp\\",
+    "\\temp\\",
+    "\\tmp\\",
+    "appdata\\local\\temp",
+    "\\users\\public\\",
+    "\\downloads\\",
+    "\\windows\\temp\\",
 )
 
 # AppData\Roaming is suspicious for executables unless it belongs to a known app
@@ -166,23 +177,26 @@ _MULTI_IP_THRESHOLD = 10      # flag non-whitelisted process with > N distinct f
 
 # ---- Startup analysis ----
 
-_AUTORUN_KEYS: Tuple[Tuple[int, str, str], ...] = (
-    (winreg.HKEY_LOCAL_MACHINE,
-     r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run",
-     "HKLM\\Run"),
-    (winreg.HKEY_LOCAL_MACHINE,
-     r"SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce",
-     "HKLM\\RunOnce"),
-    (winreg.HKEY_CURRENT_USER,
-     r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run",
-     "HKCU\\Run"),
-    (winreg.HKEY_CURRENT_USER,
-     r"SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce",
-     "HKCU\\RunOnce"),
-    (winreg.HKEY_LOCAL_MACHINE,
-     r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run",
-     "HKLM\\Run (WOW64)"),
-)
+if winreg is not None:
+    _AUTORUN_KEYS: Tuple[Tuple[int, str, str], ...] = (
+        (winreg.HKEY_LOCAL_MACHINE,
+         r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run",
+         "HKLM\\Run"),
+        (winreg.HKEY_LOCAL_MACHINE,
+         r"SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce",
+         "HKLM\\RunOnce"),
+        (winreg.HKEY_CURRENT_USER,
+         r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run",
+         "HKCU\\Run"),
+        (winreg.HKEY_CURRENT_USER,
+         r"SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce",
+         "HKCU\\RunOnce"),
+        (winreg.HKEY_LOCAL_MACHINE,
+         r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run",
+         "HKLM\\Run (WOW64)"),
+    )
+else:
+    _AUTORUN_KEYS = ()
 
 _SUSPICIOUS_CMD = re.compile(
     r"(?i)"
@@ -639,7 +653,7 @@ class NetworkMonitor(BaseCheck):
 
             # Flag connection to a malware-associated remote port
             if rport in _MALWARE_PORTS:
-                risk, desc = _MALWARE_PORTS[rport]
+                _, desc = _MALWARE_PORTS[rport]
                 malware_port_hits.append(f"{rip}:{rport} ({desc})")
 
             if self._is_public_ip(rip):
@@ -724,6 +738,15 @@ class StartupScanner(BaseCheck):
     def _scan_registry(self) -> List[Finding]:
         findings: List[Finding] = []
         total = 0
+
+        if winreg is None:
+            return [self._f(
+                self.NAME, "Info",
+                "Registry Autorun Scan Skipped",
+                "The Windows registry API is unavailable on this platform.",
+                "Run this check on Windows to inspect registry autorun entries.",
+                "winreg import failed", "N/A",
+            )]
 
         for hive, subkey, label in _AUTORUN_KEYS:
             try:
@@ -887,7 +910,6 @@ class SecuritySoftwareCheck(BaseCheck):
     # -- Windows Defender ------------------------------------------------
 
     def _check_defender(self) -> List[Finding]:
-        import json as _json
         raw = self._ps(
             "Get-MpComputerStatus | Select-Object "
             "RealTimeProtectionEnabled,AntivirusEnabled,AntispywareEnabled,"
@@ -900,7 +922,7 @@ class SecuritySoftwareCheck(BaseCheck):
             return self._defender_registry_fallback()
 
         try:
-            data = _json.loads(raw)
+            data = json.loads(raw)
         except Exception:
             return self._defender_registry_fallback()
 
@@ -966,6 +988,15 @@ class SecuritySoftwareCheck(BaseCheck):
 
     def _defender_registry_fallback(self) -> List[Finding]:
         """Check Windows Security Center registry when PS is unavailable."""
+        if winreg is None:
+            return [self._f(
+                self.NAME, "Info",
+                "Windows Defender Status Unknown",
+                "The Windows registry API is unavailable on this platform.",
+                "Run this check on Windows or verify antivirus status manually.",
+                "winreg import failed", "N/A",
+            )]
+
         try:
             key = winreg.OpenKey(
                 winreg.HKEY_LOCAL_MACHINE,
@@ -997,7 +1028,6 @@ class SecuritySoftwareCheck(BaseCheck):
     # -- Windows Firewall ------------------------------------------------
 
     def _check_firewall(self) -> List[Finding]:
-        import json as _json
         raw = self._ps(
             "Get-NetFirewallProfile | "
             "Select-Object Name,Enabled,DefaultInboundAction,DefaultOutboundAction "
@@ -1006,7 +1036,7 @@ class SecuritySoftwareCheck(BaseCheck):
 
         if raw:
             try:
-                profiles = _json.loads(raw)
+                profiles = json.loads(raw)
                 if isinstance(profiles, dict):
                     profiles = [profiles]
                 return self._evaluate_firewall_profiles(profiles)

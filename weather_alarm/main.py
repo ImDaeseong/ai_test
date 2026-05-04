@@ -43,7 +43,7 @@ class Settings:
     discord_channel_id: int
     telegram_token: str
     telegram_chat_id: str
-    db_path: str
+    postgres_dsn: str
     telegram_rate_per_second: float
     discord_rate_per_second: float
 
@@ -83,7 +83,7 @@ def load_settings() -> Settings:
         discord_channel_id=_parse_optional_int(_get_env("DISCORD_CHANNEL_ID"), "DISCORD_CHANNEL_ID"),
         telegram_token=_get_env("TELEGRAM_TOKEN"),
         telegram_chat_id=_get_env("TELEGRAM_CHAT_ID"),
-        db_path=_get_env("BROADCAST_DB_PATH", "weather_alarm.db"),
+        postgres_dsn="" if os.getenv("WEATHER_ALARM_LOCAL") else _get_env("POSTGRES_DSN"),
         telegram_rate_per_second=_parse_float(
             _get_env("TELEGRAM_RATE_PER_SECOND"), "TELEGRAM_RATE_PER_SECOND", 25.0
         ),
@@ -254,7 +254,7 @@ async def main():
     if not validate_settings(settings):
         sys.exit(1)
 
-    store = NotificationStore(settings.db_path)
+    store = NotificationStore(settings.postgres_dsn)
     seed_env_subscribers(settings, store)
     enabled_platforms = []
     if settings.discord_token:

@@ -59,6 +59,7 @@ h1 {
   font-size: 0.9rem;
   min-height: 1.2em;
 }
+#file-info.error { color: var(--danger); }
 
 button {
   cursor: pointer;
@@ -70,6 +71,7 @@ button {
   transition: opacity 0.15s, background 0.15s;
 }
 button:disabled { opacity: 0.4; cursor: default; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 #lyrics-input-wrap {
   margin-top: 14px;
@@ -134,8 +136,14 @@ audio { width: 100%; margin-bottom: 10px; }
 
 #lyrics-toolbar {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-bottom: 14px;
+}
+#timed-count {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 #download-lrc-btn { background: #2e7d32; color: #fff; }
 #download-lrc-btn:hover { opacity: 0.88; }

@@ -17,7 +17,15 @@ import json
 import platform
 import socket
 import sys
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(errors="replace")
+        sys.stderr.reconfigure(errors="replace")
+    except Exception:
+        pass
 
 try:
     from colorama import Fore, Style, init as _colorama_init
@@ -78,38 +86,33 @@ _STATUS_COLOR: Dict[str, str] = {
 
 _RISK_ORDER = ["Critical", "High", "Medium", "Low", "Info"]
 
-# 위험 등급 한국어 표시명 (모두 2글자, 터미널 표시 너비 4칸)
-_RISK_KO: Dict[str, str] = {
-    "Critical": "위험",
-    "High":     "높음",
-    "Medium":   "중간",
-    "Low":      "낮음",
-    "Info":     "정보",
-}
+_COL = 68
+_INDENT = " " * 24
 
-# Icons inside the risk bracket  (3 chars, fixed width)
-_RISK_ICON: Dict[str, str] = {
+_RISK_KO: Dict[str, str] = {
+    "Critical": "Critical",
+    "High":     "High",
+    "Medium":   "Medium",
+    "Low":      "Low",
+    "Info":     "Info",
+}
+_RISK_ICON = {
     "Critical": "!!!",
     "High":     "!! ",
     "Medium":   " ! ",
-    "Low":      "  ·",
+    "Low":      " - ",
     "Info":     "   ",
 }
-
-# 상태 배지 텍스트 (한국어 2글자 = 터미널 표시 4칸)
-_STATUS_TEXT: Dict[str, str] = {
-    "FAIL":  "실패",
-    "WARN":  "경고",
-    "PASS":  "정상",
-    "INFO":  "정보",
-    "SKIP":  "생략",
-    "ERROR": "오류",
+_STATUS_TEXT = {
+    "FAIL":  "FAIL",
+    "WARN":  "WARN",
+    "PASS":  "PASS",
+    "INFO":  "INFO",
+    "SKIP":  "SKIP",
+    "ERROR": "ERROR",
 }
-
-_COL = 68          # total output width
-_SEP_H = "═" * _COL
-_SEP_L = "─" * _COL
-_INDENT = " " * 24   # aligns detail text under the title
+_SEP_H = "=" * _COL
+_SEP_L = "-" * _COL
 
 # ---------------------------------------------------------------------------
 # Module-level helpers
@@ -127,16 +130,15 @@ def _risk_rank(f: Dict[str, Any]) -> int:
         return len(_RISK_ORDER)
 
 
-def _bar(n: int, of: int, width: int = 22) -> str:
-    """ASCII progress bar.  █ = filled, ░ = empty."""
-    if of <= 0 or n <= 0:
-        return "░" * width
-    filled = max(1, round((n / of) * width))
-    return "█" * filled + "░" * (width - filled)
-
-
 def _pct(n: int, of: int) -> str:
     return f"{round(100 * n / of):3d}%" if of > 0 else "  0%"
+
+
+def _bar(n: int, of: int, width: int = 22) -> str:
+    if of <= 0 or n <= 0:
+        return "-" * width
+    filled = max(1, round((n / of) * width))
+    return "#" * filled + "-" * (width - filled)
 
 
 def _safe_hostname() -> str:
@@ -517,11 +519,12 @@ class Reporter:
         ][:5]
 
         meta = meta or {}
+        now = datetime.datetime.now()
         report: Dict[str, Any] = {
             "tool":     "DefenseScan",
             "version":  "1.0",
-            "scan_id":  datetime.datetime.now().strftime("ds_%Y%m%d_%H%M%S"),
-            "timestamp": datetime.datetime.now().isoformat(),
+            "scan_id":  now.strftime("ds_%Y%m%d_%H%M%S"),
+            "timestamp": now.isoformat(),
             "platform": {
                 "system":   platform.system(),
                 "release":  platform.release(),
@@ -538,6 +541,8 @@ class Reporter:
                 "timeout":      meta.get("timeout", 10),
                 "admin_mode":   meta.get("admin_mode", False),
                 "verbose":      meta.get("verbose", False),
+                "verify_tls":   meta.get("verify_tls", True),
+                "allow_private_targets": meta.get("allow_private_targets", False),
                 "duration_s":   meta.get("duration_s", 0),
             },
             "summary": {
@@ -550,8 +555,17 @@ class Reporter:
             "findings": cleaned,
         }
 
-        with open(path, "w", encoding="utf-8") as fh:
+        output_path = Path(path)
+        if output_path.exists() and output_path.is_dir():
+            raise OSError(f"Output path is a directory: {output_path}")
+        if output_path.parent and str(output_path.parent) != ".":
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        tmp_path = output_path.with_name(output_path.name + ".tmp")
+        with open(tmp_path, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2, ensure_ascii=False)
+            fh.write("\n")
+        tmp_path.replace(output_path)
 
     # ------------------------------------------------------------------
     # Internal helpers

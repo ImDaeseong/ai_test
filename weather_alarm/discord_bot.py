@@ -92,3 +92,54 @@ class DiscordWeatherBot(discord.Client):
 
     async def on_ready(self):
         logger.info(f"Discord 봇 연결됨: {self.user} (ID: {self.user.id})")
+
+
+if __name__ == "__main__":
+    import asyncio
+    import io
+    import os
+    import sys
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    if hasattr(sys.stdout, "buffer"):
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
+    os.makedirs("logs", exist_ok=True)
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan> - <level>{message}</level>",
+        level="INFO",
+    )
+    logger.add("logs/discord_bot.log", mode="w", level="DEBUG", encoding="utf-8")
+
+    from notification_store import NotificationStore
+    from weather_client import WeatherClient
+
+    async def main():
+        token = os.getenv("DISCORD_TOKEN", "")
+        channel_id = int(os.getenv("DISCORD_CHANNEL_ID", "0") or "0")
+        postgres_dsn = os.getenv("POSTGRES_DSN", "")
+        weather_key = os.getenv("WEATHER_SERVICE_KEY", "")
+        if not token:
+            logger.error("DISCORD_TOKEN이 설정되지 않았습니다")
+            sys.exit(1)
+        store = NotificationStore(postgres_dsn)
+        async with WeatherClient(weather_key) as weather_client:
+            bot = DiscordWeatherBot(weather_client, channel_id, store)
+            try:
+                await bot.start(token)
+            except discord.LoginFailure:
+                logger.error("Discord 토큰이 유효하지 않습니다")
+                raise
+            finally:
+                if not bot.is_closed():
+                    await bot.close()
+
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("사용자 요청으로 Discord 봇을 종료합니다")
