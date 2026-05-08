@@ -1,7 +1,8 @@
 (function () {
   'use strict';
 
-  const COVER_SELECTOR = 'img[alt="Song Cover Image"].w-full.h-full';
+  // alt 텍스트만으로 탐지 — Tailwind 클래스명은 빌드마다 변경될 수 있으므로 제외
+  const COVER_SELECTOR = 'img[alt="Song Cover Image"]';
   const lyricsCache = new Map();
 
   // ── Styles ───────────────────────────────────────────────────────────────────
@@ -312,12 +313,12 @@
 
     for (let i = 0; i < result.length; i++) {
       const t = result[i].start_s;
-      if (t == null || t < 0) {
+      if (!isValidTime(t)) {
         // Find next known anchor
         let nextT = dur;
         let nextIdx = result.length;
         for (let j = i + 1; j < result.length; j++) {
-          if (result[j].start_s != null && result[j].start_s >= prevTime) {
+          if (isValidTime(result[j].start_s) && result[j].start_s >= prevTime) {
             nextT = result[j].start_s;
             nextIdx = j;
             break;
@@ -339,8 +340,9 @@
 
     // Fill end_s
     for (let i = 0; i < result.length; i++) {
-      const next = result[i + 1]?.start_s;
-      if (result[i].end_s == null || result[i].end_s <= result[i].start_s) {
+      const next = isValidTime(result[i + 1]?.start_s) ? result[i + 1].start_s : null;
+      if (!isValidTime(result[i].end_s) || result[i].end_s <= result[i].start_s
+          || (next != null && result[i].end_s > next)) {
         result[i] = { ...result[i], end_s: +(next ?? result[i].start_s + 3).toFixed(3) };
       }
     }
@@ -512,7 +514,7 @@
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.action === 'URL_CHANGED') {
-      lyricsCache.delete(msg.songId);
+      lyricsCache.clear();
       // Reset injected markers so buttons re-inject for the new song
       document.querySelectorAll('[data-suno-lyric-dl-injected]').forEach(el => {
         delete el.dataset.sunoLyricDlInjected;
@@ -521,6 +523,25 @@
       setTimeout(scanAndInject, 600);
     } else if (msg.action === 'FIND_BUTTONS') {
       scanAndInject();
+    }
+  });
+
+  // SPA pushState/replaceState 직접 감지 — background의 onUpdated가 누락할 경우 대비
+  let _lastHref = location.href;
+  const _patchHistory = (orig) => function (...args) {
+    const ret = orig.apply(this, args);
+    if (location.href !== _lastHref) {
+      _lastHref = location.href;
+      chrome.runtime.sendMessage({ action: 'URL_NAVIGATE', url: location.href }).catch(() => {});
+    }
+    return ret;
+  };
+  history.pushState    = _patchHistory(history.pushState);
+  history.replaceState = _patchHistory(history.replaceState);
+  window.addEventListener('popstate', () => {
+    if (location.href !== _lastHref) {
+      _lastHref = location.href;
+      chrome.runtime.sendMessage({ action: 'URL_NAVIGATE', url: location.href }).catch(() => {});
     }
   });
 
