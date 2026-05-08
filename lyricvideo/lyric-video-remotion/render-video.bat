@@ -36,17 +36,42 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Rendering YouTube-ready MP4...
-call npm run build
-if errorlevel 1 (
-  echo Render failed.
-  pause
-  exit /b 1
-)
+echo Select format:
+echo   1. 16:9 Landscape (YouTube)
+echo   2. 9:16 Vertical  (Shorts / Reels / TikTok)
+echo   3. Both
+set /p FORMAT="Enter 1, 2 or 3 [default: 1]: "
+if "%FORMAT%"=="" set FORMAT=1
 
+if "%FORMAT%"=="1" goto landscape
+if "%FORMAT%"=="2" goto vertical
+if "%FORMAT%"=="3" goto both
+echo Invalid choice, rendering landscape.
+
+:landscape
+echo Rendering 16:9 MP4...
+call npm run build
+if errorlevel 1 ( echo Render failed. & pause & exit /b 1 )
+goto done
+
+:vertical
+echo Rendering 9:16 MP4...
+call npm run build:vertical
+if errorlevel 1 ( echo Render failed. & pause & exit /b 1 )
+goto done
+
+:both
+echo Rendering 16:9...
+call npm run build
+if errorlevel 1 ( echo Render failed. & pause & exit /b 1 )
+echo Rendering 9:16...
+call npm run build:vertical
+if errorlevel 1 ( echo Render failed. & pause & exit /b 1 )
+
+:done
 echo.
-echo Render complete:
-echo %~dp0out\lyric-video.mp4
+echo Render complete. Output folder:
+echo %~dp0out
 start "" "%~dp0out"
 pause
 

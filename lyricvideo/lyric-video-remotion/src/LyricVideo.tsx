@@ -1,15 +1,17 @@
 import React from 'react';
 import {
   AbsoluteFill,
-  Audio,
+  Html5Audio,
   Img,
   interpolate,
+  OffthreadVideo,
   staticFile,
-  Video,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import {useAudioData, visualizeAudio} from '@remotion/media-utils';
 import type {LyricLine} from './parsers';
+import {FONT_FAMILY, LYRIC_STYLE, TIMING_CONFIG, WAVEFORM_STYLE} from './config';
 
 export type BackgroundKind = 'none' | 'image' | 'video';
 
@@ -18,35 +20,32 @@ export interface LyricVideoProps extends Record<string, unknown> {
   readonly backgroundKind: BackgroundKind;
   readonly backgroundSrc: string | null;
   readonly lyrics: LyricLine[];
+  readonly title: string | null;
+  readonly artist: string | null;
+  readonly vertical?: boolean;
 }
+
+const SPIKE_INDICES = Array.from({length: WAVEFORM_STYLE.numSpikes}, (_, i) => i);
+const PARTICLE_INDICES = Array.from({length: WAVEFORM_STYLE.numParticles}, (_, i) => i);
 
 const findActiveIndex = (lyrics: readonly LyricLine[], timeSeconds: number): number => {
   const exact = lyrics.findIndex((line) => timeSeconds >= line.start && timeSeconds < line.end);
-  if (exact !== -1) {
-    return exact;
-  }
-
+  if (exact !== -1) return exact;
   const nextIndex = lyrics.findIndex((line) => timeSeconds < line.start);
   return Math.max(0, nextIndex === -1 ? lyrics.length - 1 : nextIndex - 1);
 };
 
-const useLineStyle = (line: LyricLine | undefined) => {
+const useCurrentLineStyle = (line: LyricLine | undefined) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
-  if (!line) {
-    return {
-      opacity: 0,
-      transform: 'translateY(0px)',
-      filter: 'blur(2px)',
-    };
-  }
+  if (!line) return {opacity: 0, filter: 'blur(2px)'};
 
-  const timeSeconds = frame / fps;
-  const fadeSeconds = Math.min(0.24, Math.max(0.08, (line.end - line.start) * 0.18));
+  const t = frame / fps;
+  const fade = Math.min(0.24, Math.max(0.08, (line.end - line.start) * 0.18));
   const opacity = interpolate(
-    timeSeconds,
-    [line.start, line.start + fadeSeconds, line.end - fadeSeconds, line.end],
+    t,
+    [line.start, line.start + fade, line.end - fade, line.end],
     [0, 1, 1, 0],
     {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
   );
@@ -55,44 +54,76 @@ const useLineStyle = (line: LyricLine | undefined) => {
     extrapolateRight: 'clamp',
   });
 
-  return {
-    opacity,
-    transform: 'translateY(0px)',
-    filter: `blur(${blur}px)`,
-  };
+  return {opacity, filter: `blur(${blur}px)`};
 };
 
-const LyricSlot: React.FC<{
-  readonly line: LyricLine | undefined;
-}> = ({line}) => {
-  const style = useLineStyle(line);
+// 이전/현재/다음 3줄을 동시 표시 — 현재 줄만 완전 밝음, 나머지는 희미하게
+const LyricDisplay: React.FC<{
+  readonly prev: LyricLine | undefined;
+  readonly current: LyricLine | undefined;
+  readonly next: LyricLine | undefined;
+  readonly vertical?: boolean;
+}> = ({prev, current, next, vertical = false}) => {
+  const currentStyle = useCurrentLineStyle(current);
+
+  const sharedBase: React.CSSProperties = {
+    width: 'min(1260px, 90vw)',
+    textAlign: 'center',
+    overflowWrap: 'anywhere',
+    lineHeight: 1.3,
+    transition: 'opacity 0.2s',
+  };
 
   return (
     <div
       style={{
         position: 'absolute',
-        width: 'min(1260px, 90vw)',
-        minHeight: 70,
         left: '50%',
-        top: '77%',
-        marginTop: -35,
-        marginLeft: 'calc(min(1260px, 90vw) / -2)',
+        top: vertical ? '72%' : `${LYRIC_STYLE.containerTopPercent}%`,
+        transform: 'translateX(-50%)',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: '#ffffff',
-        fontSize: 'clamp(24px, 2.8vw, 44px)',
-        lineHeight: 1.18,
-        fontWeight: 720,
-        textWrap: 'balance',
-        overflowWrap: 'anywhere',
-        textShadow: '0 0 14px rgba(198, 232, 224, 0.22), 0 7px 24px rgba(0, 0, 0, 0.6)',
-        willChange: 'transform, opacity, filter',
-        ...style,
+        gap: LYRIC_STYLE.lineGap,
       }}
     >
-      {line?.text ?? ''}
+      <div
+        style={{
+          ...sharedBase,
+          fontSize: vertical ? 'clamp(18px, 3vw, 36px)' : LYRIC_STYLE.contextFontSize,
+          fontWeight: LYRIC_STYLE.contextFontWeight,
+          color: LYRIC_STYLE.prevColor,
+          opacity: prev ? 1 : 0,
+          textShadow: LYRIC_STYLE.contextTextShadow,
+        }}
+      >
+        {prev?.text ?? ''}
+      </div>
+      <div
+        style={{
+          ...sharedBase,
+          fontSize: vertical ? 'clamp(30px, 5.5vw, 60px)' : LYRIC_STYLE.currentFontSize,
+          fontWeight: LYRIC_STYLE.currentFontWeight,
+          color: LYRIC_STYLE.currentColor,
+          textShadow: LYRIC_STYLE.currentTextShadow,
+          willChange: 'opacity, filter',
+          ...currentStyle,
+        }}
+      >
+        {current?.text ?? ''}
+      </div>
+      <div
+        style={{
+          ...sharedBase,
+          fontSize: vertical ? 'clamp(18px, 3vw, 36px)' : LYRIC_STYLE.contextFontSize,
+          fontWeight: LYRIC_STYLE.contextFontWeight,
+          color: LYRIC_STYLE.nextColor,
+          opacity: next ? 1 : 0,
+          textShadow: LYRIC_STYLE.contextTextShadow,
+        }}
+      >
+        {next?.text ?? ''}
+      </div>
     </div>
   );
 };
@@ -129,11 +160,10 @@ const AnimatedBackground: React.FC<{
   if (backgroundKind === 'video' && backgroundSrc !== null) {
     return (
       <>
-        <Video
+        <OffthreadVideo
           src={staticFile(backgroundSrc)}
           muted
           volume={0}
-          loop
           style={{
             position: 'absolute',
             inset: 0,
@@ -176,8 +206,7 @@ const AnimatedBackground: React.FC<{
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'linear-gradient(135deg, #121820 0%, #19242b 46%, #151a22 100%)',
+          background: 'linear-gradient(135deg, #121820 0%, #19242b 46%, #151a22 100%)',
         }}
       />
       <div
@@ -212,45 +241,45 @@ const AnimatedBackground: React.FC<{
   );
 };
 
-const MusicWaveform: React.FC = () => {
+const MusicWaveform: React.FC<{readonly audioSrc: string; readonly vertical?: boolean}> = ({audioSrc, vertical = false}) => {
   const frame = useCurrentFrame();
-  const width = 260;
-  const height = 86;
+  const {fps} = useVideoConfig();
+  const audioData = useAudioData(staticFile(audioSrc));
+
+  const width = vertical ? 480 : WAVEFORM_STYLE.width;
+  const {height} = WAVEFORM_STYLE;
+  const topPercent = vertical ? 88 : WAVEFORM_STYLE.topPercent;
   const centerY = height / 2;
-  const samples = 120;
-  const spikes = Array.from({length: 56}, (_, index) => index);
-  const particles = Array.from({length: 10}, (_, index) => index);
 
-  const amplitudeAt = (index: number): number => {
-    const x = index / (samples - 1);
-    const leftCluster = Math.exp(-Math.pow((x - 0.16) / 0.1, 2));
-    const middleCluster = Math.exp(-Math.pow((x - 0.44) / 0.12, 2));
-    const rightCluster = Math.exp(-Math.pow((x - 0.82) / 0.13, 2));
-    const envelope = 0.18 + leftCluster * 0.48 + middleCluster * 0.28 + rightCluster * 0.22;
-    const wave =
-      Math.sin(index * 0.34 + frame * 0.2) * 0.5 +
-      Math.sin(index * 0.93 - frame * 0.13) * 0.28 +
-      Math.sin(index * 1.72 + frame * 0.07) * 0.16;
+  // Real frequency data per frame; falls back to silence while audio loads
+  const lineData = audioData
+    ? visualizeAudio({fps, frame, audioData, numberOfSamples: WAVEFORM_STYLE.numLineSamples, smoothing: true})
+    : new Array(WAVEFORM_STYLE.numLineSamples).fill(0) as number[];
 
-    return wave * envelope;
+  // Downsample line data for spike bars
+  const barAmplitude = (spike: number): number => {
+    const idx = Math.floor((spike / (SPIKE_INDICES.length - 1)) * (WAVEFORM_STYLE.numLineSamples - 1));
+    return lineData[idx] ?? 0;
   };
 
-  const linePoints = Array.from({length: samples}, (_, index) => {
-    const x = (index / (samples - 1)) * width;
-    const y = centerY + amplitudeAt(index) * 25;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
+  const linePoints = lineData
+    .map((amp, index) => {
+      const x = (index / (WAVEFORM_STYLE.numLineSamples - 1)) * width;
+      const y = centerY - amp * 32;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
 
   return (
     <div
       style={{
         position: 'absolute',
         left: '50%',
-        top: '82.7%',
+        top: `${topPercent}%`,
         width,
         height,
-        marginLeft: -130,
-        opacity: 0.68,
+        marginLeft: -(width / 2),
+        opacity: WAVEFORM_STYLE.opacity,
       }}
     >
       <svg
@@ -258,9 +287,7 @@ const MusicWaveform: React.FC = () => {
         width="100%"
         height="100%"
         preserveAspectRatio="none"
-        style={{
-          overflow: 'visible',
-        }}
+        style={{overflow: 'visible'}}
       >
         <defs>
           <linearGradient id="waveSoft" x1="0" x2="1" y1="0" y2="0">
@@ -286,12 +313,11 @@ const MusicWaveform: React.FC = () => {
           stroke="rgba(154, 232, 226, 0.22)"
           strokeWidth={1}
         />
-        {spikes.map((spike) => {
-          const sampleIndex = Math.floor((spike / (spikes.length - 1)) * (samples - 1));
-          const x = (spike / (spikes.length - 1)) * width;
-          const amplitude = Math.abs(amplitudeAt(sampleIndex));
-          const jitter = Math.sin(spike * 2.1 + frame * 0.11) * 3;
-          const spikeHeight = 6 + amplitude * 42 + Math.max(0, jitter);
+        {SPIKE_INDICES.map((spike) => {
+          const x = (spike / (SPIKE_INDICES.length - 1)) * width;
+          const amplitude = barAmplitude(spike);
+          const jitter = Math.sin(spike * 2.1 + frame * 0.11) * 2;
+          const spikeHeight = 4 + amplitude * 52 + Math.max(0, jitter);
 
           return (
             <line
@@ -315,7 +341,7 @@ const MusicWaveform: React.FC = () => {
           strokeLinecap="round"
           filter="url(#waveGlow)"
         />
-        {particles.map((particle) => {
+        {PARTICLE_INDICES.map((particle) => {
           const x = ((particle * 37 + frame * 0.28) % 100) / 100;
           const cluster = Math.sin(particle * 1.7) * 0.5 + 0.5;
           const cx = x * width;
@@ -338,30 +364,153 @@ const MusicWaveform: React.FC = () => {
   );
 };
 
+// 배경을 그대로 유지한 채 곡 정보만 오버레이 — 배경이 곡마다 달라 자연스럽게 개성이 생김
+const IntroOverlay: React.FC<{
+  readonly title: string;
+  readonly artist: string;
+}> = ({title, artist}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const t = frame / fps;
+
+  const opacity = interpolate(
+    t,
+    [0, 0.5, TIMING_CONFIG.introSeconds - 0.8, TIMING_CONFIG.introSeconds],
+    [0, 1, 1, 0],
+    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+  );
+
+  const translateY = interpolate(
+    t,
+    [0, 0.6],
+    [20, 0],
+    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+  );
+
+  if (t >= TIMING_CONFIG.introSeconds) return null;
+
+  return (
+    <>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.42)',
+          opacity,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity,
+          transform: `translateY(${translateY}px)`,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 'clamp(36px, 4.5vw, 72px)',
+            fontWeight: 700,
+            color: '#ffffff',
+            letterSpacing: '0.02em',
+            textAlign: 'center',
+            textShadow: '0 2px 32px rgba(0,0,0,0.7), 0 0 12px rgba(190,232,224,0.15)',
+          }}
+        >
+          {title}
+        </div>
+        {artist && (
+          <>
+            <div
+              style={{
+                width: 48,
+                height: 1.5,
+                background: 'rgba(255, 255, 255, 0.45)',
+                margin: '18px auto',
+                borderRadius: 1,
+              }}
+            />
+            <div
+              style={{
+                fontSize: 'clamp(18px, 2.2vw, 36px)',
+                fontWeight: 400,
+                color: 'rgba(255, 255, 255, 0.72)',
+                letterSpacing: '0.07em',
+                textAlign: 'center',
+                textShadow: '0 2px 16px rgba(0,0,0,0.6)',
+              }}
+            >
+              {artist}
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+};
+
+const OutroFade: React.FC = () => {
+  const frame = useCurrentFrame();
+  const {fps, durationInFrames} = useVideoConfig();
+  const t = frame / fps;
+  const totalSeconds = durationInFrames / fps;
+  const outroStart = totalSeconds - TIMING_CONFIG.outroSeconds;
+
+  const opacity = interpolate(
+    t,
+    [outroStart, totalSeconds - 0.1],
+    [0, 1],
+    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+  );
+
+  if (opacity <= 0) return null;
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        background: '#000000',
+        opacity,
+      }}
+    />
+  );
+};
+
 export const LyricVideo: React.FC<LyricVideoProps> = ({
   audioSrc,
   backgroundKind,
   backgroundSrc,
   lyrics,
+  title,
+  artist,
+  vertical = false,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const timeSeconds = frame / fps;
   const activeIndex = findActiveIndex(lyrics, timeSeconds);
+  const prevLine = lyrics[activeIndex - 1];
   const activeLine = lyrics[activeIndex];
+  const nextLine = lyrics[activeIndex + 1];
 
   return (
     <AbsoluteFill
       style={{
-        fontFamily:
-          'Inter, Pretendard, "Noto Sans KR", "Noto Sans JP", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif',
+        fontFamily: FONT_FAMILY,
         overflow: 'hidden',
       }}
     >
-      <Audio src={staticFile(audioSrc)} />
+      <Html5Audio src={staticFile(audioSrc)} />
       <AnimatedBackground backgroundKind={backgroundKind} backgroundSrc={backgroundSrc} />
-      <MusicWaveform />
-      <LyricSlot line={activeLine} />
+      <MusicWaveform audioSrc={audioSrc} vertical={vertical} />
+      <LyricDisplay prev={prevLine} current={activeLine} next={nextLine} vertical={vertical} />
+      <OutroFade />
+      {title !== null && <IntroOverlay title={title} artist={artist ?? ''} />}
     </AbsoluteFill>
   );
 };

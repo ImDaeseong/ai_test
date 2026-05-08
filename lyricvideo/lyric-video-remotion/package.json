@@ -7,7 +7,8 @@
     "predev": "node scripts/write-media-manifest.mjs",
     "dev": "remotion studio src/index.ts",
     "prebuild": "node scripts/write-media-manifest.mjs",
-    "build": "remotion render src/index.ts lyric-video out/lyric-video.mp4",
+    "build": "remotion render src/index.ts lyric-video out/lyric-video.mp4 --codec h264 --crf 18 --pixel-format yuv420p",
+    "build:vertical": "remotion render src/index.ts lyric-video-vertical out/lyric-video-vertical.mp4 --codec h264 --crf 18 --pixel-format yuv420p",
     "pretypecheck": "node scripts/write-media-manifest.mjs",
     "typecheck": "tsc --noEmit"
   },

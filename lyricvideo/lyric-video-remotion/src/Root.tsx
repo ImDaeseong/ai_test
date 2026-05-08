@@ -1,20 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import {Composition, continueRender, delayRender, staticFile} from 'remotion';
 import {getAudioDurationInSeconds} from '@remotion/media-utils';
-import {LyricVideo} from './LyricVideo';
+import {LyricVideo, type BackgroundKind} from './LyricVideo';
+import {VIDEO_CONFIG, VIDEO_CONFIG_VERTICAL} from './config';
 import {mediaManifest} from './mediaManifest';
 import {parseLyrics, type ParserResult} from './parsers';
 
-const FPS = 30;
-const WIDTH = 1920;
-const HEIGHT = 1080;
 
 interface ProjectData {
   readonly parserResult: ParserResult;
   readonly audioDurationSeconds: number | null;
   readonly audioSrc: string;
-  readonly backgroundKind: 'none' | 'image' | 'video';
+  readonly backgroundKind: BackgroundKind;
   readonly backgroundSrc: string | null;
+  readonly title: string | null;
+  readonly artist: string | null;
 }
 
 const fetchOptionalText = async (src: string): Promise<string | undefined> => {
@@ -48,11 +48,10 @@ const loadLyrics = async (): Promise<{readonly lrc?: string; readonly srt?: stri
 };
 
 const loadProjectData = async (): Promise<ProjectData> => {
-  const [lyrics, audioSrc] = await Promise.all([
-    loadLyrics(),
-    resolveAudioSrc(),
-  ]);
-  const audioDurationSeconds = await getAudioDurationInSeconds(staticFile(audioSrc)).catch(() => null);
+  const [lyrics, audioSrc] = await Promise.all([loadLyrics(), resolveAudioSrc()]);
+  const audioDurationSeconds = await getAudioDurationInSeconds(staticFile(audioSrc)).catch(
+    () => null,
+  );
 
   return {
     parserResult: parseLyrics(lyrics),
@@ -60,6 +59,8 @@ const loadProjectData = async (): Promise<ProjectData> => {
     audioSrc,
     backgroundKind: mediaManifest.backgroundKind,
     backgroundSrc: mediaManifest.backgroundSrc,
+    title: mediaManifest.title,
+    artist: mediaManifest.artist,
   };
 };
 
@@ -94,20 +95,36 @@ export const Root: React.FC = () => {
     data.audioDurationSeconds === null ? 0 : data.audioDurationSeconds + 1,
   );
 
+  const durationInFrames = Math.ceil(durationSeconds * VIDEO_CONFIG.fps);
+  const sharedProps = {
+    audioSrc: data.audioSrc,
+    backgroundKind: data.backgroundKind,
+    backgroundSrc: data.backgroundSrc,
+    lyrics: data.parserResult.lines,
+    title: data.title,
+    artist: data.artist,
+  };
+
   return (
-    <Composition
-      id="lyric-video"
-      component={LyricVideo}
-      durationInFrames={Math.ceil(durationSeconds * FPS)}
-      fps={FPS}
-      width={WIDTH}
-      height={HEIGHT}
-      defaultProps={{
-        audioSrc: data.audioSrc,
-        backgroundKind: data.backgroundKind,
-        backgroundSrc: data.backgroundSrc,
-        lyrics: data.parserResult.lines,
-      }}
-    />
+    <>
+      <Composition
+        id="lyric-video"
+        component={LyricVideo}
+        durationInFrames={durationInFrames}
+        fps={VIDEO_CONFIG.fps}
+        width={VIDEO_CONFIG.width}
+        height={VIDEO_CONFIG.height}
+        defaultProps={{...sharedProps, vertical: false}}
+      />
+      <Composition
+        id="lyric-video-vertical"
+        component={LyricVideo}
+        durationInFrames={durationInFrames}
+        fps={VIDEO_CONFIG_VERTICAL.fps}
+        width={VIDEO_CONFIG_VERTICAL.width}
+        height={VIDEO_CONFIG_VERTICAL.height}
+        defaultProps={{...sharedProps, vertical: true}}
+      />
+    </>
   );
 };
