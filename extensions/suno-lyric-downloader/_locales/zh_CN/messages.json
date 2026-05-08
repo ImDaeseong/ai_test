@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "Suno 歌词下载器" },
+  "extension_description": { "message": "从Suno.com下载同步歌词为LRC或SRT文件。" },
+  "download_lyric": { "message": "下载歌词" },
+  "popup_status_loading": { "message": "正在检查当前标签页..." },
+  "popup_status_not_suno": { "message": "请打开Suno并选择歌曲页面。" },
+  "popup_status_suno_non_song": { "message": "请打开URL以/song/开头的歌曲详情页。" },
+  "popup_status_suno_song": { "message": "已检测到歌曲页面。封面上将显示下载按钮。" },
+  "popup_step_1": { "message": "登录Suno (suno.com)" },
+  "popup_step_2": { "message": "打开歌曲详情页 (/song/...)" },
+  "popup_step_3": { "message": "点击封面上的LRC或SRT按钮" },
+  "popup_button_open_suno": { "message": "打开Suno" },
+  "popup_button_find_buttons": { "message": "查找按钮" },
+  "popup_tip": { "message": "LRC · SRT按钮会自动显示在歌曲封面图片上" },
+  "popup_troubleshooting_title": { "message": "故障排除" },
+  "popup_troubleshooting_no_timing": { "message": "部分歌曲没有同步时间数据。" },
+  "popup_troubleshooting_wait_cover": { "message": "等待封面加载后刷新页面。" },
+  "popup_troubleshooting_login": { "message": "请确保您已登录Suno。" },
+  "popup_troubleshooting_song_page": { "message": "请使用歌曲详情页，而非主页/创作/播放列表。" }
+}
