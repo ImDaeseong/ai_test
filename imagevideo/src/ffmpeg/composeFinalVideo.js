@@ -11,9 +11,6 @@ const DEFAULT_OUTPUT = 'output/lyric_video.mp4';
 const DEFAULT_LOG = 'output/logs/ffmpeg.log';
 const DEFAULT_PLAN = 'output/production_plan.json';
 
-// 80px waveform that clears the subtitle marginV=100 area.
-const WAVEFORM_HEIGHT = 80;
-
 async function main() {
   try {
     const args = parseArgs(process.argv.slice(2));
@@ -99,7 +96,6 @@ async function resolveInputs(args) {
     burnSubtitles: args.burnSubtitles,
     title: args.title ?? null,
     artist: args.artist ?? null,
-    waveformWidth: getResolutionWidth(plan),
     videoHeight: getResolutionHeight(plan),
     videoFps: getVideoFps(plan),
     totalDuration
@@ -206,33 +202,19 @@ async function validateInputs(paths) {
 }
 
 function buildFfmpegCommand(paths) {
-  const w = paths.waveformWidth;
-  const wh = WAVEFORM_HEIGHT;
-  const fps = paths.videoFps;
   const duration = paths.totalDuration;
   const durationText = duration.toFixed(3);
 
   const filterParts = [];
 
-  // Step 1: Trim audio to the planned duration, then split one copy for waveform
-  // visualization and one copy for the output audio track. asplit prevents the
-  // "stream already consumed by filter_complex" issue with direct -map.
-  filterParts.push(`[1:a]atrim=duration=${durationText},asetpts=PTS-STARTPTS,asplit=2[amwav][aout]`);
-  filterParts.push(`[amwav]aformat=channel_layouts=mono[am]`);
-  filterParts.push(
-    `[am]showwaves=s=${w}x${wh}:mode=p2p:colors=0xCCEEFF:rate=${fps}:scale=sqrt[wave]`
-  );
+  // Step 1: Trim audio to the planned duration for the output audio track.
+  filterParts.push(`[1:a]atrim=duration=${durationText},asetpts=PTS-STARTPTS[aout]`);
 
   // Step 2: Pad with the last frame if the typography render is shorter than
   // the final timeline, then trim to a finite stream so FFmpeg terminates.
-  // drawbox uses iw/ih; overlay uses W/H (main_w/main_h).
   filterParts.push(`[0:v]tpad=stop_mode=clone:stop_duration=${durationText},trim=duration=${durationText},setpts=PTS-STARTPTS[vbase]`);
-  filterParts.push(
-    `[vbase]drawbox=x=0:y=ih-${wh + 8}:w=iw:h=${wh + 12}:color=black@0.55:t=fill[vbg]`
-  );
-  filterParts.push(`[vbg][wave]overlay=x=0:y=H-${wh}[vwave]`);
 
-  let currentLabel = 'vwave';
+  let currentLabel = 'vbase';
 
   // Step 3: Optional subtitle burning. The standard pipeline skips this because
   // subtitles are already burned in the render phase.
