@@ -1,10 +1,14 @@
-# AI Anime Monochrome Cinematic MV Style Rules
+# AI Anime Cyber Brand Cinematic MV Style Rules
 
 Default style:
 
 - anime cinematic style
-- monochrome black and white base
-- one accent color only
+- limited-color cyber anime palette
+- neon magenta / cyber pink as the dominant brand color
+- deep plum / dark violet shadows
+- graphite gray / near-black backgrounds
+- subtle icy cyan secondary reflections only
+- silver-white rim highlights
 - emotional composition
 - soft cinematic lighting
 - atmospheric environments
@@ -18,7 +22,9 @@ Avoid:
 - realistic humans
 - complex 3D realism
 - heavy lip sync
-- rainbow or multi-color palettes
+- rainbow palettes
+- warm daylight palettes
+- natural pastel palettes
 - overly complicated fantasy worlds
 - dialogue-heavy scenes
 - idol choreography as the main visual idea
@@ -26,8 +32,9 @@ Avoid:
 Preferred visual language:
 
 - manga cinematic panel composition
-- noir anime city atmosphere
-- silhouettes against rain, windows, skylines, trains, rooftops, and streets
+- cyber noir anime city atmosphere
+- silhouettes against neon rain, windows, skylines, trains, rooftops, and streets
+- waveform-like light trails in cyber pink with tiny icy cyan reflections
 - wide shots for loneliness
 - close-ups for emotional tension
 - upward camera angles for hope
@@ -38,9 +45,10 @@ Prompt consistency requirements:
 
 - Keep the same protagonist identity within one song.
 - Keep hairstyle, outfit, silhouette, and emotional continuity stable within one song.
-- Keep the same monochrome base and one accent color across all scenes in one song.
+- Keep the same channel brand palette across all scenes and songs.
+- Vary color by ratio, brightness, glow intensity, and contrast, not by changing the palette.
 - Use the protagonist bible as the source of truth for character details.
 
 Global negative prompt:
 
-realistic human, live action, photorealistic, 3D render, saturated colors, rainbow palette, multiple accent colors, complex fantasy armor, idol stage lip sync, crowded choreography, comedy expression, distorted hands, extra fingers, text, watermark, logo
+realistic human, live action, photorealistic, 3D render, saturated colors, rainbow palette, warm daylight palette, natural pastel palette, unrelated color palette, complex fantasy armor, idol stage lip sync, crowded choreography, comedy expression, distorted hands, extra fingers, text, watermark, logo

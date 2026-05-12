@@ -7,32 +7,50 @@ from typing import Any
 from common import PROJECT_ROOT, ensure_directories, read_json, slugify, write_json, write_text
 
 
-ACCENT_BY_EMOTION = {
-    "lonely": "deep blue",
-    "loneliness": "pale cyan",
-    "nostalgic": "faded blue",
-    "hopeful": "pale cyan",
-    "hope": "sunset orange",
-    "sad": "crimson red",
-    "melancholic": "deep blue",
+BRAND_PALETTE = {
+    "visual_identity": "dark cyber noir anime with neon magenta and cyber pink dominance",
+    "base": "graphite gray and near-black backgrounds",
+    "main_color": "neon magenta and cyber pink",
+    "shadow_color": "deep plum and dark violet",
+    "secondary_light": "subtle icy cyan secondary reflections",
+    "highlight": "silver-white rim highlights",
+    "palette_rule": (
+        "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, "
+        "graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+    ),
+}
+
+
+COLOR_BALANCE_BY_STAGE = {
+    "opening": "mostly graphite gray and near-black, faint cyber pink glow, tiny icy cyan reflections",
+    "development": "graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections",
+    "turning point": "stronger neon magenta and cyber pink glow balanced by cool icy cyan reflections",
+    "climax": "high-energy neon magenta and cyber pink dominance, silver-white rim light, controlled icy cyan contrast",
+    "resolution": "softened cyber pink glow with silver-white highlights and faint icy cyan reflections",
 }
 
 
 def create_visual_world(song: dict[str, Any], emotion: dict[str, Any]) -> dict[str, Any]:
-    primary = emotion.get("primary_emotion", "melancholic")
-    accent = ACCENT_BY_EMOTION.get(primary, "deep blue")
-    if "hopeful" in [m.lower() for m in song.get("mood", [])]:
-        accent = "pale cyan"
     return {
         "song_slug": slugify(song["title"]),
-        "visual_identity": f"monochrome anime noir with {accent} accent",
-        "monochrome_base": "black, white, and layered grayscale",
-        "accent_color": accent,
+        "visual_identity": BRAND_PALETTE["visual_identity"],
+        "color_palette": {
+            "base": BRAND_PALETTE["base"],
+            "main_color": BRAND_PALETTE["main_color"],
+            "shadow_color": BRAND_PALETTE["shadow_color"],
+            "secondary_light": BRAND_PALETTE["secondary_light"],
+            "highlight": BRAND_PALETTE["highlight"],
+            "rule": BRAND_PALETTE["palette_rule"],
+        },
+        "base_palette": BRAND_PALETTE["base"],
+        "accent_color": BRAND_PALETTE["main_color"],
+        "secondary_accent_color": "icy cyan",
+        "highlight_color": "silver white",
         "environment_family": emotion.get("urban_rural_mood", "urban emotional atmosphere"),
         "core_locations": infer_locations(song),
         "recurring_symbols": list(dict.fromkeys(emotion.get("visual_symbolism", []) + song.get("visual_cues", [])))[:8],
-        "lighting_language": "soft cinematic grayscale, rain reflections, silhouette-first composition",
-        "transition_language": "match cuts through reflections, paper crane motion, and passing train lights",
+        "lighting_language": "dark cinematic cyber lighting, neon magenta glow, deep violet shadows, subtle icy cyan reflections, silver rim light",
+        "transition_language": "match cuts through neon reflections, paper crane motion, waveform-like light trails, and passing train lights",
         "negative_style_rules": song.get("negative_tags", []),
     }
 
@@ -62,7 +80,7 @@ def create_protagonist(song: dict[str, Any], world: dict[str, Any]) -> dict[str,
         "silhouette": "slim figure, coat hem and side fringe readable in silhouette",
         "emotional_state": mood_words,
         "signature_prop": "small paper crane",
-        "accent_detail": f"only the {world['accent_color']} reflections and crane edge carry color",
+        "accent_detail": "neon magenta/cyber pink is dominant, with deep plum shadows, subtle icy cyan reflections, and silver-white rim highlights",
         "consistency_rules": [
             "Keep the same hairstyle in every scene.",
             "Keep the same outfit and shoulder bag in every scene.",
@@ -105,7 +123,7 @@ def create_story_arc(song: dict[str, Any], emotion: dict[str, Any], world: dict[
     return {
         "title": title,
         "theme_ko": "상실을 품고 걷던 주인공이 반복되는 도시의 신호와 빛을 지나며 스스로 앞으로 나아갈 이유를 발견하는 이야기",
-        "logline_ko": f"'{title}'은 종이학을 든 외로운 청소년 주인공이 주요 공간인 {locations_ko}를 지나며 {symbols_ko} 같은 상징을 단서처럼 따라가고, 마지막에는 {accent_ko} 빛 속에서 작은 결심을 되찾는 흑백 애니메이션 MV입니다.",
+        "logline_ko": f"'{title}'은 종이학을 든 외로운 청소년 주인공이 주요 공간인 {locations_ko}를 지나며 {symbols_ko} 같은 상징을 단서처럼 따라가고, 마지막에는 {accent_ko} 빛 속에서 작은 결심을 되찾는 사이버 애니메이션 MV입니다.",
         "story_summary_ko": (
             f"이 뮤직비디오는 {primary_emotion_ko} 감정에서 출발합니다. 주인공은 같은 옷차림과 종이학을 지닌 채 비에 젖은 도시를 걷고, "
             "각 장면은 도망치거나 멈춰 서는 대신 조금씩 앞으로 이동하는 행동으로 이어집니다. 벌스에서는 아직 말하지 못한 감정을 품고 걷고, "
@@ -133,7 +151,7 @@ def create_story_arc(song: dict[str, Any], emotion: dict[str, Any], world: dict[
         "continuity_rules": [
             "모든 씬은 같은 주인공, 같은 헤어스타일, 같은 의상, 같은 종이학 소품을 유지합니다.",
             "각 씬의 이동 방향은 이전 씬의 감정에서 다음 씬의 감정으로 이어지는 흐름을 보여줍니다.",
-            f"흑백 세계와 {accent_ko} 악센트 컬러 규칙은 전체 영상에서 유지됩니다.",
+            f"채널 브랜드 팔레트와 {accent_ko} 중심의 사이버 컬러 규칙은 전체 영상에서 유지됩니다.",
             "씬 전환은 비, 반사, 종이학, 신호등, 도시의 빛 같은 반복 심볼을 이용합니다.",
         ],
     }
@@ -141,6 +159,7 @@ def create_story_arc(song: dict[str, Any], emotion: dict[str, Any], world: dict[
 
 def ko_accent(value: str) -> str:
     return {
+        "neon magenta and cyber pink": "네온 마젠타와 사이버 핑크",
         "deep blue": "짙은 파란색",
         "pale cyan": "옅은 청록색",
         "faded blue": "바랜 파란색",
@@ -196,7 +215,7 @@ def apply_story_arc_to_scenes(scenes: list[dict[str, Any]], story_arc: dict[str,
         beat_ko = story_beat_ko(scene, stage)
         beat_en = story_beat_en(scene, stage)
         continuity_from = (
-            "첫 장면이므로 주인공의 고립감, 종이학, 흑백 도시의 규칙을 분명히 소개합니다."
+            "첫 장면이므로 주인공의 고립감, 종이학, 네온 마젠타 중심의 사이버 도시 규칙을 분명히 소개합니다."
             if previous_scene is None
             else f"이전 {previous_scene['music_section']} 장면의 {previous_scene['emotion']} 감정을 이어받아 같은 이동 방향과 소품으로 연결합니다."
         )
@@ -208,7 +227,7 @@ def apply_story_arc_to_scenes(scenes: list[dict[str, Any]], story_arc: dict[str,
         story_prompt_context = (
             f"Narrative continuity: this is the {stage} beat of the music video. "
             f"Continue from the previous scene through the same protagonist, paper crane, walking direction, rain reflections, "
-            f"and single accent color. Story beat: {beat_en}"
+            f"and the fixed neon magenta cyber palette. Story beat: {beat_en}"
         )
         enriched.append(
             {
@@ -316,6 +335,7 @@ def choose_movement(section: str) -> str:
 
 
 def image_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict[str, Any]) -> str:
+    color_balance = COLOR_BALANCE_BY_STAGE.get(scene.get("story_stage", "development"), COLOR_BALANCE_BY_STAGE["development"])
     return (
         "Use the attached character turnaround model sheet as the identity lock. Match the same face, hairstyle, outfit, "
         "body proportions, shoulder bag, silhouette, and signature paper crane exactly. Use the model sheet views "
@@ -324,13 +344,16 @@ def image_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict
         f"{scene.get('story_prompt_context', '')} "
         f"{protagonist['identity']}, {protagonist['hair']}, {protagonist['outfit']}, "
         f"in {scene['environment']}, emotion: {scene['emotion']}, {scene['lighting']}, "
-        f"{scene['camera_direction']}, {scene['movement']}, monochrome black and white anime cinematic frame, "
-        f"single accent color: {world['accent_color']}, strong silhouette, soft film grain, manga panel atmosphere, "
-        "non-photorealistic, no live action, no rainbow colors, no heavy lip sync, no text, no watermark"
+        f"{scene['camera_direction']}, {scene['movement']}, dark cinematic anime music video frame, "
+        f"{BRAND_PALETTE['palette_rule']}, scene color balance: {color_balance}, strong silhouette, "
+        "soft film grain, manga panel atmosphere, glowing waveform-like light trails, high contrast atmospheric depth, "
+        "non-photorealistic, no live action, no rainbow colors, no warm daylight palette, no natural pastel palette, "
+        "no heavy lip sync, no text, no watermark"
     )
 
 
 def video_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict[str, Any]) -> str:
+    color_balance = COLOR_BALANCE_BY_STAGE.get(scene.get("story_stage", "development"), COLOR_BALANCE_BY_STAGE["development"])
     return (
         "Use the attached scene image as the primary first-frame/image-to-video reference. If the tool supports multiple "
         "references, also attach the character turnaround model sheet as a secondary identity reference. Preserve the "
@@ -339,8 +362,9 @@ def video_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict
         f"{scene.get('story_prompt_context', '')} "
         f"Anime cinematic music video shot. Maintain protagonist: {protagonist['hair']}, {protagonist['outfit']}. "
         f"Scene in {scene['environment']} with {scene['emotion']} mood. Camera: {scene['movement']}; "
-        f"composition: {scene['camera_direction']}. Atmosphere: rain, grayscale depth, soft lighting, "
-        f"only {world['accent_color']} accent visible. Keep motion slow and emotional, avoid dialogue and lip sync, "
+        f"composition: {scene['camera_direction']}. Atmosphere: rain, dark cyber depth, neon magenta/cyber pink glow, "
+        f"deep plum shadows, subtle icy cyan reflections, silver-white rim highlights. Scene color balance: {color_balance}. "
+        "Keep motion slow and emotional, avoid dialogue and lip sync, preserve the fixed channel color palette, "
         "use a clean cinematic transition at the end."
     )
 
@@ -430,7 +454,7 @@ def character_reference_prompt(protagonist: dict[str, Any], world: dict[str, Any
         "Composition: clean anime production model sheet, neutral simple background, aligned character views at the same scale, "
         "full body visible from head to toe in each turnaround pose, clear face close-up, clear hairstyle silhouette, clear outfit seams, "
         "clear shoulder bag shape, clear paper crane prop, no dramatic camera angle, no cropped limbs, no environmental scene, no action pose. "
-        f"Monochrome black and white with single accent color: {world['accent_color']}. Non-photorealistic, no live action, no text, no watermark.\n\n"
+        f"{BRAND_PALETTE['palette_rule']}. Non-photorealistic, no live action, no text, no watermark.\n\n"
         "Consistency rules:\n"
         f"{rules}\n\n"
         "Production workflow:\n"
@@ -474,9 +498,7 @@ def _generate_and_write(song: dict, emotion: dict) -> None:
     cinematic_style = {
         "style_name": world["visual_identity"],
         "color_rules": {
-            "base": world["monochrome_base"],
-            "accent_color": world["accent_color"],
-            "rule": "one accent color only",
+            **world["color_palette"],
         },
         "camera_language": [scene["camera_direction"] for scene in scenes],
         "transition_language": world["transition_language"],

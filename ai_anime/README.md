@@ -1,6 +1,6 @@
-# AI Anime Monochrome Cinematic MV System
+# AI Anime Cyber Brand Cinematic MV System
 
-A reusable Python pipeline for turning raw song information into an anime-style monochrome cinematic music video package.
+A reusable Python pipeline for turning raw song information into an anime-style cyber brand cinematic music video package.
 
 The system creates:
 
@@ -16,7 +16,7 @@ The system creates:
 - `storyboard/storyboard_prompts.md`
 - `storyboard/camera_directions.md`
 - per-scene image prompts
-- per-scene video prompts for Runway, Kling, Pika, and Luma
+- per-scene video prompts for Runway, Kling, Pika, Luma, Veo, Flow, Sora, Hailuo, and PixVerse
 - optional versioned snapshots under `output/storyboard/`
 
 ## Concept
@@ -26,8 +26,12 @@ Each song becomes its own emotional cinematic world. Characters may change betwe
 The default visual identity is:
 
 - anime cinematic style
-- monochrome black and white base
-- one accent color only
+- limited-color cyber anime palette
+- neon magenta / cyber pink as the dominant brand color
+- deep plum / dark violet shadows
+- graphite gray / near-black backgrounds
+- subtle icy cyan secondary reflections only
+- silver-white rim highlights
 - emotional composition
 - soft cinematic lighting
 - atmospheric environments
@@ -219,7 +223,7 @@ Good next modules to add:
 - shot duration estimation from BPM and song structure
 - OpenAI API integration for richer lyric interpretation
 - image generation adapter
-- Runway, Kling, Pika, or Luma export adapters
+- Runway, Kling, Pika, Luma, Veo, Flow, Sora, Hailuo, or PixVerse export adapters
 - reference image management
 - prompt scoring and consistency checks
 - final edit decision list generation

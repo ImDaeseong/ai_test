@@ -1,1 +1,1 @@
-"""AI Anime Monochrome Cinematic MV generation pipeline."""
+"""AI Anime cyber brand cinematic MV generation pipeline."""

@@ -10,37 +10,37 @@ from common import PROJECT_ROOT, ensure_directories, read_json, write_json
 EMOTION_MAP = {
     "lonely": {
         "symbols": ["empty train platform", "unanswered signal light", "single window glow"],
-        "lighting": "cold silver grayscale with deep blue accent",
+        "lighting": "cold graphite darkness with restrained neon magenta glow, silver rim light, and faint icy cyan reflections",
         "camera": "wide static frame, small figure against negative space",
         "environment": "rainy city night",
     },
     "loneliness": {
         "symbols": ["empty street", "distant apartment lights", "wet pavement reflection"],
-        "lighting": "soft low-key grayscale with pale cyan accent",
+        "lighting": "low-key graphite shadows with soft cyber pink spill and subtle icy cyan pavement reflections",
         "camera": "slow lateral dolly with strong silhouette",
         "environment": "urban backstreet after rain",
     },
     "nostalgic": {
         "symbols": ["paper crane", "old station sign", "wind through curtains"],
-        "lighting": "faded grayscale with pale blue accent",
+        "lighting": "muted deep plum shadows with softened cyber pink memory glow and silver-white highlights",
         "camera": "gentle push-in, shallow atmospheric depth",
         "environment": "quiet transit spaces and rooftops",
     },
     "hope": {
         "symbols": ["sunrise edge", "opening sky", "upward drifting paper crane"],
-        "lighting": "bright grayscale bloom with one warm accent",
+        "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
         "camera": "upward angle, slow crane rise",
         "environment": "rooftop at dawn",
     },
     "hopeful": {
         "symbols": ["thin line of dawn", "opening hand", "city lights turning off"],
-        "lighting": "soft white glow with pale cyan accent",
+        "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
         "camera": "forward tracking shot into open space",
         "environment": "city morning after rain",
     },
     "sad": {
         "symbols": ["rain on glass", "empty bench", "flickering streetlamp"],
-        "lighting": "high contrast grayscale with muted crimson accent",
+        "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
         "camera": "close-up profile, slow tilt down",
         "environment": "night street or train window",
     },
@@ -60,7 +60,7 @@ def map_emotion(emotion: str) -> dict[str, Any]:
         emotion,
         {
             "symbols": ["silhouette", "wind", "distant city lights"],
-            "lighting": "soft monochrome light with deep blue accent",
+            "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
             "camera": "film-like composition with slow push-in",
             "environment": "atmospheric city space",
         },
