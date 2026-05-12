@@ -1,7 +1,7 @@
 # 소스 설명
 
-> 작성일: 2026-05-08  
-> 총 13개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
+> 작성일: 2026-05-08 / 최종 수정: 2026-05-12  
+> 총 14개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
 
 ---
 
@@ -22,6 +22,7 @@
 | 11 | [port_scan](#11-port_scan) | 로컬 네트워크 연결 실시간 모니터링 | Python | ★★★★☆ |
 | 12 | [security_scanning](#12-security_scanning) | 웹·시스템 보안 취약점 스캐너 | Python | ★★★★☆ |
 | 13 | [weather_alarm](#13-weather_alarm) | 기상청 날씨 → Discord/Telegram 알림 봇 | Python (asyncio) | ★★★★☆ |
+| 14 | [ai_anime](#14-ai_anime) | 가사 → 애니메이션 MV 스토리보드·AI 프롬프트 자동 생성 | Python (표준 라이브러리) | ★★★★☆ |
 
 ---
 
@@ -689,6 +690,77 @@ run_local.bat
 
 ### 개발 완성도: ★★★★☆
 양방향 봇(Discord/Telegram), 구독 DB, 발송 큐, 재시도 로직 완성. .env API 키 설정 후 즉시 실행 가능. Docker Compose + PostgreSQL + Redis + Celery 기반 리팩터링 예정.
+
+---
+
+## 14. ai_anime
+
+### 기능 개요
+음악 가사(TXT/LRC/SRT)와 메타데이터를 입력받아 모노크롬 시네마틱 애니메이션 MV 제작을 위한 스토리보드·캐릭터 설정·씬별 AI 이미지/영상 프롬프트를 자동 생성하는 파이프라인.
+
+### 주요 기능
+- **파싱**: TXT/LRC/SRT 가사 파일 → `song_master.json` (제목, BPM, 장르, 섹션, 가사)
+- **감정 분석**: 가사 전체에서 감정 곡선과 시각적 색상·무드 매핑 생성 (`emotion_analysis.json`)
+- **씬 생성**: 비주얼 월드(`visual_world.json`), 주인공 캐릭터 바이블(`protagonist_bible.json`), 씬 목록(`scene_list.json`), 스토리 아크(`story_arc.json`) 자동 생성
+- **이미지 프롬프트**: 씬별 Midjourney/DALL·E 영어 프롬프트 + 한국어 스토리 컨텍스트 (`scene_*.md`)
+- **영상 프롬프트**: 씬별 Runway·Kling·Pika·Luma 4개 플랫폼 영상 생성 프롬프트
+- **스냅샷 아카이브**: `--snapshot` 옵션으로 실행 결과를 타임스탬프 폴더에 일괄 저장
+- **웹 UI**: Python 내장 `http.server` 기반 로컬 UI — 외부 패키지 설치 불필요
+
+### 비주얼 콘셉트
+- 흑백 모노크롬 베이스 + 단일 포인트 컬러
+- 캐릭터: 종이학을 든 고독한 애니메이션 십대 (학교 코트, 사이드 프린지 단발)
+- 한국어 내러티브 구조 (시작→전개→고조→결말)
+
+### 폴더 구조
+```
+ai_anime/
+├── scripts/
+│   ├── parser.py                   # TXT/LRC/SRT 파싱 → song_master.json
+│   ├── emotion_engine.py           # 감정 분석 및 시각 매핑
+│   ├── scene_generator.py          # 비주얼 월드·캐릭터·씬·스토리 아크 생성 (508줄)
+│   ├── image_prompt_generator.py   # 씬별 이미지 프롬프트 생성
+│   ├── video_prompt_generator.py   # 씬별 영상 프롬프트 생성 (4 플랫폼)
+│   ├── web_app.py                  # 로컬 HTTP 서버 UI (569줄)
+│   ├── run_pipeline.py             # 전체 파이프라인 오케스트레이션
+│   └── common.py                   # 공통 유틸리티 (경로, 인코딩, 슬러그)
+├── prompts/
+│   └── style_rules.md              # 비주얼 스타일 가이드라인
+├── output/
+│   ├── web_inputs/                 # 웹 UI 업로드 원본 파일
+│   └── storyboard/                 # 스냅샷 출력 (SLUG-TIMESTAMP/)
+│       ├── input/                  # song_master.json
+│       ├── analysis/               # emotion, visual_world, cinematic_style
+│       ├── character/              # protagonist_bible, character_prompt
+│       ├── storyboard/             # story_arc, scene_list, camera_directions
+│       └── prompts/                # image_prompts/, video_prompts/
+└── run_web.bat                     # Windows 웹서버 실행 스크립트
+```
+
+### 사용 방법
+```bash
+# 웹 UI (권장)
+run_web.bat
+# → http://localhost:포트  (TXT/LRC/SRT 업로드 후 파이프라인 실행)
+
+# CLI 전체 파이프라인
+python scripts/run_pipeline.py --input lyrics.lrc --snapshot
+
+# 단계별 실행
+python scripts/parser.py lyrics.lrc
+python scripts/emotion_engine.py
+python scripts/scene_generator.py
+python scripts/image_prompt_generator.py
+python scripts/video_prompt_generator.py
+```
+
+### 기술 스택
+- Python 3.10+ / **외부 패키지 없음** (표준 라이브러리만 사용)
+- 입력: TXT, LRC (`[MM:SS.mm]` 동기화 가사), SRT 형식 지원
+- 출력: JSON (구조화 데이터) + Markdown (AI 프롬프트)
+
+### 개발 완성도: ★★★★☆
+파이프라인 완전 작동 확인. pip install 없이 Python 설치만으로 실행 가능. Runway·Kling·Pika·Luma 4개 영상 플랫폼 프롬프트 동시 생성. 향후 OpenAI API 연동 및 자동 이미지 생성 어댑터 추가 예정.
 
 ---
 

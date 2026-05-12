@@ -1,0 +1,129 @@
+{
+  "primary_emotion": "melancholic",
+  "secondary_emotions": [
+    "cinematic"
+  ],
+  "emotional_progression": [
+    {
+      "section": "Intro",
+      "intensity": "low",
+      "emotion": "melancholic",
+      "visual_symbols": [
+        "silhouette",
+        "wind",
+        "distant city lights"
+      ],
+      "lighting": "soft monochrome light with deep blue accent",
+      "environment": "atmospheric city space",
+      "camera_emotion": "film-like composition with slow push-in"
+    },
+    {
+      "section": "Verse",
+      "intensity": "medium",
+      "emotion": "melancholic",
+      "visual_symbols": [
+        "silhouette",
+        "wind",
+        "distant city lights"
+      ],
+      "lighting": "soft monochrome light with deep blue accent",
+      "environment": "atmospheric city space",
+      "camera_emotion": "film-like composition with slow push-in"
+    },
+    {
+      "section": "Verse",
+      "intensity": "medium",
+      "emotion": "melancholic",
+      "visual_symbols": [
+        "silhouette",
+        "wind",
+        "distant city lights"
+      ],
+      "lighting": "soft monochrome light with deep blue accent",
+      "environment": "atmospheric city space",
+      "camera_emotion": "film-like composition with slow push-in"
+    },
+    {
+      "section": "Verse",
+      "intensity": "medium",
+      "emotion": "melancholic",
+      "visual_symbols": [
+        "silhouette",
+        "wind",
+        "distant city lights"
+      ],
+      "lighting": "soft monochrome light with deep blue accent",
+      "environment": "atmospheric city space",
+      "camera_emotion": "film-like composition with slow push-in"
+    },
+    {
+      "section": "Verse",
+      "intensity": "medium",
+      "emotion": "melancholic",
+      "visual_symbols": [
+        "silhouette",
+        "wind",
+        "distant city lights"
+      ],
+      "lighting": "soft monochrome light with deep blue accent",
+      "environment": "atmospheric city space",
+      "camera_emotion": "film-like composition with slow push-in"
+    },
+    {
+      "section": "Bridge",
+      "intensity": "emotional peak",
+      "emotion": "melancholic",
+      "visual_symbols": [
+        "silhouette",
+        "wind",
+        "distant city lights"
+      ],
+      "lighting": "soft monochrome light with deep blue accent",
+      "environment": "atmospheric city space",
+      "camera_emotion": "film-like composition with slow push-in"
+    },
+    {
+      "section": "Outro",
+      "intensity": "falling",
+      "emotion": "hope",
+      "visual_symbols": [
+        "sunrise edge",
+        "opening sky",
+        "upward drifting paper crane"
+      ],
+      "lighting": "bright grayscale bloom with one warm accent",
+      "environment": "rooftop at dawn",
+      "camera_emotion": "upward angle, slow crane rise"
+    }
+  ],
+  "visual_symbolism": [
+    "silhouette",
+    "wind",
+    "distant city lights"
+  ],
+  "emotional_climax": {
+    "section": "Bridge",
+    "intensity": "emotional peak",
+    "emotion": "melancholic",
+    "visual_symbols": [
+      "silhouette",
+      "wind",
+      "distant city lights"
+    ],
+    "lighting": "soft monochrome light with deep blue accent",
+    "environment": "atmospheric city space",
+    "camera_emotion": "film-like composition with slow push-in"
+  },
+  "seasonal_atmosphere": "rainy late spring night",
+  "urban_rural_mood": "urban emotional atmosphere",
+  "cinematic_pacing": "medium cinematic pacing",
+  "tension_curve": [
+    "low",
+    "medium",
+    "medium",
+    "medium",
+    "medium",
+    "emotional peak",
+    "falling"
+  ]
+}

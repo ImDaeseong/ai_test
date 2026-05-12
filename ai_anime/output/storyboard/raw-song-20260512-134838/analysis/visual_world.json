@@ -1,0 +1,20 @@
+{
+  "song_slug": "raw-song",
+  "visual_identity": "monochrome anime noir with deep blue accent",
+  "monochrome_base": "black, white, and layered grayscale",
+  "accent_color": "deep blue",
+  "environment_family": "urban emotional atmosphere",
+  "core_locations": [
+    "quiet city street after rain"
+  ],
+  "recurring_symbols": [
+    "silhouette",
+    "wind",
+    "distant city lights",
+    "empty street",
+    "rain"
+  ],
+  "lighting_language": "soft cinematic grayscale, rain reflections, silhouette-first composition",
+  "transition_language": "match cuts through reflections, paper crane motion, and passing train lights",
+  "negative_style_rules": []
+}

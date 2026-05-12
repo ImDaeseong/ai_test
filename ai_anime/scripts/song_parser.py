@@ -1,0 +1,570 @@
+from __future__ import annotations
+
+import argparse
+import contextlib
+import json
+import re
+import subprocess
+from pathlib import Path
+from typing import Any
+import wave
+
+from common import (
+    DEFAULT_SECTIONS,
+    PROJECT_ROOT,
+    ensure_directories,
+    normalize_section_name,
+    read_text,
+    split_csv,
+    write_json,
+)
+
+
+KEY_ALIASES = {
+    "title": "title",
+    "genre": "genre",
+    "bpm": "bpm",
+    "mood": "mood",
+    "emotion": "mood",
+    "energy": "energy",
+    "instruments": "instruments",
+    "music style tags": "style_tags",
+    "style tags": "style_tags",
+    "negative tags": "negative_tags",
+    "visual cues": "visual_cues",
+    "atmosphere": "atmosphere",
+    "pacing": "pacing",
+}
+
+
+SECTION_LABEL_PATTERN = re.compile(
+    r"^\[(Intro|Verse(?:\s*\d+)?|Pre[- ]?Chorus|Chorus|Post[- ]?Chorus|Bridge|Outro)(?::\s*(.*?))?\]$",
+    re.I,
+)
+TIMESTAMP_PATTERN = re.compile(r"\[(\d{1,2}):(\d{2})(?:\.(\d{1,2}))?\]")
+SRT_TIME_PATTERN = re.compile(
+    r"(\d{2}):(\d{2}):(\d{2}),(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2}),(\d{3})"
+)
+AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"}
+
+
+def seconds_from_lrc_match(match: re.Match[str]) -> float:
+    minutes, seconds, centiseconds = match.groups()
+    timestamp = int(minutes) * 60 + int(seconds)
+    if centiseconds:
+        timestamp += int(centiseconds.ljust(2, "0")) / 100
+    return round(timestamp, 2)
+
+
+def seconds_from_srt_parts(parts: tuple[str, str, str, str]) -> float:
+    hours, minutes, seconds, milliseconds = parts
+    return round(int(hours) * 3600 + int(minutes) * 60 + int(seconds) + int(milliseconds) / 1000, 3)
+
+
+def normalize_section_label(label: str) -> str:
+    label = re.sub(r"\s*\d+$", "", label.strip())
+    label = label.replace("-", " ")
+    normalized = normalize_section_name(label)
+    if normalized == "Post Chorus":
+        return "Post-Chorus"
+    return normalized
+
+
+def strip_inline_timestamps(text: str) -> str:
+    return TIMESTAMP_PATTERN.sub("", text).strip()
+
+
+def is_section_marker(text: str) -> bool:
+    return bool(SECTION_LABEL_PATTERN.match(text.strip()))
+
+
+def is_bracketed_direction(text: str) -> bool:
+    stripped = text.strip()
+    return stripped.startswith("[") and stripped.endswith("]")
+
+
+def parse_lrc(text: str) -> list[dict[str, Any]]:
+    lines = []
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        matches = list(TIMESTAMP_PATTERN.finditer(line))
+        if not matches:
+            continue
+        for index, match in enumerate(matches):
+            start = match.end()
+            end = matches[index + 1].start() if index + 1 < len(matches) else len(line)
+            lyric = line[start:end].strip()
+            if lyric:
+                lines.append({"time": seconds_from_lrc_match(match), "text": lyric})
+    return lines
+
+
+def parse_srt(text: str) -> list[dict[str, Any]]:
+    lines = []
+    blocks = re.split(r"\n\s*\n", text.strip())
+    for block in blocks:
+        block_lines = [line.strip() for line in block.splitlines() if line.strip()]
+        if len(block_lines) < 2:
+            continue
+        time_index = next((i for i, line in enumerate(block_lines) if SRT_TIME_PATTERN.search(line)), None)
+        if time_index is None:
+            continue
+        match = SRT_TIME_PATTERN.search(block_lines[time_index])
+        if not match:
+            continue
+        start_time = seconds_from_srt_parts(match.groups()[:4])
+        lyric = "\n".join(block_lines[time_index + 1 :]).strip()
+        if lyric:
+            lines.append({"time": start_time, "text": lyric})
+    return lines
+
+
+def extract_metadata(text: str) -> dict[str, Any]:
+    metadata: dict[str, Any] = {
+        "title": "",
+        "genre": "anime cinematic pop",
+        "bpm": None,
+        "energy": "medium",
+        "mood": [],
+        "instruments": [],
+        "style_tags": [],
+        "negative_tags": [],
+        "visual_cues": [],
+        "atmosphere": "",
+        "pacing": "",
+    }
+    style_seed_line = find_style_seed_line(text)
+    if style_seed_line:
+        metadata["style_tags"] = split_csv(re.sub(r"Weirdness\s+\d+%.*", "", style_seed_line, flags=re.I))
+        bpm_match = re.search(r"(\d{2,3})\s*BPM", style_seed_line, re.I)
+        if bpm_match:
+            metadata["bpm"] = int(bpm_match.group(1))
+        if metadata["style_tags"]:
+            metadata["genre"] = ", ".join(metadata["style_tags"][:3])
+
+    for raw_line in text.splitlines():
+        if ":" not in raw_line:
+            continue
+        key, value = raw_line.split(":", 1)
+        normalized = KEY_ALIASES.get(key.strip().lower())
+        if not normalized:
+            continue
+        value = value.strip()
+        if normalized == "bpm":
+            bpm_match = re.search(r"\d+", value)
+            metadata[normalized] = int(bpm_match.group(0)) if bpm_match else None
+        elif normalized in {"mood", "instruments", "style_tags", "negative_tags", "visual_cues"}:
+            metadata[normalized] = split_csv(value)
+        else:
+            metadata[normalized] = value
+    return metadata
+
+
+def find_style_seed_line(text: str) -> str:
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("["):
+            continue
+        if ":" in line:
+            key = line.split(":", 1)[0].strip().lower()
+            if key in KEY_ALIASES:
+                continue
+        if re.search(r"\b\d{2,3}\s*BPM\b", line, re.I) or "," in line:
+            return line
+    return ""
+
+
+def parse_sections(text: str) -> list[dict[str, Any]]:
+    sections: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+
+    for raw_line in text.splitlines():
+        line = strip_inline_timestamps(raw_line.strip())
+        bracket_match = SECTION_LABEL_PATTERN.match(line)
+        if bracket_match:
+            if current:
+                current["lyrics"] = "\n".join(current["lyrics"]).strip()
+                sections.append(current)
+            section_name, description = bracket_match.groups()
+            current = {
+                "section": normalize_section_label(section_name),
+                "lyrics": [],
+                "description": description or "",
+            }
+            continue
+        if current and line and not re.match(r"^\[[A-Za-z -]+:", line):
+            current["lyrics"].append(line)
+
+    if current:
+        current["lyrics"] = "\n".join(current["lyrics"]).strip()
+        sections.append(current)
+
+    if sections:
+        return sections
+
+    lyric_lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.strip() and ":" not in line and not line.startswith("[")
+    ]
+    chunk_size = max(1, len(lyric_lines) // 4)
+    inferred = []
+    for index, section_name in enumerate(DEFAULT_SECTIONS[: max(1, min(4, len(lyric_lines)))]):
+        chunk = lyric_lines[index * chunk_size : (index + 1) * chunk_size]
+        if chunk:
+            inferred.append({"section": section_name, "lyrics": "\n".join(chunk), "description": "inferred"})
+    return inferred
+
+
+def sections_from_timed_lyrics(timed_lyrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    sections: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    for item in timed_lyrics:
+        text = item["text"].strip()
+        marker = SECTION_LABEL_PATTERN.match(text)
+        if marker:
+            if current:
+                current["lyrics"] = "\n".join(current["lyrics"]).strip()
+                sections.append(current)
+            section_name, description = marker.groups()
+            current = {
+                "section": normalize_section_label(section_name),
+                "lyrics": [],
+                "description": description or "",
+            }
+            continue
+        if current and text and not is_bracketed_direction(text):
+            current["lyrics"].append(text)
+    if current:
+        current["lyrics"] = "\n".join(current["lyrics"]).strip()
+        sections.append(current)
+    return sections
+
+
+def discover_input_files(input_path: Path) -> dict[str, list[Path]]:
+    if input_path.is_file():
+        return {input_path.suffix.lower(): [input_path]}
+
+    files: dict[str, list[Path]] = {".txt": [], ".lrc": [], ".srt": []}
+    for suffix in AUDIO_EXTENSIONS:
+        files[suffix] = []
+    for path in sorted(input_path.iterdir()):
+        if path.name == "song_master.json" or not path.is_file():
+            continue
+        if path.suffix.lower() in files:
+            files[path.suffix.lower()].append(path)
+    return files
+
+
+def probe_audio_duration(path: Path) -> float | None:
+    if path.suffix.lower() == ".wav":
+        with contextlib.suppress(Exception), wave.open(str(path), "rb") as wav_file:
+            frames = wav_file.getnframes()
+            rate = wav_file.getframerate()
+            if rate:
+                return round(frames / float(rate), 3)
+
+    command = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        str(path),
+    ]
+    with contextlib.suppress(Exception):
+        result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", check=True)
+        duration = float(result.stdout.strip())
+        if duration > 0:
+            return round(duration, 3)
+    return None
+
+
+def probe_audio_stream(path: Path) -> dict[str, Any]:
+    command = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration,bit_rate:stream=codec_name,channels,sample_rate",
+        "-of",
+        "json",
+        str(path),
+    ]
+    with contextlib.suppress(Exception):
+        result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", check=True)
+        data = json.loads(result.stdout or "{}")
+        stream = next((item for item in data.get("streams", []) if item.get("codec_name")), {})
+        duration = data.get("format", {}).get("duration")
+        bit_rate = data.get("format", {}).get("bit_rate")
+        return {
+            "codec": stream.get("codec_name"),
+            "sample_rate": int(stream["sample_rate"]) if str(stream.get("sample_rate", "")).isdigit() else None,
+            "channels": stream.get("channels"),
+            "bit_rate": int(bit_rate) if str(bit_rate or "").isdigit() else None,
+            "duration_seconds": round(float(duration), 3) if duration else None,
+        }
+    return {}
+
+
+def probe_audio_loudness(path: Path) -> dict[str, Any]:
+    command = [
+        "ffmpeg",
+        "-hide_banner",
+        "-nostats",
+        "-i",
+        str(path),
+        "-af",
+        "volumedetect",
+        "-f",
+        "null",
+        "NUL",
+    ]
+    with contextlib.suppress(Exception):
+        result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", check=False)
+        output = "\n".join([result.stdout, result.stderr])
+        mean_match = re.search(r"mean_volume:\s*(-?\d+(?:\.\d+)?)\s*dB", output)
+        max_match = re.search(r"max_volume:\s*(-?\d+(?:\.\d+)?)\s*dB", output)
+        return {
+            "mean_volume_db": float(mean_match.group(1)) if mean_match else None,
+            "max_volume_db": float(max_match.group(1)) if max_match else None,
+        }
+    return {}
+
+
+def classify_audio_energy(mean_volume_db: float | None, max_volume_db: float | None) -> str:
+    if mean_volume_db is None:
+        return "medium"
+    if mean_volume_db >= -14 or (max_volume_db is not None and max_volume_db >= -1):
+        return "high"
+    if mean_volume_db <= -24:
+        return "low"
+    return "medium"
+
+
+def infer_audio_pacing(duration_seconds: float | None, energy: str) -> str:
+    if energy == "high":
+        return "energetic cuts with stronger motion accents"
+    if duration_seconds and duration_seconds >= 240:
+        return "slow build with longer cinematic sections"
+    if duration_seconds and duration_seconds <= 120:
+        return "compact pacing with concise scene beats"
+    if energy == "low":
+        return "slow cinematic cuts with lingering frames"
+    return "medium cinematic pacing informed by the audio reference"
+
+
+def analyze_audio_file(path: Path) -> dict[str, Any]:
+    stream_info = probe_audio_stream(path)
+    loudness = probe_audio_loudness(path)
+    duration = stream_info.get("duration_seconds") or probe_audio_duration(path)
+    energy = classify_audio_energy(loudness.get("mean_volume_db"), loudness.get("max_volume_db"))
+    return {
+        "file": path.name,
+        "extension": path.suffix.lower(),
+        "size_bytes": path.stat().st_size,
+        "duration_seconds": duration,
+        "codec": stream_info.get("codec"),
+        "sample_rate": stream_info.get("sample_rate"),
+        "channels": stream_info.get("channels"),
+        "bit_rate": stream_info.get("bit_rate"),
+        "mean_volume_db": loudness.get("mean_volume_db"),
+        "max_volume_db": loudness.get("max_volume_db"),
+        "energy_hint": energy,
+        "pacing_hint": infer_audio_pacing(duration, energy),
+    }
+
+
+def audio_file_metadata(files: dict[str, list[Path]]) -> list[dict[str, Any]]:
+    audio_files = [path for suffix in AUDIO_EXTENSIONS for path in files.get(suffix, [])]
+    return [analyze_audio_file(path) for path in sorted(audio_files)]
+
+
+def summarize_audio_analysis(audio_files: list[dict[str, Any]]) -> dict[str, Any]:
+    if not audio_files:
+        return {
+            "available": False,
+            "applied_to_generation": False,
+            "note": "No audio file was provided.",
+        }
+    primary = audio_files[0]
+    return {
+        "available": True,
+        "applied_to_generation": False,
+        "primary_file": primary.get("file"),
+        "duration_seconds": primary.get("duration_seconds"),
+        "energy_hint": primary.get("energy_hint", "medium"),
+        "pacing_hint": primary.get("pacing_hint", "medium cinematic pacing informed by the audio reference"),
+        "mean_volume_db": primary.get("mean_volume_db"),
+        "max_volume_db": primary.get("max_volume_db"),
+        "note": "Audio analysis is stored as reference data unless apply_audio_analysis is enabled.",
+    }
+
+
+def apply_audio_analysis_to_song(song: dict[str, Any], audio_analysis: dict[str, Any]) -> None:
+    if not audio_analysis.get("available"):
+        return
+    energy_hint = audio_analysis.get("energy_hint")
+    pacing_hint = audio_analysis.get("pacing_hint")
+    if energy_hint:
+        song["energy"] = energy_hint
+    if pacing_hint:
+        song["pacing"] = pacing_hint
+    mood = song.get("mood", [])
+    if "audio-informed" not in [item.lower() for item in mood]:
+        song["mood"] = [*mood, "audio-informed"]
+    song["audio_analysis_applied"] = True
+    audio_analysis["applied_to_generation"] = True
+    audio_analysis["note"] = "Audio analysis was applied to energy, pacing, and mood hints for generation."
+
+
+def choose_primary_text_file(files: dict[str, list[Path]]) -> Path | None:
+    text_files = files.get(".txt", [])
+    if not text_files:
+        return None
+    raw_song = next((path for path in text_files if path.name.lower() == "raw_song.txt"), None)
+    return raw_song or text_files[0]
+
+
+def build_song_master_from_input(input_path: Path, apply_audio_analysis: bool = False) -> dict[str, Any]:
+    files = discover_input_files(input_path)
+    primary_text_file = choose_primary_text_file(files)
+    source_files = [path.name for paths in files.values() for path in paths]
+    audio_files = audio_file_metadata(files)
+
+    if primary_text_file:
+        primary_text = read_text(primary_text_file)
+        source_name = primary_text_file.name
+    else:
+        lyric_source = (files.get(".lrc") or files.get(".srt") or [None])[0]
+        if lyric_source is None:
+            raise FileNotFoundError(f"No .txt, .lrc, or .srt files found in {input_path}")
+        primary_text = read_text(lyric_source)
+        source_name = lyric_source.name
+
+    timed_lyrics: list[dict[str, Any]] = []
+    for lrc_path in files.get(".lrc", []):
+        timed_lyrics.extend(parse_lrc(read_text(lrc_path)))
+    if not timed_lyrics:
+        for srt_path in files.get(".srt", []):
+            timed_lyrics.extend(parse_srt(read_text(srt_path)))
+
+    song_master = build_song_master(primary_text, source_name)
+    if timed_lyrics:
+        song_master["timed_lyrics"] = timed_lyrics
+        timed_sections = sections_from_timed_lyrics(timed_lyrics)
+        if timed_sections:
+            song_master["sections"] = structure_sections(timed_sections, song_master)
+    song_master["source_files"] = source_files
+    song_master["audio_files"] = audio_files
+    song_master["audio_analysis"] = summarize_audio_analysis(audio_files)
+    song_master["audio_analysis_applied"] = False
+    song_master["timing_mode"] = "reference_only"
+    song_master["timing_note"] = "Audio, LRC, and SRT timing data are stored as references only. Scene timing is not auto-assigned."
+    first_audio_duration = next((item["duration_seconds"] for item in audio_files if item.get("duration_seconds")), None)
+    if first_audio_duration:
+        song_master["duration_seconds"] = first_audio_duration
+        song_master["duration_source"] = "audio_file"
+    if apply_audio_analysis:
+        apply_audio_analysis_to_song(song_master, song_master["audio_analysis"])
+    return song_master
+
+
+def infer_intensity(section: str, index: int, total: int, energy: str) -> str:
+    if section == "Chorus":
+        return "high" if "high" in energy.lower() or "rising" in energy.lower() else "medium-high"
+    if section == "Bridge":
+        return "emotional peak"
+    if section == "Intro":
+        return "low"
+    if index >= total - 1:
+        return "falling"
+    return "medium"
+
+
+def structure_sections(sections: list[dict[str, Any]], song: dict[str, Any]) -> list[dict[str, Any]]:
+    visual_cues = song.get("visual_cues") or ["empty street", "rain", "silhouette"]
+    structured_sections = []
+    for index, section in enumerate(sections, start=1):
+        structured_sections.append(
+            {
+                "index": index,
+                "name": section["section"],
+                "lyrics": section["lyrics"],
+                "description": section.get("description", ""),
+                "intensity": infer_intensity(section["section"], index, len(sections), song.get("energy", "medium")),
+                "visual_cues": visual_cues,
+            }
+        )
+    return structured_sections
+
+
+def build_song_master(text: str, source_name: str) -> dict[str, Any]:
+    metadata = extract_metadata(text)
+    sections = parse_sections(text)
+    lrc_lines = parse_lrc(text)
+    title = metadata.get("title") or Path(source_name).stem.replace("_", " ").replace("-", " ").title()
+    mood = metadata.get("mood") or ["melancholic", "cinematic"]
+    visual_cues = metadata.get("visual_cues") or ["empty street", "rain", "silhouette"]
+
+    song = {
+        "title": title,
+        "source_file": source_name,
+        "genre": metadata["genre"],
+        "bpm": metadata["bpm"],
+        "energy": metadata["energy"],
+        "mood": mood,
+        "instruments": metadata["instruments"],
+        "style_tags": metadata["style_tags"],
+        "negative_tags": metadata["negative_tags"],
+        "visual_cues": visual_cues,
+        "atmosphere": metadata["atmosphere"] or ", ".join(mood),
+        "pacing": metadata["pacing"] or infer_pacing(metadata["bpm"], metadata["energy"]),
+        "sections": [],
+        "timed_lyrics": lrc_lines,
+    }
+    song["sections"] = structure_sections(sections, song)
+    return song
+
+
+def infer_pacing(bpm: int | None, energy: str) -> str:
+    if bpm and bpm >= 130:
+        return "fast cuts with energetic camera movement"
+    if bpm and bpm <= 80:
+        return "slow cinematic cuts with lingering frames"
+    if "rising" in energy.lower():
+        return "measured pacing that expands in chorus sections"
+    return "medium cinematic pacing"
+
+
+def run(
+    input_path: Path | None = None,
+    output_path: Path | None = None,
+    apply_audio_analysis: bool = False,
+) -> None:
+    ensure_directories()
+    inp = input_path or (PROJECT_ROOT / "input")
+    out = output_path or (PROJECT_ROOT / "input" / "song_master.json")
+    song_master = build_song_master_from_input(inp, apply_audio_analysis=apply_audio_analysis)
+    write_json(out, song_master)
+    print(f"Wrote {out}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse raw music input into song_master.json.")
+    parser.add_argument("--input", default=str(PROJECT_ROOT / "input"), help="Input file or folder containing .txt/.lrc/.srt files.")
+    parser.add_argument("--output", default=str(PROJECT_ROOT / "input" / "song_master.json"))
+    parser.add_argument("--apply-audio-analysis", action="store_true", help="Apply optional audio analysis hints to generation metadata.")
+    args = parser.parse_args()
+
+    run(
+        input_path=Path(args.input),
+        output_path=Path(args.output),
+        apply_audio_analysis=args.apply_audio_analysis,
+    )
+
+
+if __name__ == "__main__":
+    main()
