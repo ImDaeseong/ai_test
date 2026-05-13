@@ -1,0 +1,39 @@
+{
+  "global_anime_constraints": {
+    "format": "anime",
+    "color_mode": "limited-color",
+    "style_enforcement": [
+      "non-photorealistic anime MV still",
+      "stylized and non-photorealistic",
+      "anime cinematic styling, never live-action realism"
+    ],
+    "negative_enforcement": [
+      "No text, no watermark, no live action"
+    ],
+    "video_negative_enforcement": [
+      "Avoid dialogue, heavy lip sync, extra characters, text, and watermark"
+    ]
+  },
+  "default_style": "cyber_noir",
+  "styles": {
+    "cyber_noir": {
+      "name": "Cyber Noir",
+      "brand_palette": {
+        "visual_identity": "dark cyber noir anime with neon magenta and cyber pink dominance",
+        "base": "graphite gray and near-black backgrounds",
+        "main_color": "neon magenta and cyber pink",
+        "shadow_color": "deep plum and dark violet",
+        "secondary_light": "subtle icy cyan secondary reflections",
+        "highlight": "silver-white rim highlights",
+        "palette_rule": "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+      },
+      "color_balance_by_stage": {
+        "opening": "mostly graphite gray and near-black, faint cyber pink glow, tiny icy cyan reflections",
+        "development": "graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections",
+        "turning point": "stronger neon magenta and cyber pink glow balanced by cool icy cyan reflections",
+        "climax": "high-energy neon magenta and cyber pink dominance, silver-white rim light, controlled icy cyan contrast",
+        "resolution": "softened cyber pink glow with silver-white highlights and faint icy cyan reflections"
+      }
+    }
+  }
+}

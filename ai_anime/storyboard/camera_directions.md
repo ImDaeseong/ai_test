@@ -1,11 +1,10 @@
 # Camera Directions
 
-1. Intro: wide cinematic silhouette shot with the protagonist small in frame | slow push-in through rainfall
-2. Verse: medium close-up with soft parallax background | gentle lateral dolly following footsteps
-3. Verse: medium close-up with soft parallax background | gentle lateral dolly following footsteps
-4. Pre-Chorus: medium close-up with soft parallax background | subtle handheld drift as signal lights blink
-5. Chorus: forward tracking shot, low angle, rain reflections stretching toward dawn | steady forward dolly, faster cuts on drum hits
-6. Verse: medium close-up with soft parallax background | gentle lateral dolly following footsteps
-7. Bridge: close-up side profile, hair crossing one eye, city lights behind | slow tilt from hand to face, then match cut to skyline
-8. Chorus: forward tracking shot, low angle, rain reflections stretching toward dawn | steady forward dolly, faster cuts on drum hits
-9. Outro: upward crane shot as the paper crane catches the accent light | slow upward crane and dissolve to white-gray morning
+1. Intro: wide establishing anime frame with the protagonist small but clearly identifiable | slow push-in that reveals the song-specific prop and silhouette | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity low
+2. Verse: close-up profile or low-angle tilt down, shallow depth isolating the face | tight lateral tracking with small beat-synced body accents | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium
+3. Pre-Chorus: close-up profile or low-angle tilt down, shallow depth isolating the face | rising handheld drift with quick light pulses before the hook | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium
+4. Chorus: dynamic forward tracking shot, low angle, strong beat-synced foreground streaks | beat-matched forward dolly with short acceleration bursts | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium-high
+5. Verse: medium close-up reflected in a dark surface with neon fracture light framing the face | tight lateral tracking with small beat-synced body accents | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium
+6. Bridge: intimate close-up profile shifting to a three-quarter emotional reveal | slow tilt from the signature prop to the face, then a motivated match cut | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity emotional peak
+7. Chorus: dynamic forward tracking shot, low angle, strong beat-synced foreground streaks | beat-matched forward dolly with short acceleration bursts | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium-high
+8. Outro: slow pullback from the signature prop to the full silhouette | slow pullback and dissolve into graphite-gray silence | 175 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity falling

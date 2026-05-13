@@ -1,0 +1,39 @@
+{
+  "thresholds": {
+    "fast": {
+      "min_bpm": 120,
+      "label": "fast",
+      "rhythm_desc": "quick but readable anime motion, cuts or light accents on strong beats",
+      "lighting_desc": "strobing but controlled cyber-pink accents on beat peaks",
+      "transition_desc": "beat-matched impact cuts and fast reflection wipes"
+    },
+    "slow": {
+      "max_bpm": 80,
+      "label": "slow",
+      "rhythm_desc": "long takes, slow camera travel, minimal character motion",
+      "lighting_desc": "slow breathing cyber-pink glow with long silver rim fades",
+      "transition_desc": "slow dissolves and lingering match cuts"
+    },
+    "medium": {
+      "label": "medium",
+      "rhythm_desc": "measured musical motion, camera accents every phrase",
+      "lighting_desc": "measured cyber-pink pulses with subtle icy cyan response lights",
+      "transition_desc": "smooth rhythmic match cuts and gentle push transitions"
+    }
+  },
+  "audio_energy": {
+    "high": {
+      "min_mean_db": -14,
+      "min_max_db": -1
+    },
+    "low": {
+      "max_mean_db": -24
+    }
+  },
+  "pacing_desc": {
+    "fast": "fast cuts with energetic camera movement",
+    "slow": "slow cinematic cuts with lingering frames",
+    "rising": "measured pacing that expands in chorus sections",
+    "default": "medium cinematic pacing"
+  }
+}

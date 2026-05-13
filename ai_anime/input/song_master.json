@@ -1,9 +1,9 @@
 {
-  "title": "Raw Song",
+  "title": "UPGRADE",
   "source_file": "raw_song.txt",
-  "genre": "Melodic Trap-Pop, Dreamy Synth-Pop, 90BPM",
-  "bpm": 90,
-  "energy": "medium",
+  "genre": "Hardcore Punk, Garage Rock, 175 BPM",
+  "bpm": 175,
+  "energy": "high",
   "mood": [
     "melancholic",
     "cinematic",
@@ -11,28 +11,31 @@
   ],
   "instruments": [],
   "style_tags": [
-    "Melodic Trap-Pop",
-    "Dreamy Synth-Pop",
-    "90BPM",
-    "Chill R&B",
-    "Breezy Male Vocal",
-    "Airy Texture",
-    "Syncopated Bass",
-    "Bright Electric Guitar",
-    "Modern High-Fidelity",
-    "UHD Audio Grade",
-    "Catchy Melodic Rap",
-    "Vibrant Energy",
-    "‑Heavy Metal",
-    "‑Distorted",
-    "‑Acoustic Folk",
-    "‑Fast Tempo",
-    "‑Operatic",
-    "‑Mumbled",
-    "‑Low-Quality",
-    "‑Dark Atmosphere",
-    "‑Aggressive",
-    "‑Gritty"
+    "Hardcore Punk",
+    "Garage Rock",
+    "175 BPM",
+    "4",
+    "4 time",
+    "Visceral raw male vocals",
+    "gravelly raspy tone",
+    "aggressive shouting",
+    "frantic screams",
+    "primal vocal breaks",
+    "Vocal cracks",
+    "heavy breathing",
+    "panting",
+    "Anthemic shout-along gang vocals",
+    "High-gain distorted electric guitar",
+    "feedback",
+    "overdriven tube-amp",
+    "Aggressive distorted bass",
+    "fast driving drums",
+    "crashing cymbals",
+    "Lo-fi analog distortion",
+    "gritty garage acoustics",
+    "dark rebellious energy",
+    "chaotic",
+    "high velocity"
   ],
   "negative_tags": [],
   "visual_cues": [
@@ -41,13 +44,13 @@
     "silhouette"
   ],
   "atmosphere": "melancholic, cinematic",
-  "pacing": "medium cinematic pacing informed by the audio reference",
+  "pacing": "energetic cuts with stronger motion accents",
   "sections": [
     {
       "index": 1,
       "name": "Intro",
       "lyrics": "",
-      "description": "Instrumental, High-Fidelity Dreamy Synth Pluck, Clean Electric Guitar Licks, Wide Reverb",
+      "description": "",
       "intensity": "low",
       "visual_cues": [
         "empty street",
@@ -58,8 +61,8 @@
     {
       "index": 2,
       "name": "Verse",
-      "lyrics": "괜히 더 크게 웃어본다\n아무 일 없는 척 걸어본다\n친구들 말에 고개 끄덕여도\n내 맘은 자꾸 늦게 온다",
-      "description": "Breezy Melodic Rap-Vocal, Airy Texture, Syncopated Rhythm",
+      "lyrics": "어제의 껍질을 찢어 발겨\n차가운 핏줄에 다시 불을 질러\n두려움은 재가 되고\n흉터는 단단한 갑옷이 돼!\n녹슨 날개를 강철로 바꿔\n한계를 향해 이빨을 드러내\n세상이 내 발밑에 기게 해줄게\n이제 시작이야 나의 전쟁!",
+      "description": "",
       "intensity": "medium",
       "visual_cues": [
         "empty street",
@@ -69,9 +72,9 @@
     },
     {
       "index": 3,
-      "name": "Verse",
-      "lyrics": "불 꺼진 방에 기대 앉으면\n참았던 생각 밀려온다\n오늘도 괜찮다 말했지만\n거울 속 나는 금방 운다",
-      "description": "Add Sub-Bass Pulse, Crisp Percussion, Lo-fi Saturation",
+      "name": "Pre-Chorus",
+      "lyrics": "심장을 조여!\n한계를 넘어!\n모조리 바꿔!",
+      "description": "",
       "intensity": "medium",
       "visual_cues": [
         "empty street",
@@ -81,10 +84,10 @@
     },
     {
       "index": 4,
-      "name": "Pre-Chorus",
-      "lyrics": "다 지나간 일이라\n쉽게 말해도\n가슴 한쪽은 아직\n그날에 멈춰",
-      "description": "Vocal Doubling, Harmonic Excitation 3kHz, Rising Energy",
-      "intensity": "medium",
+      "name": "Chorus",
+      "lyrics": "업그레이드! 심장을 갈아 끼워!\n어제의 나는 이미 죽었어!\n업그레이드! 독기를 들이켜!\n이 바닥 끝까지 다 뒤집어놔!\n더 날카로운 이빨을 세워\n안전한 감옥을 부숴버려!\n업그레이드! 멈추는 순간 죽어!\n이건 진화일 뿐 끝은 없어!",
+      "description": "",
+      "intensity": "medium-high",
       "visual_cues": [
         "empty street",
         "rain",
@@ -93,21 +96,9 @@
     },
     {
       "index": 5,
-      "name": "Chorus",
-      "lyrics": "슬픔을 숨기려 웃어본다\n괜찮은 사람처럼 웃는다\n입꼬린 올라가도\n두 눈은 못 속여\n밤이 오면 또 너를 부른다",
-      "description": "Catchy Hook Energy, Bright Synth Chords, Rhythmic Bassline, 135% Stereo Width",
-      "intensity": "medium-high",
-      "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
-      ]
-    },
-    {
-      "index": 6,
       "name": "Verse",
-      "lyrics": "아픈 맘 들킬까 고개 든다\n괜히 더 밝은 척 또 웃는다\n사람들 사이에서\n혼자만 조용히\n너 없는 하루를 버텨본다",
-      "description": "Percussive Vocal Delivery, Mid-Focus EQ, Dynamic Soundstage",
+      "lyrics": "거울 속 괴물이 웃고 있어\n매일 난 스스로를 무너뜨려\n안정? 그딴 건\n나약한 놈들의 핑계일 뿐!\n패배의 악몽이 나의 연료\n상처를 삼켜 힘으로 바꿔\n두 주먹 쥐고 벽을 부수면\n막혔던 숨통이 터져 나와!",
+      "description": "",
       "intensity": "medium",
       "visual_cues": [
         "empty street",
@@ -116,10 +107,10 @@
       ]
     },
     {
-      "index": 7,
+      "index": 6,
       "name": "Bridge",
-      "lyrics": "울면 약해질까 봐\n웃으며 숨겼는데\n참으면 괜찮을 줄\n나도 믿고 있었어\n근데 왜 아직도 네가 남아있어\n눈 감은 새벽마다 또 아파와",
-      "description": "Dreamy Pad, Transient Softening, High-Register Harmony, Emotional Build-up",
+      "lyrics": "살을 깎아내도 좋아... 뼈가 부서져도 좋아...\n내일의 내가 너를 비웃을 테니!\n멈추지 않을 거야! 무릎 꿇지 않을 거야!\n이 고통 속에서! 나는! 나를! 다시 써!",
+      "description": "",
       "intensity": "emotional peak",
       "visual_cues": [
         "empty street",
@@ -128,10 +119,10 @@
       ]
     },
     {
-      "index": 8,
+      "index": 7,
       "name": "Chorus",
-      "lyrics": "슬픔을 숨기려 웃어본다\n괜찮은 오늘처럼 웃는다\n다 지난 사랑이라\n혼잣말 해봐도\n내 맘은 아직 너를 본다",
-      "description": "High-Energy Vibrant Mix, Multi-Layered Vocals, Maximum Spectral Clarity",
+      "lyrics": "업그레이드! 심장을 갈아 끼워!\n어제의 나는 재가 됐어!\n업그레이드! 독기를 들이켜!\n나를 막는 벽을 씹어 삼킬 거야!\n더 날카로운 발톱을 세워\n천장 따윈 뚫어버릴 거야!\n업그레이드! 영원히 굶주려!\n이건 끝이 아냐 새로운 사냥!",
+      "description": "",
       "intensity": "medium-high",
       "visual_cues": [
         "empty street",
@@ -140,10 +131,10 @@
       ]
     },
     {
-      "index": 9,
+      "index": 8,
       "name": "Outro",
-      "lyrics": "아픈 맘 안고서 또 웃는다\n무너진 하루 끝에 웃는다\n환하게 웃고 나면 더 크게 번지는\n너라는 이름에 울어본다",
-      "description": "Smooth Fade-out, LPF Filter Sweep, Distant Reverb, Minimal Beat",
+      "lyrics": "더 지독한 나로 다시 태어나!\n매일매일 진화는 계속돼!\n멈추지 않아!",
+      "description": "",
       "intensity": "falling",
       "visual_cues": [
         "empty street",
@@ -154,226 +145,266 @@
   ],
   "timed_lyrics": [
     {
-      "time": 10.9,
-      "text": "[Intro: Instrumental, High-Fidelity Dreamy Synth Pluck, Clean Electric Guitar Licks, Wide Reverb]"
+      "time": 23.34,
+      "text": "[Intro]"
     },
     {
-      "time": 11.25,
-      "text": "[Verse 1: Breezy Melodic Rap-Vocal, Airy Texture, Syncopated Rhythm]"
+      "time": 23.69,
+      "text": "[Loud high-gain tube-amp feedback]"
     },
     {
-      "time": 11.25,
-      "text": "괜히 더 크게 웃어본다"
+      "time": 23.69,
+      "text": "[Heavy visceral breathing, mic thumping]"
     },
     {
-      "time": 13.8,
-      "text": "아무 일 없는 척 걸어본다"
+      "time": 23.69,
+      "text": "[Drummer counts: One! Two! Three! Four!]"
     },
     {
-      "time": 16.43,
-      "text": "친구들 말에 고개 끄덕여도"
+      "time": 23.69,
+      "text": "[Fast aggressive down-stroke riffing]"
     },
     {
-      "time": 18.98,
-      "text": "내 맘은 자꾸 늦게 온다"
+      "time": 23.69,
+      "text": "[Verse 1]"
     },
     {
-      "time": 21.27,
-      "text": "[Verse 2: Add Sub-Bass Pulse, Crisp Percussion, Lo-fi Saturation]"
+      "time": 23.69,
+      "text": "어제의 껍질을 찢어 발겨"
     },
     {
-      "time": 21.62,
-      "text": "불 꺼진 방에 기대 앉으면"
+      "time": 29.2,
+      "text": "차가운 핏줄에 다시 불을 질러"
     },
     {
-      "time": 24.25,
-      "text": "참았던 생각 밀려온다"
+      "time": 34.62,
+      "text": "두려움은 재가 되고"
     },
     {
-      "time": 27.12,
-      "text": "오늘도 괜찮다 말했지만"
+      "time": 36.78,
+      "text": "흉터는 단단한 갑옷이 돼!"
     },
     {
-      "time": 29.28,
-      "text": "거울 속 나는 금방 운다"
+      "time": 40.05,
+      "text": "녹슨 날개를 강철로 바꿔"
     },
     {
-      "time": 30.92,
-      "text": "[Pre-Chorus: Vocal Doubling, Harmonic Excitation 3kHz, Rising Energy]"
+      "time": 42.2,
+      "text": "한계를 향해 이빨을 드러내"
     },
     {
-      "time": 31.27,
-      "text": "다 지나간 일이라"
+      "time": 46.75,
+      "text": "세상이 내 발밑에 기게 해줄게"
     },
     {
-      "time": 35.26,
-      "text": "쉽게 말해도"
+      "time": 52.1,
+      "text": "이제 시작이야 나의 전쟁!"
     },
     {
-      "time": 37.5,
-      "text": "가슴 한쪽은 아직"
+      "time": 55.97,
+      "text": "[Pre-Chorus]"
     },
     {
-      "time": 40.13,
-      "text": "그날에 멈춰"
+      "time": 56.32,
+      "text": "심장을 조여!"
     },
     {
-      "time": 42.01,
-      "text": "[Chorus: Catchy Hook Energy, Bright Synth Chords, Rhythmic Bassline, 135% Stereo Width]"
+      "time": 57.76,
+      "text": "한계를 넘어!"
     },
     {
-      "time": 42.36,
-      "text": "슬픔을 숨기려 웃어본다"
+      "time": 59.2,
+      "text": "모조리 바꿔!"
     },
     {
-      "time": 47.87,
-      "text": "괜찮은 사람처럼 웃는다"
+      "time": 64.27,
+      "text": "[Chorus]"
     },
     {
-      "time": 52.81,
-      "text": "입꼬린 올라가도"
+      "time": 64.62,
+      "text": "업그레이드! 심장을 갈아 끼워!"
     },
     {
-      "time": 55.37,
-      "text": "두 눈은 못 속여"
+      "time": 67.34,
+      "text": "어제의 나는 이미 죽었어!"
     },
     {
-      "time": 58.16,
-      "text": "밤이 오면 또 너를 부른다"
+      "time": 70.05,
+      "text": "업그레이드! 독기를 들이켜!"
     },
     {
-      "time": 60.92,
-      "text": "[Verse 3: Percussive Vocal Delivery, Mid-Focus EQ, Dynamic Soundstage]"
+      "time": 72.44,
+      "text": "이 바닥 끝까지 다 뒤집어놔!"
     },
     {
-      "time": 61.27,
-      "text": "아픈 맘 들킬까 고개 든다"
+      "time": 75.87,
+      "text": "더 날카로운 이빨을 세워"
     },
     {
-      "time": 65.98,
-      "text": "괜히 더 밝은 척 또 웃는다"
+      "time": 78.51,
+      "text": "안전한 감옥을 부숴버려!"
     },
     {
-      "time": 68.45,
-      "text": "사람들 사이에서"
+      "time": 80.9,
+      "text": "업그레이드! 멈추는 순간 죽어!"
     },
     {
-      "time": 70.21,
-      "text": "혼자만 조용히"
+      "time": 83.61,
+      "text": "이건 진화일 뿐 끝은 없어!"
     },
     {
-      "time": 71.48,
-      "text": "너 없는 하루를 버텨본다"
+      "time": 86.37,
+      "text": "[Verse 2]"
     },
     {
-      "time": 73.61,
-      "text": "[Bridge: Dreamy Pad, Transient Softening, High-Register Harmony, Emotional Build-up]"
+      "time": 86.72,
+      "text": "거울 속 괴물이 웃고 있어"
     },
     {
-      "time": 73.96,
-      "text": "울면 약해질까 봐"
+      "time": 89.68,
+      "text": "매일 난 스스로를 무너뜨려"
     },
     {
-      "time": 75.55,
-      "text": "웃으며 숨겼는데"
+      "time": 97.34,
+      "text": "안정? 그딴 건"
     },
     {
-      "time": 76.91,
-      "text": "참으면 괜찮을 줄"
+      "time": 99.57,
+      "text": "나약한 놈들의 핑계일 뿐!"
     },
     {
-      "time": 79.38,
-      "text": "나도 믿고 있었어"
+      "time": 102.92,
+      "text": "패배의 악몽이 나의 연료"
     },
     {
-      "time": 81.3,
-      "text": "근데 왜 아직도 네가 남아있어"
+      "time": 105.15,
+      "text": "상처를 삼켜 힘으로 바꿔"
     },
     {
-      "time": 84.49,
-      "text": "눈 감은 새벽마다 또 아파와"
+      "time": 108.51,
+      "text": "두 주먹 쥐고 벽을 부수면"
     },
     {
-      "time": 88.93,
-      "text": "[Chorus: High-Energy Vibrant Mix, Multi-Layered Vocals, Maximum Spectral Clarity]"
+      "time": 113.93,
+      "text": "막혔던 숨통이 터져 나와!"
     },
     {
-      "time": 89.28,
-      "text": "슬픔을 숨기려 웃어본다"
+      "time": 118.29,
+      "text": "[Bridge]"
     },
     {
-      "time": 94.86,
-      "text": "괜찮은 오늘처럼 웃는다"
+      "time": 118.64,
+      "text": "살을 깎아내도 좋아... 뼈가 부서져도 좋아..."
     },
     {
-      "time": 99.73,
-      "text": "다 지난 사랑이라"
+      "time": 124.06,
+      "text": "내일의 내가 너를 비웃을 테니!"
     },
     {
-      "time": 102.36,
-      "text": "혼잣말 해봐도"
+      "time": 129.89,
+      "text": "멈추지 않을 거야! 무릎 꿇지 않을 거야!"
     },
     {
-      "time": 105.07,
-      "text": "내 맘은 아직 너를 본다"
+      "time": 135.0,
+      "text": "이 고통 속에서! 나는! 나를! 다시 써!"
     },
     {
-      "time": 108.08,
-      "text": "[Outro: Smooth Fade-out, LPF Filter Sweep, Distant Reverb, Minimal Beat]"
+      "time": 192.01,
+      "text": "[Guitar Solo]"
     },
     {
-      "time": 108.43,
-      "text": "아픈 맘 안고서 또 웃는다"
+      "time": 192.36,
+      "text": "[Raw high-gain solo with feedback and noise]"
     },
     {
-      "time": 125.82,
-      "text": "무너진 하루 끝에 웃는다"
+      "time": 192.36,
+      "text": "[Chorus]"
     },
     {
-      "time": 130.93,
-      "text": "환하게 웃고 나면 더 크게 번지는"
+      "time": 192.36,
+      "text": "업그레이드! 심장을 갈아 끼워!"
     },
     {
-      "time": 136.35,
-      "text": "너라는 이름에 울어본다"
+      "time": 195.08,
+      "text": "어제의 나는 재가 됐어!"
+    },
+    {
+      "time": 197.07,
+      "text": "업그레이드! 독기를 들이켜!"
+    },
+    {
+      "time": 200.1,
+      "text": "나를 막는 벽을 씹어 삼킬 거야!"
+    },
+    {
+      "time": 203.53,
+      "text": "더 날카로운 발톱을 세워"
+    },
+    {
+      "time": 206.25,
+      "text": "천장 따윈 뚫어버릴 거야!"
+    },
+    {
+      "time": 209.36,
+      "text": "업그레이드! 영원히 굶주려!"
+    },
+    {
+      "time": 211.35,
+      "text": "이건 끝이 아냐 새로운 사냥!"
+    },
+    {
+      "time": 216.75,
+      "text": "[Outro]"
+    },
+    {
+      "time": 217.1,
+      "text": "더 지독한 나로 다시 태어나!"
+    },
+    {
+      "time": 222.52,
+      "text": "매일매일 진화는 계속돼!"
+    },
+    {
+      "time": 227.71,
+      "text": "멈추지 않아!"
     }
   ],
   "source_files": [
     "raw_song.txt",
-    "15b4f608-2e0c-45a3-838d-ca36c545392e-lyrics-suno-가사-다운로더.lrc",
-    "15b4f608-2e0c-45a3-838d-ca36c545392e-lyrics-suno-가사-다운로더.srt",
-    "웃어본다.mp3"
+    "3fc29c89-f98a-4a6c-a34e-52684aa1f89c-lyrics-suno-가사-다운로더.lrc",
+    "3fc29c89-f98a-4a6c-a34e-52684aa1f89c-lyrics-suno-가사-다운로더.srt",
+    "UPGRADE.mp3"
   ],
   "audio_files": [
     {
-      "file": "웃어본다.mp3",
+      "file": "UPGRADE.mp3",
       "extension": ".mp3",
-      "size_bytes": 3707084,
-      "duration_seconds": 153.72,
+      "size_bytes": 5532329,
+      "duration_seconds": 242.92,
       "codec": "mp3",
       "sample_rate": 48000,
       "channels": 2,
-      "bit_rate": 192926,
-      "mean_volume_db": -15.7,
-      "max_volume_db": -2.2,
-      "energy_hint": "medium",
-      "pacing_hint": "medium cinematic pacing informed by the audio reference"
+      "bit_rate": 182194,
+      "mean_volume_db": -14.5,
+      "max_volume_db": 0.0,
+      "energy_hint": "high",
+      "pacing_hint": "energetic cuts with stronger motion accents"
     }
   ],
   "audio_analysis": {
     "available": true,
     "applied_to_generation": true,
-    "primary_file": "웃어본다.mp3",
-    "duration_seconds": 153.72,
-    "energy_hint": "medium",
-    "pacing_hint": "medium cinematic pacing informed by the audio reference",
-    "mean_volume_db": -15.7,
-    "max_volume_db": -2.2,
+    "primary_file": "UPGRADE.mp3",
+    "duration_seconds": 242.92,
+    "energy_hint": "high",
+    "pacing_hint": "energetic cuts with stronger motion accents",
+    "mean_volume_db": -14.5,
+    "max_volume_db": 0.0,
     "note": "Audio analysis was applied to energy, pacing, and mood hints for generation."
   },
   "audio_analysis_applied": true,
   "timing_mode": "reference_only",
   "timing_note": "Audio, LRC, and SRT timing data are stored as references only. Scene timing is not auto-assigned.",
-  "duration_seconds": 153.72,
+  "duration_seconds": 242.92,
   "duration_source": "audio_file"
 }

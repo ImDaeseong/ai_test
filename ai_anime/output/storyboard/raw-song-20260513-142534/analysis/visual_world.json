@@ -1,0 +1,38 @@
+{
+  "song_slug": "raw-song",
+  "visual_identity": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+  "genre_profile": "dreamy synth anime noir",
+  "song_motif": "tears turning into tiny cyber-pink light particles",
+  "color_palette": {
+    "base": "graphite gray and near-black backgrounds",
+    "main_color": "neon magenta and cyber pink",
+    "shadow_color": "deep plum and dark violet",
+    "secondary_light": "subtle icy cyan secondary reflections",
+    "highlight": "silver-white rim highlights",
+    "rule": "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+  },
+  "base_palette": "graphite gray and near-black backgrounds",
+  "accent_color": "neon magenta and cyber pink",
+  "secondary_accent_color": "icy cyan",
+  "highlight_color": "silver white",
+  "environment_family": "urban emotional atmosphere",
+  "core_locations": [
+    "quiet city street after rain",
+    "mirror-wet glass corridor",
+    "holographic bus stop at night",
+    "empty rooftop with waveform lights"
+  ],
+  "recurring_symbols": [
+    "tears turning into tiny cyber-pink light particles",
+    "rain on glass",
+    "empty bench",
+    "flickering streetlamp",
+    "empty street",
+    "rain",
+    "silhouette",
+    "small prism-like synth shard"
+  ],
+  "lighting_language": "strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights",
+  "transition_language": "beat-matched impact cuts and fast reflection wipes through tears turning into tiny cyber-pink light particles, neon reflections, and airy pads, soft bloom, slow neon trails, glassy reflections",
+  "negative_style_rules": []
+}

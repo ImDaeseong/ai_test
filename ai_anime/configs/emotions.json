@@ -1,0 +1,174 @@
+{
+  "emotions": {
+    "lonely": {
+      "symbols": ["empty train platform", "unanswered signal light", "single window glow"],
+      "lighting": "cold graphite darkness with restrained neon magenta glow, silver rim light, and faint icy cyan reflections",
+      "camera": "wide static frame, small figure against negative space",
+      "environment": "rainy city night"
+    },
+    "loneliness": {
+      "symbols": ["empty street", "distant apartment lights", "wet pavement reflection"],
+      "lighting": "low-key graphite shadows with soft cyber pink spill and subtle icy cyan pavement reflections",
+      "camera": "slow lateral dolly with strong silhouette",
+      "environment": "urban backstreet after rain"
+    },
+    "nostalgic": {
+      "symbols": ["folded memory token", "old station sign", "wind through curtains"],
+      "lighting": "muted deep plum shadows with softened cyber pink memory glow and silver-white highlights",
+      "camera": "gentle push-in, shallow atmospheric depth",
+      "environment": "quiet transit spaces and rooftops"
+    },
+    "hope": {
+      "symbols": ["sunrise edge", "opening sky", "upward drifting signature prop"],
+      "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
+      "camera": "upward angle, slow crane rise",
+      "environment": "rooftop at dawn"
+    },
+    "hopeful": {
+      "symbols": ["thin line of dawn", "opening hand", "city lights turning off"],
+      "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
+      "camera": "forward tracking shot into open space",
+      "environment": "city morning after rain"
+    },
+    "sad": {
+      "symbols": ["rain on glass", "empty bench", "flickering streetlamp"],
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "camera": "close-up profile, slow tilt down",
+      "environment": "night street or train window"
+    },
+    "angry": {
+      "symbols": ["shattered neon panel", "sparks scraping a wall", "flickering red signal"],
+      "lighting": "harsh near-black with aggressive neon magenta fractures and sharp cyber-pink impact flares",
+      "camera": "fast low-angle push with impact flash cuts",
+      "environment": "narrow alley with cracked neon signs"
+    },
+    "defiant": {
+      "symbols": ["raised fist silhouette", "overturned neon sign", "open road at night"],
+      "lighting": "high-contrast graphite and punchy neon magenta with strong silver rim emphasis",
+      "camera": "strong low angle rising slowly toward the sky",
+      "environment": "exposed urban overpass or rooftop edge"
+    },
+    "romantic": {
+      "symbols": ["two silhouettes in neon mist", "reflected light on still water", "soft glow behind open hands"],
+      "lighting": "warm cyber-pink bloom with silver-white softening, minimal icy cyan",
+      "camera": "gentle orbit or soft push-in with warm shallow depth",
+      "environment": "quiet rain-wet walkway or lit bridge"
+    },
+    "longing": {
+      "symbols": ["empty window frame", "hand reaching toward fading light", "distant unanswered signal"],
+      "lighting": "deep plum atmosphere with a single focused cyber-pink beam and faint icy cyan fringe",
+      "camera": "slow zoom into a small detail, then pull back to full isolation",
+      "environment": "deserted bus stop or quiet late-night station"
+    },
+    "anxious": {
+      "symbols": ["fast-moving clock shadow", "flickering neon fragment", "crowd blur with sharp protagonist"],
+      "lighting": "rapid alternating neon magenta and graphite with unsteady icy cyan flickers",
+      "camera": "slight handheld shake, tight crop frame",
+      "environment": "busy street intersection or crowded indoor space"
+    },
+    "peaceful": {
+      "symbols": ["still water surface", "slow cloud drift", "soft light through curtains"],
+      "lighting": "balanced silver-white ambient with gentle cyber-pink warmth and minimal contrast",
+      "camera": "wide still frame or slow gentle overhead drift",
+      "environment": "rooftop before sunrise or quiet riverside"
+    },
+    "excited": {
+      "symbols": ["burst of neon sparks", "fast motion light trails", "crowd energy blur"],
+      "lighting": "high-energy neon magenta and cyber-pink dominance with rapid silver-white rim accents",
+      "camera": "dynamic lateral tracking with quick panning bursts",
+      "environment": "concert hall entrance or night festival street"
+    },
+    "bittersweet": {
+      "symbols": ["half-lit doorway", "rain with soft backlight", "smile reflected in tears"],
+      "lighting": "dual-tone cyber-pink warmth and cold graphite shadow meeting at the subject's face",
+      "camera": "medium profile with slow dolly and split-tone depth",
+      "environment": "threshold space — doorway, train window, bridge midpoint"
+    },
+    "fearful": {
+      "symbols": ["shadow without a source", "flickering emergency signal", "empty corridor receding into darkness"],
+      "lighting": "near-black crush with single cold white flicker, deep violet edge compression, no warm tones",
+      "camera": "slow imperceptible creep-in then sudden freeze, extreme shallow depth, tight crop",
+      "environment": "abandoned underground corridor or dark tunnel threshold"
+    },
+    "dreamy": {
+      "symbols": ["floating memory fragment", "light diffused through haze", "transparent silhouette overlay"],
+      "lighting": "soft diffused glow, muted desaturated edges, layered depth blur, gentle rim without hard contrast",
+      "camera": "slow weightless drift with soft rack focus shifts and gradual exposure bloom",
+      "environment": "hazy open space between sleep and waking, suspended mid-air threshold"
+    },
+    "tense": {
+      "symbols": ["stopped clock shadow", "tight grip on signature prop", "two figures at threshold distance"],
+      "lighting": "sharp graphite contrast with narrow focused beam, hard rim shadow, no ambient fill, high compression",
+      "camera": "locked tight close-up with imperceptible slow push, breath-held stillness",
+      "environment": "confined urban space or narrow lit corridor at night"
+    }
+  },
+  "aliases": {
+    "melancholic": "sad",
+    "melancholy": "sad",
+    "grief": "sad",
+    "sorrow": "sad",
+    "heartbreak": "sad",
+    "heartbroken": "sad",
+    "somber": "sad",
+    "gloomy": "sad",
+    "rage": "angry",
+    "anger": "angry",
+    "furious": "angry",
+    "mad": "angry",
+    "aggressive": "angry",
+    "rebel": "defiant",
+    "rebellion": "defiant",
+    "defiance": "defiant",
+    "freedom": "defiant",
+    "bold": "defiant",
+    "love": "romantic",
+    "romance": "romantic",
+    "tender": "romantic",
+    "affection": "romantic",
+    "miss": "longing",
+    "missing": "longing",
+    "yearn": "longing",
+    "yearning": "longing",
+    "wistful": "longing",
+    "nervous": "anxious",
+    "anxiety": "anxious",
+    "worried": "anxious",
+    "stress": "anxious",
+    "uneasy": "anxious",
+    "calm": "peaceful",
+    "serene": "peaceful",
+    "tranquil": "peaceful",
+    "quiet": "peaceful",
+    "joyful": "excited",
+    "euphoric": "excited",
+    "happy": "excited",
+    "energetic": "excited",
+    "upbeat": "excited",
+    "mixed": "bittersweet",
+    "ambivalent": "bittersweet",
+    "complex": "bittersweet",
+    "fear": "fearful",
+    "horror": "fearful",
+    "scared": "fearful",
+    "terrified": "fearful",
+    "dread": "fearful",
+    "eerie": "fearful",
+    "surreal": "dreamy",
+    "hazy": "dreamy",
+    "floating": "dreamy",
+    "blur": "dreamy",
+    "ethereal": "dreamy",
+    "mystic": "dreamy",
+    "tension": "tense",
+    "suspense": "tense",
+    "urgent": "tense",
+    "pressure": "tense",
+    "conflict": "tense",
+    "행복": "excited",
+    "우울": "sad",
+    "공포": "fearful",
+    "몽환": "dreamy",
+    "긴장감": "tense"
+  }
+}

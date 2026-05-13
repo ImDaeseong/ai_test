@@ -1,0 +1,42 @@
+{
+  "season_rules": [
+    {
+      "keys": [
+        "summer"
+      ],
+      "season": "summer nostalgia"
+    },
+    {
+      "keys": [
+        "snow",
+        "winter"
+      ],
+      "season": "winter stillness"
+    },
+    {
+      "keys": [
+        "rain"
+      ],
+      "season": "rainy late spring night"
+    },
+    {
+      "keys": [
+        "spring"
+      ],
+      "season": "spring awakening"
+    }
+  ],
+  "season_default": "season-neutral cinematic night",
+  "urban_keywords": [
+    "city",
+    "train",
+    "subway",
+    "street",
+    "rooftop",
+    "neon",
+    "platform",
+    "bridge"
+  ],
+  "urban_mood": "urban emotional atmosphere",
+  "rural_mood": "quiet rural or liminal atmosphere"
+}

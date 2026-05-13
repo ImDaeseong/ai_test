@@ -1,0 +1,49 @@
+{
+  "adaptive_identities": {
+    "fast": {
+      "identity": "driven anime protagonist channeling intense lyric emotion into every frame",
+      "silhouette": "strong forward-leaning silhouette with kinetic readiness",
+      "texture": "kinetic {main_color} atmosphere, beat-driven motion, sharp rim contrasts"
+    },
+    "slow": {
+      "identity": "introspective anime protagonist quietly holding the weight of the lyric's emotion",
+      "silhouette": "still inward-facing silhouette with deep internal light",
+      "texture": "minimal motion, slow breathing {main_color} glow, intimate frame depth"
+    },
+    "medium": {
+      "identity": "anime protagonist shaped by the song's central emotional arc",
+      "silhouette": "balanced silhouette with expressive hand and gaze language",
+      "texture": "measured {main_color} rhythm, lyric-tied movement, mid-range cinematic depth"
+    }
+  },
+  "hair_rules": [
+    {
+      "keys": ["love", "사랑", "heart", "tender", "together"],
+      "hair": "flowing dark hair with gentle {main_color} bloom at the edges"
+    },
+    {
+      "keys": ["angry", "rage", "rebel", "fierce", "fight"],
+      "hair": "sharp-textured dark hair with aggressive {main_color} color strikes"
+    },
+    {
+      "keys": ["dream", "float", "haze", "blur"],
+      "hair": "soft layered dark hair with translucent {main_color} edge light"
+    }
+  ],
+  "hair_default": "dark hair with restrained {main_color} rim glow shaped by the song's mood",
+  "outfit_rules": [
+    {
+      "keys": ["stage", "perform", "show", "concert", "공연"],
+      "outfit": "dark performance-ready outfit with reflective trim and clean stage lines"
+    },
+    {
+      "keys": ["rain", "street", "city", "비", "거리"],
+      "outfit": "dark modern street coat with subtle reflective edge detail"
+    },
+    {
+      "keys": ["room", "window", "quiet", "방", "창"],
+      "outfit": "simple layered dark casual wear with soft trim"
+    }
+  ],
+  "outfit_default": "dark contemporary outfit with subtle {main_color} accent detail"
+}

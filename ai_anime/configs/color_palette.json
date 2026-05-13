@@ -1,0 +1,41 @@
+{
+  "rules": [
+    {
+      "keys": ["rock", "punk", "metal", "rebel", "aggressive", "rage", "fierce", "anger", "grunge", "hardcore"],
+      "color": "crimson red"
+    },
+    {
+      "keys": ["jazz", "blues", "soul", "vintage", "retro", "classic", "old school", "funk", "swing", "bossa"],
+      "color": "amber gold"
+    },
+    {
+      "keys": ["romantic", "love", "tender", "sweet", "heart", "cute", "kawaii", "idol pop"],
+      "color": "rose gold"
+    },
+    {
+      "keys": ["dreamy", "ethereal", "float", "haze", "dream", "surreal", "mystic", "magical", "fantasy", "fairy"],
+      "color": "soft violet"
+    },
+    {
+      "keys": ["nature", "acoustic", "forest", "calm", "peaceful", "natural", "organic", "folk", "pastoral"],
+      "color": "jade green"
+    },
+    {
+      "keys": ["pop", "happy", "bright", "cheerful", "dance", "k-pop", "kpop", "j-pop", "jpop"],
+      "color": "electric blue"
+    },
+    {
+      "keys": ["warm", "summer", "sunset", "fire", "heat", "passion", "desert", "tropical"],
+      "color": "coral orange"
+    },
+    {
+      "keys": ["ocean", "sea", "rain", "lonely", "cold", "ice", "winter", "snow", "chill"],
+      "color": "teal cyan"
+    },
+    {
+      "keys": ["dark", "noir", "cyber", "dystopia", "urban", "city", "night", "midnight", "neon", "synthwave", "cyberpunk"],
+      "color": "neon magenta"
+    }
+  ],
+  "default": "neon magenta"
+}

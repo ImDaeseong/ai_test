@@ -1,0 +1,30 @@
+{
+  "title": "Raw Song",
+  "theme_ko": "K-Pop Dance, Future House, Brazilian Funk, 128 BPM, sad mood에 맞춘 곡별 애니메이션 뮤직비디오",
+  "logline_ko": "'Raw Song'는 dreamlike anime wanderer surrounded by floating audio-light fragments가 tears turning into tiny cyber-pink light particles를 따라가며 quiet city street after rain, mirror-wet glass corridor, holographic bus stop at night를 통과하는 dreamy synth anime noir MV입니다.",
+  "story_summary_ko": "이 뮤직비디오는 고정된 색상톤은 유지하되, 장면과 캐릭터는 'K-Pop Dance, Future House, Brazilian Funk'의 리듬, 128 BPM의 속도감, 섹션별 가사와 감정 변화에 맞춰 전개됩니다. 반복 상징은 tears turning into tiny cyber-pink light particles이며, 각 장면은 같은 주인공을 유지하면서도 장소, 행동, 카메라, 영상 움직임을 다르게 설계합니다.",
+  "acts": [
+    {
+      "name": "opening",
+      "purpose_ko": "곡의 사운드 질감, 주인공, 핵심 상징을 소개합니다."
+    },
+    {
+      "name": "development",
+      "purpose_ko": "벌스와 프리코러스의 가사 정서를 행동과 공간 변화로 보여줍니다."
+    },
+    {
+      "name": "climax",
+      "purpose_ko": "코러스와 브리지에서 BPM과 에너지에 맞춰 카메라와 빛의 강도를 높입니다."
+    },
+    {
+      "name": "resolution",
+      "purpose_ko": "마지막 가사와 잔향에 맞춰 상징을 정리하고 다음 감정으로 닫습니다."
+    }
+  ],
+  "continuity_rules": [
+    "한 곡 안에서는 같은 주인공, 같은 의상, 같은 대표 소품을 유지합니다.",
+    "곡이 바뀌면 장르, BPM, 가사, 분위기에 맞춰 새 주인공과 새 소품을 생성합니다.",
+    "색상톤은 유지합니다: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights.",
+    "각 섹션은 가사, 섹션 설명, 강도, BPM에 따라 다른 장소, 행동, 카메라 움직임을 가져야 합니다."
+  ]
+}

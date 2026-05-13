@@ -1,0 +1,41 @@
+{
+  "section_overrides": {
+    "Intro": "wide establishing anime frame with the protagonist small but clearly identifiable",
+    "Bridge": "intimate close-up profile shifting to a three-quarter emotional reveal",
+    "Outro": "slow pullback from the signature prop to the full silhouette"
+  },
+  "chorus_fast_shot": "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
+  "chorus_default_shot": "forward tracking shot with widening background parallax and brighter rim light",
+  "mirror_keywords": ["거울", "mirror", "반사"],
+  "mirror_shot": "medium close-up reflected in a dark surface with neon fracture light framing the face",
+  "emotion_shots": {
+    "sad": "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "lonely": "wide static frame — small figure against large negative space",
+    "loneliness": "slow lateral dolly with strong silhouette against empty background",
+    "angry": "fast low-angle push-in with impact flash cuts",
+    "defiant": "strong low angle rising slowly toward the sky",
+    "romantic": "gentle orbit or soft push-in with warm shallow depth",
+    "longing": "slow zoom into a small detail, then pull back to full isolation",
+    "anxious": "slight handheld shake, tight crop frame",
+    "peaceful": "wide still frame or slow gentle overhead drift",
+    "excited": "dynamic lateral tracking with quick panning bursts",
+    "bittersweet": "medium profile with slow dolly and split-tone depth",
+    "nostalgic": "gentle push-in with shallow atmospheric depth",
+    "hopeful": "forward tracking shot into open space, upward angle"
+  },
+  "keyword_shots": [
+    {
+      "keys": ["alone", "혼자"],
+      "shot": "wide shot with strong negative space surrounding the figure"
+    },
+    {
+      "keys": ["close", "hold", "touch"],
+      "shot": "tight close-up on hands or face with soft neon rim light"
+    },
+    {
+      "keys": ["run", "move", "fast", "달리"],
+      "shot": "dynamic low tracking shot with motion blur on background elements"
+    }
+  ],
+  "default": "medium shot with lyric-specific hand action and soft parallax background"
+}

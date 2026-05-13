@@ -1,0 +1,97 @@
+{
+  "story_stages": {
+    "Intro": "opening",
+    "Verse": "development",
+    "Pre-Chorus": "development",
+    "Chorus": "turning point",
+    "Post-Chorus": "turning point",
+    "Bridge": "climax",
+    "Outro": "resolution"
+  },
+  "climax_sections": ["Bridge", "Chorus"],
+  "climax_position_ratio": 0.6,
+  "resolution_location_keywords": ["dawn", "skyline", "rooftop", "sunrise"],
+  "action_overrides": {
+    "Bridge": {
+      "hide_keywords": ["숨", "hide", "secret", "비밀"],
+      "hide_action": "mask finally slips, {prop} trembling as buried emotion breaks through the neon surface",
+      "default_action": "looks past the camera as long-held emotion surfaces, {prop} vibrating faintly with the vocal line"
+    },
+    "Outro": {
+      "cry_keywords": ["울", "cry", "눈물", "tear"],
+      "cry_action": "lets the smile fall; {prop} dims as tears trace the neon edge into silence",
+      "default_action": "slows to stillness, {prop} settling into the final graphite reflection"
+    },
+    "Chorus": {
+      "smile_keywords": ["웃", "smile", "laugh"],
+      "smile_action": "surges forward with {prop} raised, forced smile vivid against the neon light",
+      "default_action": "pushes forward through the brightest neon layer with {prop} leading the frame"
+    },
+    "Intro": {
+      "music_cue_prefix": "music cue:",
+      "music_cue_action": "stands in controlled stillness, making a small hand gesture as {prop} begins to glow"
+    }
+  },
+  "shot_overrides": {
+    "Intro": "wide establishing anime frame with the protagonist small but clearly identifiable",
+    "Bridge": "intimate close-up profile shifting to a three-quarter emotional reveal",
+    "Outro": "slow pullback from the signature prop to the full silhouette"
+  },
+  "chorus_shot_fast": "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
+  "chorus_shot_default": "forward tracking shot with widening background parallax and brighter rim light",
+  "movement_patterns": {
+    "Intro": {
+      "any": "slow push-in that reveals the song-specific prop and silhouette"
+    },
+    "Verse": {
+      "fast": "tight lateral tracking with small beat-synced body accents",
+      "medium": "gentle lateral dolly following the lyric gesture",
+      "slow": "lingering drift with minimal hand and eye movement"
+    },
+    "Pre-Chorus": {
+      "fast": "rising handheld drift with quick light pulses before the hook",
+      "medium": "subtle handheld drift that builds anticipation",
+      "slow": "gradual tilt and suspended pause before the emotional turn"
+    },
+    "Chorus": {
+      "fast": "beat-matched forward dolly with short acceleration bursts",
+      "medium": "steady forward dolly with visible rhythmic parallax",
+      "slow": "broad slow push through intensified neon atmosphere"
+    },
+    "Bridge": {
+      "any": "slow tilt from the signature prop to the face, then a motivated match cut"
+    },
+    "Outro": {
+      "any": "slow pullback and dissolve into graphite-gray silence"
+    }
+  },
+  "default_movement": "song-tempo-aware cinematic drift",
+  "intensity_defaults": {
+    "Chorus": "high",
+    "Bridge": "emotional peak",
+    "Intro": "low",
+    "Outro": "falling"
+  },
+  "final_section_intensity": "falling",
+  "aliases": {
+    "intro": "Intro",
+    "verse": "Verse",
+    "verse 1": "Verse",
+    "verse 2": "Verse",
+    "pre chorus": "Pre-Chorus",
+    "prechorus": "Pre-Chorus",
+    "pre-chorus": "Pre-Chorus",
+    "chorus": "Chorus",
+    "chorus 1": "Chorus",
+    "chorus 2": "Chorus",
+    "post chorus": "Post-Chorus",
+    "bridge": "Bridge",
+    "outro": "Outro",
+    "hook": "Chorus",
+    "interlude": "Bridge",
+    "drop": "Chorus",
+    "breakdown": "Bridge",
+    "refrain": "Chorus"
+  },
+  "default_sections": ["Intro", "Verse", "Pre-Chorus", "Chorus", "Bridge", "Outro"]
+}

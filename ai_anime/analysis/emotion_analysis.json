@@ -1,5 +1,5 @@
 {
-  "primary_emotion": "melancholic",
+  "primary_emotion": "sad",
   "secondary_emotions": [
     "cinematic",
     "audio-informed"
@@ -8,106 +8,93 @@
     {
       "section": "Intro",
       "intensity": "low",
-      "emotion": "melancholic",
+      "emotion": "sad",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
     },
     {
       "section": "Verse",
       "intensity": "medium",
-      "emotion": "melancholic",
+      "emotion": "sad",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
-    },
-    {
-      "section": "Verse",
-      "intensity": "medium",
-      "emotion": "melancholic",
-      "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
-      ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
     },
     {
       "section": "Pre-Chorus",
       "intensity": "medium",
-      "emotion": "melancholic",
+      "emotion": "sad",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
     },
     {
       "section": "Chorus",
       "intensity": "medium-high",
-      "emotion": "melancholic",
+      "emotion": "hopeful",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "thin line of dawn",
+        "opening hand",
+        "city lights turning off"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
+      "environment": "city morning after rain",
+      "camera_emotion": "forward tracking shot into open space"
     },
     {
       "section": "Verse",
       "intensity": "medium",
-      "emotion": "melancholic",
+      "emotion": "sad",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
     },
     {
       "section": "Bridge",
       "intensity": "emotional peak",
-      "emotion": "melancholic",
+      "emotion": "sad",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
     },
     {
       "section": "Chorus",
       "intensity": "medium-high",
-      "emotion": "melancholic",
+      "emotion": "hopeful",
       "visual_symbols": [
-        "silhouette",
-        "wind",
-        "distant city lights"
+        "thin line of dawn",
+        "opening hand",
+        "city lights turning off"
       ],
-      "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-      "environment": "atmospheric city space",
-      "camera_emotion": "film-like composition with slow push-in"
+      "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
+      "environment": "city morning after rain",
+      "camera_emotion": "forward tracking shot into open space"
     },
     {
       "section": "Outro",
@@ -116,7 +103,7 @@
       "visual_symbols": [
         "sunrise edge",
         "opening sky",
-        "upward drifting paper crane"
+        "upward drifting signature prop"
       ],
       "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
       "environment": "rooftop at dawn",
@@ -124,29 +111,28 @@
     }
   ],
   "visual_symbolism": [
-    "silhouette",
-    "wind",
-    "distant city lights"
+    "rain on glass",
+    "empty bench",
+    "flickering streetlamp"
   ],
   "emotional_climax": {
     "section": "Chorus",
     "intensity": "medium-high",
-    "emotion": "melancholic",
+    "emotion": "hopeful",
     "visual_symbols": [
-      "silhouette",
-      "wind",
-      "distant city lights"
+      "thin line of dawn",
+      "opening hand",
+      "city lights turning off"
     ],
-    "lighting": "dark cinematic cyber lighting with neon magenta glow, deep violet shadows, subtle icy cyan reflections, and silver rim light",
-    "environment": "atmospheric city space",
-    "camera_emotion": "film-like composition with slow push-in"
+    "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
+    "environment": "city morning after rain",
+    "camera_emotion": "forward tracking shot into open space"
   },
   "seasonal_atmosphere": "rainy late spring night",
   "urban_rural_mood": "urban emotional atmosphere",
-  "cinematic_pacing": "medium cinematic pacing informed by the audio reference",
+  "cinematic_pacing": "energetic cuts with stronger motion accents",
   "tension_curve": [
     "low",
-    "medium",
     "medium",
     "medium",
     "medium-high",

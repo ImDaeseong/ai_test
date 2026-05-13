@@ -1,24 +1,25 @@
 {
-  "style_name": "dark cyber noir anime with neon magenta and cyber pink dominance",
+  "style_name": "high-contrast rock anime noir within dark anime with crimson red dominance",
+  "genre_profile": "high-contrast rock anime noir",
+  "song_motif": "a forced smile reflected as a split neon expression",
   "color_rules": {
     "base": "graphite gray and near-black backgrounds",
-    "main_color": "neon magenta and cyber pink",
+    "main_color": "crimson red",
     "shadow_color": "deep plum and dark violet",
     "secondary_light": "subtle icy cyan secondary reflections",
     "highlight": "silver-white rim highlights",
-    "rule": "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+    "rule": "limited-color anime palette: crimson red dominant, dark shadows, near-black backgrounds, subtle secondary reflections, silver-white rim highlights"
   },
   "camera_language": [
-    "wide cinematic silhouette shot with the protagonist small in frame",
-    "medium close-up with soft parallax background",
-    "medium close-up with soft parallax background",
-    "medium close-up with soft parallax background",
-    "forward tracking shot, low angle, rain reflections stretching toward dawn",
-    "medium close-up with soft parallax background",
-    "close-up side profile, hair crossing one eye, city lights behind",
-    "forward tracking shot, low angle, rain reflections stretching toward dawn",
-    "upward crane shot as the paper crane catches the accent light"
+    "wide establishing anime frame with the protagonist small but clearly identifiable",
+    "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
+    "medium close-up reflected in a dark surface with neon fracture light framing the face",
+    "intimate close-up profile shifting to a three-quarter emotional reveal",
+    "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
+    "slow pullback from the signature prop to the full silhouette"
   ],
-  "transition_language": "match cuts through neon reflections, paper crane motion, waveform-like light trails, and passing train lights",
+  "transition_language": "beat-matched impact cuts and fast reflection wipes through a forced smile reflected as a split neon expression, neon reflections, and distorted light streaks, harder contrast, impact flashes on drum accents",
   "negative_style_rules": []
 }

@@ -1,0 +1,314 @@
+{
+  "song_title": "Raw Song",
+  "story_arc": {
+    "title": "Raw Song",
+    "theme_ko": "K-Pop Dance, Future House, Brazilian Funk, 128 BPM, sad mood에 맞춘 곡별 애니메이션 뮤직비디오",
+    "logline_ko": "'Raw Song'는 dreamlike anime wanderer surrounded by floating audio-light fragments가 tears turning into tiny cyber-pink light particles를 따라가며 quiet city street after rain, mirror-wet glass corridor, holographic bus stop at night를 통과하는 dreamy synth anime noir MV입니다.",
+    "story_summary_ko": "이 뮤직비디오는 고정된 색상톤은 유지하되, 장면과 캐릭터는 'K-Pop Dance, Future House, Brazilian Funk'의 리듬, 128 BPM의 속도감, 섹션별 가사와 감정 변화에 맞춰 전개됩니다. 반복 상징은 tears turning into tiny cyber-pink light particles이며, 각 장면은 같은 주인공을 유지하면서도 장소, 행동, 카메라, 영상 움직임을 다르게 설계합니다.",
+    "acts": [
+      {
+        "name": "opening",
+        "purpose_ko": "곡의 사운드 질감, 주인공, 핵심 상징을 소개합니다."
+      },
+      {
+        "name": "development",
+        "purpose_ko": "벌스와 프리코러스의 가사 정서를 행동과 공간 변화로 보여줍니다."
+      },
+      {
+        "name": "climax",
+        "purpose_ko": "코러스와 브리지에서 BPM과 에너지에 맞춰 카메라와 빛의 강도를 높입니다."
+      },
+      {
+        "name": "resolution",
+        "purpose_ko": "마지막 가사와 잔향에 맞춰 상징을 정리하고 다음 감정으로 닫습니다."
+      }
+    ],
+    "continuity_rules": [
+      "한 곡 안에서는 같은 주인공, 같은 의상, 같은 대표 소품을 유지합니다.",
+      "곡이 바뀌면 장르, BPM, 가사, 분위기에 맞춰 새 주인공과 새 소품을 생성합니다.",
+      "색상톤은 유지합니다: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights.",
+      "각 섹션은 가사, 섹션 설명, 강도, BPM에 따라 다른 장소, 행동, 카메라 움직임을 가져야 합니다."
+    ]
+  },
+  "visual_world": {
+    "song_slug": "raw-song",
+    "visual_identity": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+    "genre_profile": "dreamy synth anime noir",
+    "song_motif": "tears turning into tiny cyber-pink light particles",
+    "color_palette": {
+      "base": "graphite gray and near-black backgrounds",
+      "main_color": "neon magenta and cyber pink",
+      "shadow_color": "deep plum and dark violet",
+      "secondary_light": "subtle icy cyan secondary reflections",
+      "highlight": "silver-white rim highlights",
+      "rule": "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+    },
+    "base_palette": "graphite gray and near-black backgrounds",
+    "accent_color": "neon magenta and cyber pink",
+    "secondary_accent_color": "icy cyan",
+    "highlight_color": "silver white",
+    "environment_family": "urban emotional atmosphere",
+    "core_locations": [
+      "quiet city street after rain",
+      "mirror-wet glass corridor",
+      "holographic bus stop at night",
+      "empty rooftop with waveform lights"
+    ],
+    "recurring_symbols": [
+      "tears turning into tiny cyber-pink light particles",
+      "rain on glass",
+      "empty bench",
+      "flickering streetlamp",
+      "empty street",
+      "rain",
+      "silhouette",
+      "small prism-like synth shard"
+    ],
+    "lighting_language": "strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights",
+    "transition_language": "beat-matched impact cuts and fast reflection wipes through tears turning into tiny cyber-pink light particles, neon reflections, and airy pads, soft bloom, slow neon trails, glassy reflections",
+    "negative_style_rules": []
+  },
+  "protagonist": {
+    "role": "unique protagonist for this song",
+    "identity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+    "age_style": "anime character, stylized and non-photorealistic",
+    "hair": "soft layered dark hair with translucent cyber-pink edge highlights",
+    "outfit": "long lightweight coat over minimal futuristic casualwear, reflective trim",
+    "silhouette": "floating coat line and quiet futuristic profile",
+    "emotional_state": "melancholic, cinematic",
+    "signature_prop": "small prism-like synth shard",
+    "accent_detail": "neon magenta and cyber pink remains dominant, but the prop and gestures follow this song motif: tears turning into tiny cyber-pink light particles",
+    "consistency_rules": [
+      "Keep the same face, hairstyle, outfit, body proportions, and signature prop within this song only.",
+      "Do not reuse this character design for a different song unless the user explicitly requests a series identity.",
+      "Let pose, expression, setting, and action change per section according to lyrics, genre, intensity, and BPM.",
+      "Use anime cinematic styling, never live-action realism.",
+      "First generate Step 00 (character turnaround model sheet) before creating any scene image.",
+      "Attach that same character model sheet when generating every scene image for this song.",
+      "Attach the final scene image as the primary image-to-video reference when generating the video for that scene."
+    ],
+    "reference_workflow": [
+      "Generate a clean song-specific character turnaround model sheet before scene production.",
+      "Use the same model sheet as an input/reference for every scene image prompt in this song.",
+      "After each scene image is approved, use that scene image as the primary image-to-video input with the matching video prompt.",
+      "When possible, include the model sheet as a secondary reference during video generation to protect character identity."
+    ],
+    "required_reference_views": [
+      "front full-body view",
+      "left side full-body view",
+      "right side full-body view",
+      "back full-body view",
+      "three-quarter full-body view",
+      "face close-up",
+      "prop close-up of small prism-like synth shard"
+    ]
+  },
+  "character_model_sheet": {
+    "step": 0,
+    "purpose": "Generate this song-specific character turnaround model sheet before any scene image.",
+    "prompt_file": "prompts/image_prompts/00_character_turnaround_model_sheet.md",
+    "character_reference_prompt": "# Character Turnaround Model Sheet Prompt\n\nCreate the master character turnaround model sheet for this song. This model sheet will be attached as the identity reference for every later scene image, and optionally as a secondary reference for video generation.\n\nRequired views:\n- front full-body view\n- left side full-body view\n- right side full-body view\n- back full-body view\n- three-quarter full-body view\n- face close-up\n- prop close-up of small prism-like synth shard\n\nCharacter design: dreamlike anime wanderer surrounded by floating audio-light fragments, anime character, stylized and non-photorealistic, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile. Signature prop: small prism-like synth shard. Accent detail: neon magenta and cyber pink remains dominant, but the prop and gestures follow this song motif: tears turning into tiny cyber-pink light particles. Visual world: dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance.\n\nComposition: clean anime production model sheet, neutral simple background, aligned character views at the same scale, full body visible from head to toe in each turnaround pose, clear face close-up, clear hairstyle silhouette, clear outfit seams, clear signature prop, no dramatic camera angle, no cropped limbs, no environmental scene, no action pose. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights. Non-photorealistic, no live action, no text, no watermark.\n\nConsistency rules:\n- Keep the same face, hairstyle, outfit, body proportions, and signature prop within this song only.\n- Do not reuse this character design for a different song unless the user explicitly requests a series identity.\n- Let pose, expression, setting, and action change per section according to lyrics, genre, intensity, and BPM.\n- Use anime cinematic styling, never live-action realism.\n- First generate Step 00 (character turnaround model sheet) before creating any scene image.\n- Attach that same character model sheet when generating every scene image for this song.\n- Attach the final scene image as the primary image-to-video reference when generating the video for that scene.\n\nProduction workflow:\n- Generate a clean song-specific character turnaround model sheet before scene production.\n- Use the same model sheet as an input/reference for every scene image prompt in this song.\n- After each scene image is approved, use that scene image as the primary image-to-video input with the matching video prompt.\n- When possible, include the model sheet as a secondary reference during video generation to protect character identity.\n",
+    "required_views": [
+      "front full-body view",
+      "left side full-body view",
+      "right side full-body view",
+      "back full-body view",
+      "three-quarter full-body view",
+      "face close-up",
+      "prop close-up of small prism-like synth shard"
+    ],
+    "usage": [
+      "Attach this model sheet as the identity reference for every scene image prompt in this song.",
+      "Use each generated scene image as the primary image-to-video reference.",
+      "If the video tool supports multiple references, attach this model sheet as a secondary video reference."
+    ]
+  },
+  "scenes": [
+    {
+      "scene_number": 1,
+      "music_section": "Intro",
+      "lyrics_excerpt": "",
+      "lyric_visual_idea": "music cue: Instrumental Only, Deep 808 Bass 40Hz, Industrial Metal Clank 2-4kHz, Ultra-Wide Stereo, High-Fidelity DSD-Master Synthesis",
+      "emotion": "sad",
+      "intensity": "low",
+      "environment": "quiet city street after rain",
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "camera_direction": "wide establishing anime frame with the protagonist small but clearly identifiable",
+      "movement": "slow push-in that reveals the song-specific prop and silhouette",
+      "video_rhythm": "128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity low",
+      "cinematic_style": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+      "symbolism": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "symbolic_focus": "bass pulses bending the wet reflections",
+      "scene_action": "stands in controlled stillness, making a small hand gesture as small prism-like synth shard begins to glow",
+      "protagonist_continuity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+      "section_description": "Instrumental Only, Deep 808 Bass 40Hz, Industrial Metal Clank 2-4kHz, Ultra-Wide Stereo, High-Fidelity DSD-Master Synthesis",
+      "story_stage": "opening",
+      "story_beat_ko": "In the Intro, the protagonist introduces bass pulses bending the wet reflections; action: stands in controlled stillness, making a small hand gesture as small prism-like synth shard begins to glow.",
+      "story_beat_en": "In the Intro, the protagonist introduces bass pulses bending the wet reflections; action: stands in controlled stillness, making a small hand gesture as small prism-like synth shard begins to glow.",
+      "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
+      "continuity_to_next_ko": "Lead the motion and symbol into the next section.",
+      "story_prompt_context": "Narrative continuity: this is the opening beat of the music video. Keep the song-specific protagonist and signature prop consistent, but make this scene distinct through the section lyric idea, location, action, camera, and BPM-aware motion. Story beat: In the Intro, the protagonist introduces bass pulses bending the wet reflections; action: stands in controlled stillness, making a small hand gesture as small prism-like synth shard begins to glow.",
+      "image_prompt": "wide establishing anime frame with the protagonist small but clearly identifiable in quiet city street after rain. dreamlike anime wanderer surrounded by floating audio-light fragments, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile, holding small prism-like synth shard. Action: stands in controlled stillness, making a small hand gesture as small prism-like synth shard begins to glow. Lyric mood: Instrumental Only, Deep 808 Bass 40Hz, Industrial Metal Clank 2-4kHz, Ultra-Wide Stereo, High-Fidelity DSD-Master Synthesis. Visual symbol: bass pulses bending the wet reflections; supporting symbols: rain on glass, empty bench, flickering streetlamp. sad dreamy synth anime noir mood, high contrast near-black and deep violet shadows with sharper neon magenta fracture light. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; mostly graphite gray and near-black, faint cyber pink glow, tiny icy cyan reflections. non-photorealistic anime MV still, stylized and non-photorealistic, anime cinematic styling, never live-action realism. No text, no watermark, no live action.",
+      "video_prompt": "Image-to-video from the attached scene image. Preserve the character design: soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, small prism-like synth shard. Camera motion: slow push-in that reveals the song-specific prop and silhouette; composition stays wide establishing anime frame with the protagonist small but clearly identifiable. Action over time: stands in controlled stillness, making a small hand gesture as small prism-like synth shard begins to glow. Musical timing: 128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity low. Lyric mood: Instrumental Only, Deep 808 Bass 40Hz, Industrial Metal Clank 2-4kHz, Ultra-Wide Stereo, High-Fidelity DSD-Master Synthesis. Atmosphere: strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights; symbolic motion: bass pulses bending the wet reflections. Palette: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; mostly graphite gray and near-black, faint cyber pink glow, tiny icy cyan reflections. Smooth coherent anime motion, subtle parallax, clean motivated transition at the end. Avoid dialogue, heavy lip sync, extra characters, text, and watermark."
+    },
+    {
+      "scene_number": 2,
+      "music_section": "Verse",
+      "lyrics_excerpt": "lyrics text appears encoding-damaged; use the section description and song metadata as the visual guide",
+      "lyric_visual_idea": "music cue: Sharp Staccato Female Vocals, Energy 50%, Dry Mix, Minimalist Percussion",
+      "emotion": "sad",
+      "intensity": "medium",
+      "environment": "mirror-wet glass corridor",
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "camera_direction": "close-up profile or low-angle tilt down, shallow depth isolating the face",
+      "movement": "tight lateral tracking with small beat-synced body accents",
+      "video_rhythm": "128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium",
+      "cinematic_style": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+      "symbolism": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "symbolic_focus": "bass pulses bending the wet reflections",
+      "scene_action": "presses small prism-like synth shard close to the chest, partially concealing it in shadow",
+      "protagonist_continuity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+      "section_description": "Sharp Staccato Female Vocals, Energy 50%, Dry Mix, Minimalist Percussion",
+      "story_stage": "development",
+      "story_beat_ko": "In the Verse, the lyric emotion becomes visible through the action: presses small prism-like synth shard close to the chest, partially concealing it in shadow.",
+      "story_beat_en": "In the Verse, the lyric emotion becomes visible through the action: presses small prism-like synth shard close to the chest, partially concealing it in shadow.",
+      "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
+      "continuity_to_next_ko": "Lead the motion and symbol into the next section.",
+      "story_prompt_context": "Narrative continuity: this is the development beat of the music video. Keep the song-specific protagonist and signature prop consistent, but make this scene distinct through the section lyric idea, location, action, camera, and BPM-aware motion. Story beat: In the Verse, the lyric emotion becomes visible through the action: presses small prism-like synth shard close to the chest, partially concealing it in shadow.",
+      "image_prompt": "close-up profile or low-angle tilt down, shallow depth isolating the face in mirror-wet glass corridor. dreamlike anime wanderer surrounded by floating audio-light fragments, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile, holding small prism-like synth shard. Action: presses small prism-like synth shard close to the chest, partially concealing it in shadow. Lyric mood: Sharp Staccato Female Vocals, Energy 50%, Dry Mix, Minimalist Percussion. Visual symbol: bass pulses bending the wet reflections; supporting symbols: rain on glass, empty bench, flickering streetlamp. sad dreamy synth anime noir mood, high contrast near-black and deep violet shadows with sharper neon magenta fracture light. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections. non-photorealistic anime MV still, stylized and non-photorealistic, anime cinematic styling, never live-action realism. No text, no watermark, no live action.",
+      "video_prompt": "Image-to-video from the attached scene image. Preserve the character design: soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, small prism-like synth shard. Camera motion: tight lateral tracking with small beat-synced body accents; composition stays close-up profile or low-angle tilt down, shallow depth isolating the face. Action over time: presses small prism-like synth shard close to the chest, partially concealing it in shadow. Musical timing: 128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium. Lyric mood: Sharp Staccato Female Vocals, Energy 50%, Dry Mix, Minimalist Percussion. Atmosphere: strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights; symbolic motion: bass pulses bending the wet reflections. Palette: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections. Smooth coherent anime motion, subtle parallax, clean motivated transition at the end. Avoid dialogue, heavy lip sync, extra characters, text, and watermark."
+    },
+    {
+      "scene_number": 3,
+      "music_section": "Verse",
+      "lyrics_excerpt": "lyrics text appears encoding-damaged; use the section description and song metadata as the visual guide",
+      "lyric_visual_idea": "music cue: Rising Energy 70%, 16th Note Rhythm, High-Density Synthesis",
+      "emotion": "sad",
+      "intensity": "medium",
+      "environment": "holographic bus stop at night",
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "camera_direction": "close-up profile or low-angle tilt down, shallow depth isolating the face",
+      "movement": "tight lateral tracking with small beat-synced body accents",
+      "video_rhythm": "128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium",
+      "cinematic_style": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+      "symbolism": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "symbolic_focus": "bass pulses bending the wet reflections",
+      "scene_action": "opens the mouth slightly, small prism-like synth shard vibrating with the vocal resonance",
+      "protagonist_continuity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+      "section_description": "Rising Energy 70%, 16th Note Rhythm, High-Density Synthesis",
+      "story_stage": "development",
+      "story_beat_ko": "In the Verse, the lyric emotion becomes visible through the action: opens the mouth slightly, small prism-like synth shard vibrating with the vocal resonance.",
+      "story_beat_en": "In the Verse, the lyric emotion becomes visible through the action: opens the mouth slightly, small prism-like synth shard vibrating with the vocal resonance.",
+      "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
+      "continuity_to_next_ko": "Lead the motion and symbol into the next section.",
+      "story_prompt_context": "Narrative continuity: this is the development beat of the music video. Keep the song-specific protagonist and signature prop consistent, but make this scene distinct through the section lyric idea, location, action, camera, and BPM-aware motion. Story beat: In the Verse, the lyric emotion becomes visible through the action: opens the mouth slightly, small prism-like synth shard vibrating with the vocal resonance.",
+      "image_prompt": "close-up profile or low-angle tilt down, shallow depth isolating the face in holographic bus stop at night. dreamlike anime wanderer surrounded by floating audio-light fragments, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile, holding small prism-like synth shard. Action: opens the mouth slightly, small prism-like synth shard vibrating with the vocal resonance. Lyric mood: Rising Energy 70%, 16th Note Rhythm, High-Density Synthesis. Visual symbol: bass pulses bending the wet reflections; supporting symbols: rain on glass, empty bench, flickering streetlamp. sad dreamy synth anime noir mood, high contrast near-black and deep violet shadows with sharper neon magenta fracture light. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections. non-photorealistic anime MV still, stylized and non-photorealistic, anime cinematic styling, never live-action realism. No text, no watermark, no live action.",
+      "video_prompt": "Image-to-video from the attached scene image. Preserve the character design: soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, small prism-like synth shard. Camera motion: tight lateral tracking with small beat-synced body accents; composition stays close-up profile or low-angle tilt down, shallow depth isolating the face. Action over time: opens the mouth slightly, small prism-like synth shard vibrating with the vocal resonance. Musical timing: 128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium. Lyric mood: Rising Energy 70%, 16th Note Rhythm, High-Density Synthesis. Atmosphere: strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights; symbolic motion: bass pulses bending the wet reflections. Palette: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections. Smooth coherent anime motion, subtle parallax, clean motivated transition at the end. Avoid dialogue, heavy lip sync, extra characters, text, and watermark."
+    },
+    {
+      "scene_number": 4,
+      "music_section": "Pre-Chorus",
+      "lyrics_excerpt": "lyrics text appears encoding-damaged; use the section description and song metadata as the visual guide",
+      "lyric_visual_idea": "music cue: Energy 90%, Massive White Noise Sweep, Layered 5th Harmonies",
+      "emotion": "sad",
+      "intensity": "medium",
+      "environment": "empty rooftop with waveform lights",
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "camera_direction": "close-up profile or low-angle tilt down, shallow depth isolating the face",
+      "movement": "rising handheld drift with quick light pulses before the hook",
+      "video_rhythm": "128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium",
+      "cinematic_style": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+      "symbolism": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "symbolic_focus": "rain streaks refracting neon into scattered points",
+      "scene_action": "lets small prism-like synth shard hang low, its light fragmenting across the floor",
+      "protagonist_continuity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+      "section_description": "Energy 90%, Massive White Noise Sweep, Layered 5th Harmonies",
+      "story_stage": "development",
+      "story_beat_ko": "In the Pre-Chorus, the lyric emotion becomes visible through the action: lets small prism-like synth shard hang low, its light fragmenting across the floor.",
+      "story_beat_en": "In the Pre-Chorus, the lyric emotion becomes visible through the action: lets small prism-like synth shard hang low, its light fragmenting across the floor.",
+      "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
+      "continuity_to_next_ko": "Lead the motion and symbol into the next section.",
+      "story_prompt_context": "Narrative continuity: this is the development beat of the music video. Keep the song-specific protagonist and signature prop consistent, but make this scene distinct through the section lyric idea, location, action, camera, and BPM-aware motion. Story beat: In the Pre-Chorus, the lyric emotion becomes visible through the action: lets small prism-like synth shard hang low, its light fragmenting across the floor.",
+      "image_prompt": "close-up profile or low-angle tilt down, shallow depth isolating the face in empty rooftop with waveform lights. dreamlike anime wanderer surrounded by floating audio-light fragments, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile, holding small prism-like synth shard. Action: lets small prism-like synth shard hang low, its light fragmenting across the floor. Lyric mood: Energy 90%, Massive White Noise Sweep, Layered 5th Harmonies. Visual symbol: rain streaks refracting neon into scattered points; supporting symbols: rain on glass, empty bench, flickering streetlamp. sad dreamy synth anime noir mood, high contrast near-black and deep violet shadows with sharper neon magenta fracture light. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections. non-photorealistic anime MV still, stylized and non-photorealistic, anime cinematic styling, never live-action realism. No text, no watermark, no live action.",
+      "video_prompt": "Image-to-video from the attached scene image. Preserve the character design: soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, small prism-like synth shard. Camera motion: rising handheld drift with quick light pulses before the hook; composition stays close-up profile or low-angle tilt down, shallow depth isolating the face. Action over time: lets small prism-like synth shard hang low, its light fragmenting across the floor. Musical timing: 128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity medium. Lyric mood: Energy 90%, Massive White Noise Sweep, Layered 5th Harmonies. Atmosphere: strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights; symbolic motion: rain streaks refracting neon into scattered points. Palette: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; graphite gray base with restrained neon magenta light trails and subtle icy cyan reflections. Smooth coherent anime motion, subtle parallax, clean motivated transition at the end. Avoid dialogue, heavy lip sync, extra characters, text, and watermark."
+    },
+    {
+      "scene_number": 5,
+      "music_section": "Bridge",
+      "lyrics_excerpt": "lyrics text appears encoding-damaged; use the section description and song metadata as the visual guide",
+      "lyric_visual_idea": "music cue: Energy 60%, Half-time Feel, Low-pass Filter Sweep 500Hz-2kHz",
+      "emotion": "sad",
+      "intensity": "emotional peak",
+      "environment": "quiet city street after rain",
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "camera_direction": "intimate close-up profile shifting to a three-quarter emotional reveal",
+      "movement": "slow tilt from the signature prop to the face, then a motivated match cut",
+      "video_rhythm": "128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity emotional peak",
+      "cinematic_style": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+      "symbolism": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "symbolic_focus": "rain streaks refracting neon into scattered points",
+      "scene_action": "looks past the camera as long-held emotion surfaces, small prism-like synth shard vibrating faintly with the vocal line",
+      "protagonist_continuity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+      "section_description": "Energy 60%, Half-time Feel, Low-pass Filter Sweep 500Hz-2kHz",
+      "story_stage": "climax",
+      "story_beat_ko": "In the Bridge, the repeated emotion peaks while the camera follows the action: looks past the camera as long-held emotion surfaces, small prism-like synth shard vibrating faintly with the vocal line.",
+      "story_beat_en": "In the Bridge, the repeated emotion peaks while the camera follows the action: looks past the camera as long-held emotion surfaces, small prism-like synth shard vibrating faintly with the vocal line.",
+      "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
+      "continuity_to_next_ko": "Lead the motion and symbol into the next section.",
+      "story_prompt_context": "Narrative continuity: this is the climax beat of the music video. Keep the song-specific protagonist and signature prop consistent, but make this scene distinct through the section lyric idea, location, action, camera, and BPM-aware motion. Story beat: In the Bridge, the repeated emotion peaks while the camera follows the action: looks past the camera as long-held emotion surfaces, small prism-like synth shard vibrating faintly with the vocal line.",
+      "image_prompt": "intimate close-up profile shifting to a three-quarter emotional reveal in quiet city street after rain. dreamlike anime wanderer surrounded by floating audio-light fragments, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile, holding small prism-like synth shard. Action: looks past the camera as long-held emotion surfaces, small prism-like synth shard vibrating faintly with the vocal line. Lyric mood: Energy 60%, Half-time Feel, Low-pass Filter Sweep 500Hz-2kHz. Visual symbol: rain streaks refracting neon into scattered points; supporting symbols: rain on glass, empty bench, flickering streetlamp. sad dreamy synth anime noir mood, high contrast near-black and deep violet shadows with sharper neon magenta fracture light. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; high-energy neon magenta and cyber pink dominance, silver-white rim light, controlled icy cyan contrast. non-photorealistic anime MV still, stylized and non-photorealistic, anime cinematic styling, never live-action realism. No text, no watermark, no live action.",
+      "video_prompt": "Image-to-video from the attached scene image. Preserve the character design: soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, small prism-like synth shard. Camera motion: slow tilt from the signature prop to the face, then a motivated match cut; composition stays intimate close-up profile shifting to a three-quarter emotional reveal. Action over time: looks past the camera as long-held emotion surfaces, small prism-like synth shard vibrating faintly with the vocal line. Musical timing: 128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity emotional peak. Lyric mood: Energy 60%, Half-time Feel, Low-pass Filter Sweep 500Hz-2kHz. Atmosphere: strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights; symbolic motion: rain streaks refracting neon into scattered points. Palette: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; high-energy neon magenta and cyber pink dominance, silver-white rim light, controlled icy cyan contrast. Smooth coherent anime motion, subtle parallax, clean motivated transition at the end. Avoid dialogue, heavy lip sync, extra characters, text, and watermark."
+    },
+    {
+      "scene_number": 6,
+      "music_section": "Outro",
+      "lyrics_excerpt": "lyrics text appears encoding-damaged; use the section description and song metadata as the visual guide",
+      "lyric_visual_idea": "music cue: Sudden Dynamics Drop, Whisper Vocals -12dB, 4.5s Industrial Reverb",
+      "emotion": "hope",
+      "intensity": "falling",
+      "environment": "empty rooftop with waveform lights",
+      "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
+      "camera_direction": "slow pullback from the signature prop to the full silhouette",
+      "movement": "slow pullback and dissolve into graphite-gray silence",
+      "video_rhythm": "128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity falling",
+      "cinematic_style": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+      "symbolism": [
+        "sunrise edge",
+        "opening sky",
+        "upward drifting signature prop"
+      ],
+      "symbolic_focus": "layered voice trails orbiting the character",
+      "scene_action": "slows to stillness, small prism-like synth shard settling into the final graphite reflection",
+      "protagonist_continuity": "dreamlike anime wanderer surrounded by floating audio-light fragments",
+      "section_description": "Sudden Dynamics Drop, Whisper Vocals -12dB, 4.5s Industrial Reverb",
+      "story_stage": "resolution",
+      "story_beat_ko": "In the Outro, layered voice trails orbiting the character settles into the final image as the motion slows into resolution.",
+      "story_beat_en": "In the Outro, layered voice trails orbiting the character settles into the final image as the motion slows into resolution.",
+      "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
+      "continuity_to_next_ko": "Lead the motion and symbol into the next section.",
+      "story_prompt_context": "Narrative continuity: this is the resolution beat of the music video. Keep the song-specific protagonist and signature prop consistent, but make this scene distinct through the section lyric idea, location, action, camera, and BPM-aware motion. Story beat: In the Outro, layered voice trails orbiting the character settles into the final image as the motion slows into resolution.",
+      "image_prompt": "slow pullback from the signature prop to the full silhouette in empty rooftop with waveform lights. dreamlike anime wanderer surrounded by floating audio-light fragments, soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, floating coat line and quiet futuristic profile, holding small prism-like synth shard. Action: slows to stillness, small prism-like synth shard settling into the final graphite reflection. Lyric mood: Sudden Dynamics Drop, Whisper Vocals -12dB, 4.5s Industrial Reverb. Visual symbol: layered voice trails orbiting the character; supporting symbols: sunrise edge, opening sky, upward drifting signature prop. hope dreamy synth anime noir mood, silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light. limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; softened cyber pink glow with silver-white highlights and faint icy cyan reflections. non-photorealistic anime MV still, stylized and non-photorealistic, anime cinematic styling, never live-action realism. No text, no watermark, no live action.",
+      "video_prompt": "Image-to-video from the attached scene image. Preserve the character design: soft layered dark hair with translucent cyber-pink edge highlights, long lightweight coat over minimal futuristic casualwear, reflective trim, small prism-like synth shard. Camera motion: slow pullback and dissolve into graphite-gray silence; composition stays slow pullback from the signature prop to the full silhouette. Action over time: slows to stillness, small prism-like synth shard settling into the final graphite reflection. Musical timing: 128 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity falling. Lyric mood: Sudden Dynamics Drop, Whisper Vocals -12dB, 4.5s Industrial Reverb. Atmosphere: strobing but controlled cyber-pink accents on beat peaks, airy pads, soft bloom, slow neon trails, glassy reflections, deep plum shadows, graphite darkness, silver-white rim highlights; symbolic motion: layered voice trails orbiting the character. Palette: limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights; softened cyber pink glow with silver-white highlights and faint icy cyan reflections. Smooth coherent anime motion, subtle parallax, clean motivated transition at the end. Avoid dialogue, heavy lip sync, extra characters, text, and watermark."
+    }
+  ]
+}

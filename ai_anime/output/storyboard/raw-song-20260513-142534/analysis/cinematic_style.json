@@ -1,0 +1,23 @@
+{
+  "style_name": "dreamy synth anime noir within dark cyber noir anime with neon magenta and cyber pink dominance",
+  "genre_profile": "dreamy synth anime noir",
+  "song_motif": "tears turning into tiny cyber-pink light particles",
+  "color_rules": {
+    "base": "graphite gray and near-black backgrounds",
+    "main_color": "neon magenta and cyber pink",
+    "shadow_color": "deep plum and dark violet",
+    "secondary_light": "subtle icy cyan secondary reflections",
+    "highlight": "silver-white rim highlights",
+    "rule": "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+  },
+  "camera_language": [
+    "wide establishing anime frame with the protagonist small but clearly identifiable",
+    "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "intimate close-up profile shifting to a three-quarter emotional reveal",
+    "slow pullback from the signature prop to the full silhouette"
+  ],
+  "transition_language": "beat-matched impact cuts and fast reflection wipes through tears turning into tiny cyber-pink light particles, neon reflections, and airy pads, soft bloom, slow neon trails, glassy reflections",
+  "negative_style_rules": []
+}

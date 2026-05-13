@@ -1,30 +1,40 @@
 {
-  "song_slug": "raw-song",
-  "visual_identity": "dark cyber noir anime with neon magenta and cyber pink dominance",
+  "song_slug": "upgrade",
+  "visual_identity": "high-contrast rock anime noir within dark anime with crimson red dominance",
+  "genre_profile": "high-contrast rock anime noir",
+  "song_motif": "a forced smile reflected as a split neon expression",
   "color_palette": {
     "base": "graphite gray and near-black backgrounds",
-    "main_color": "neon magenta and cyber pink",
+    "main_color": "crimson red",
     "shadow_color": "deep plum and dark violet",
     "secondary_light": "subtle icy cyan secondary reflections",
     "highlight": "silver-white rim highlights",
-    "rule": "limited-color cyber anime palette: neon magenta/cyber pink dominant, deep plum/dark violet shadows, graphite gray/near-black backgrounds, subtle icy cyan reflections only, and silver-white highlights"
+    "rule": "limited-color anime palette: crimson red dominant, dark shadows, near-black backgrounds, subtle secondary reflections, silver-white rim highlights"
   },
   "base_palette": "graphite gray and near-black backgrounds",
-  "accent_color": "neon magenta and cyber pink",
+  "accent_color": "crimson red",
   "secondary_accent_color": "icy cyan",
   "highlight_color": "silver white",
   "environment_family": "urban emotional atmosphere",
   "core_locations": [
-    "quiet city street after rain"
+    "window-lit room above a quiet street",
+    "abandoned live house exterior",
+    "quiet city street after rain",
+    "empty night highway with neon overhead signs",
+    "rain-dark alley beside amplifier cases"
   ],
   "recurring_symbols": [
-    "silhouette",
-    "wind",
-    "distant city lights",
+    "a forced smile reflected as a split neon expression",
+    "rain on glass",
+    "empty bench",
+    "flickering streetlamp",
     "empty street",
-    "rain"
+    "rain",
+    "silhouette",
+    "scratched guitar pick glowing cyber pink"
   ],
-  "lighting_language": "dark cinematic cyber lighting, neon magenta glow, deep violet shadows, subtle icy cyan reflections, silver rim light",
-  "transition_language": "match cuts through neon reflections, paper crane motion, waveform-like light trails, and passing train lights",
+  "lighting_language": "strobing but controlled cyber-pink accents on beat peaks, distorted light streaks, harder contrast, impact flashes on drum accents, deep plum shadows, graphite darkness, silver-white rim highlights",
+  "transition_language": "beat-matched impact cuts and fast reflection wipes through a forced smile reflected as a split neon expression, neon reflections, and distorted light streaks, harder contrast, impact flashes on drum accents",
+  "instrument_hint": "",
   "negative_style_rules": []
 }

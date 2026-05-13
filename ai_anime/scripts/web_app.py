@@ -3,20 +3,22 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import re
 import shutil
 import urllib.parse
+import urllib.request
 from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+import config_learner
 import emotion_engine
 import image_prompt_generator
 import song_parser
 import scene_generator
 import video_prompt_generator
-from common import PROJECT_ROOT, ensure_directories, read_json, slugify, timestamp, write_text
-from run_pipeline import snapshot_outputs
+from common import PROJECT_ROOT, ensure_directories, load_config, read_json, timestamp, write_text
 
 
 MAX_TEXT_UPLOAD_SIZE = 8 * 1024 * 1024
@@ -127,6 +129,42 @@ def page_shell(content: str, status: str = "") -> bytes:
       color: var(--text);
       font-size: 13px;
       font-weight: 650;
+    }}
+    select {{
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfe;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      padding: 10px 11px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23687386' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: calc(100% - 12px) center;
+    }}
+    .suno-row {{
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: #f1f4f9;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px dashed var(--line);
+    }}
+    .suno-row input {{
+      flex: 1;
+      margin-bottom: 0 !important;
+    }}
+    .suno-row button {{
+      white-space: nowrap;
+      padding: 8px 16px;
+      background: #444;
+    }}
+    .suno-row button:disabled {{
+      opacity: 0.5;
+      cursor: not-allowed;
     }}
     .check-row input {{
       width: 16px;
@@ -260,17 +298,167 @@ def page_shell(content: str, status: str = "") -> bytes:
       .layout {{ grid-template-columns: 1fr; }}
       .summary {{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }}
     }}
+    #msg-bar {{
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 9999;
+      padding: 14px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.6;
+      border-bottom: 3px solid;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }}
+    #msg-bar .msg-close {{
+      float: right;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      opacity: 0.6;
+      margin-left: 16px;
+    }}
+    #msg-bar .msg-close:hover {{ opacity: 1; }}
+    #msg-bar.ok   {{ background: #d1fae5; border-color: #059669; color: #065f46; }}
+    #msg-bar.warn {{ background: #fef9c3; border-color: #ca8a04; color: #713f12; }}
+    #msg-bar.err  {{ background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }}
   </style>
 </head>
 <body>
   <header>
     <h1>AI Anime MV Builder</h1>
-    <p>가사를 입력하고 필요하면 LRC/SRT와 음악 파일을 선택 첨부하면 storyboard, 이미지 프롬프트, 비디오 프롬프트를 생성합니다.</p>
+    <p>가사를 입력하고 필요하면 LRC/SRT와 음악 파일을 선택 첨부하면 storyboard, 이미지 프롬프트, 비디오 프롬프트를 생성할 수 있습니다.</p>
   </header>
   <main>
     {status_html}
+    <div id="msg-bar" role="alert"></div>
     {content}
   </main>
+  <script>
+    function esc(s) {{
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }}
+    function showMsg(html_content, type) {{
+      const bar = document.getElementById('msg-bar');
+      if (!bar) return;
+      bar.className = 'msg-bar ' + (type || 'ok');
+      bar.innerHTML = '<span class="msg-close" onclick="clearMsg()">&#x2715;</span>' + html_content;
+      bar.style.display = 'block';
+    }}
+    function clearMsg() {{
+      const bar = document.getElementById('msg-bar');
+      if (bar) {{ bar.style.display = 'none'; bar.innerHTML = ''; }}
+    }}
+
+    async function importSuno() {{
+      const urlInput = document.getElementById('suno_url');
+      const btn = document.getElementById('suno_btn');
+      const url = urlInput.value.trim();
+      if (!url) {{ showMsg('Suno 곡 URL을 입력해주세요.', 'warn'); return; }}
+      clearMsg();
+      btn.disabled = true;
+      btn.innerText = '가져오는 중...';
+      try {{
+        const res = await fetch('/api/import_suno?url=' + encodeURIComponent(url));
+        const data = await res.json();
+        if (data.error) {{
+          showMsg('오류: ' + esc(data.error), 'err');
+        }} else {{
+          if (data.title) {{
+            const titleInput = document.getElementById('title');
+            if (titleInput) titleInput.value = data.title;
+          }}
+          let content = '';
+          if (data.tags) content += 'Style: ' + data.tags + '\\n\\n';
+          if (data.lyrics) content += data.lyrics;
+          const lyricsArea = document.getElementById('lyrics');
+          if (lyricsArea && content) lyricsArea.value = content;
+          if (data.analysis) {{
+            showMsg(
+              `가져오기 완료 &nbsp;—&nbsp; 제목: <b>${{esc(data.title || '없음')}}</b> &nbsp;/&nbsp; 태그 <b>${{data.analysis.tag_count}}</b>개 &nbsp;/&nbsp; 가사 <b>${{data.analysis.lyrics_chars}}</b>자`,
+              'ok'
+            );
+          }}
+        }}
+      }} catch (e) {{
+        showMsg('연결 오류: ' + esc(e.message), 'err');
+      }} finally {{
+        btn.disabled = false;
+        btn.innerText = '가져오기';
+      }}
+    }}
+
+    let _learnReport = null;
+
+    async function learnConfig() {{
+      const btn = document.getElementById('learn_btn');
+      if (!btn) return;
+      clearMsg();
+      btn.disabled = true;
+      btn.innerText = '분석 중...';
+      try {{
+        const res = await fetch('/api/config_learn', {{method: 'GET'}});
+        const report = await res.json();
+
+        if (report.status === 'skipped') {{
+          showMsg('Suno 이력이 없습니다. 먼저 Suno URL로 곡을 가져와 주세요.', 'warn');
+          return;
+        }}
+
+        const gUpdates = report.genre_updates || {{}};
+        const aUpdates = report.atmosphere_updates || {{}};
+        const totalGenre = Object.values(gUpdates).reduce((s, v) => s + v.length, 0);
+        const totalUrban = (aUpdates.urban_keywords || []).length;
+        const totalSeason = Object.keys(aUpdates.season_rules || {{}}).length;
+
+        if (totalGenre + totalUrban + totalSeason === 0) {{
+          showMsg(`분석 완료 (${{report.entries_analyzed}}곡) &nbsp;—&nbsp; 추가할 새 키워드 없음. 모든 태그가 이미 Config에 포함되어 있습니다.`, 'ok');
+          return;
+        }}
+
+        let lines = [];
+        if (totalGenre > 0) {{
+          for (const [profile, keys] of Object.entries(gUpdates)) {{
+            lines.push(`장르 <b>${{esc(profile)}}</b> 키 추가: ${{esc(keys.join(', '))}}`);
+          }}
+        }}
+        if (totalUrban > 0) lines.push(`도시 키워드 추가: ${{esc(aUpdates.urban_keywords.join(', '))}}`);
+        if (totalSeason > 0) lines.push(`계절 규칙 추가: ${{esc(Object.keys(aUpdates.season_rules).join(', '))}}`);
+        if (report.bpm_stats) {{
+          const b = report.bpm_stats;
+          lines.push(`BPM 분포 (${{b.count}}곡): 평균 ${{b.mean}} / 중앙값 ${{b.median}} / 범위 ${{b.min}}~${{b.max}}`);
+        }}
+
+        _learnReport = report;
+        showMsg(
+          `분석 완료 (${{report.entries_analyzed}}곡)<br>` +
+          `<ul style="margin:8px 0 12px 18px;">${{lines.map(l=>`<li>${{l}}</li>`).join('')}}</ul>` +
+          `<button onclick="applyLearnConfig()" style="background:var(--accent);color:white;border:0;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:700;margin-right:8px;">Config에 적용</button>` +
+          `<button onclick="clearMsg()" style="background:#eef2f7;color:#1d2430;border:1px solid #d8dee8;padding:8px 16px;border-radius:6px;cursor:pointer;">취소</button>`,
+          'warn'
+        );
+      }} catch (e) {{
+        showMsg('오류: ' + esc(e.message), 'err');
+      }} finally {{
+        btn.disabled = false;
+        btn.innerText = 'Config 자동 학습';
+      }}
+    }}
+
+    async function applyLearnConfig() {{
+      clearMsg();
+      try {{
+        const applyRes = await fetch('/api/config_learn', {{method: 'POST'}});
+        const applied = await applyRes.json();
+        const changed = (applied.configs_changed || []).join(', ');
+        const backup = applied.backup_path ? ` <small style="color:#444">(백업: ${{esc(applied.backup_path)}})</small>` : '';
+        showMsg(`Config 업데이트 완료! &nbsp; 변경 파일: <b>${{esc(changed || '없음')}}</b>${{backup}}`, 'ok');
+      }} catch (e) {{
+        showMsg('적용 오류: ' + esc(e.message), 'err');
+      }}
+      _learnReport = null;
+    }}
+  </script>
 </body>
 </html>"""
     return document.encode("utf-8")
@@ -281,6 +469,11 @@ def render_form(sample_text: str = "") -> str:
 <div class="layout">
   <section class="form-panel">
     <form method="post" action="/generate" enctype="multipart/form-data">
+      <div class="suno-row">
+        <input id="suno_url" type="text" placeholder="Suno 곡 URL (선택)">
+        <button id="suno_btn" type="button" onclick="importSuno()">가져오기</button>
+      </div>
+
       <label for="title">제목</label>
       <input id="title" name="title" type="text" placeholder="비워두면 입력 파일명 기준으로 생성">
 
@@ -301,10 +494,14 @@ def render_form(sample_text: str = "") -> str:
       </label>
 
       <div class="actions">
-        <button type="submit">생성 실행</button>
+        <button type="submit" style="background: var(--accent-strong); font-size: 16px;">Generate Storyboard</button>
         <a class="button secondary" href="/results">최근 결과 보기</a>
       </div>
     </form>
+    <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--line);">
+      <button id="learn_btn" type="button" class="secondary" onclick="learnConfig()"
+              style="width:100%; font-size:13px;">Config 자동 학습 (Suno 이력 반영)</button>
+    </div>
   </section>
   <section class="panel">
     <div class="empty">아직 표시할 결과가 없습니다. 왼쪽에서 입력 후 생성 실행을 누르세요.</div>
@@ -333,6 +530,10 @@ def render_results() -> str:
     return f"""
 <div class="layout">
   <section class="form-panel">
+    <div class="suno-row">
+      <input id="suno_url" type="text" placeholder="Suno 곡 URL (선택)">
+      <button id="suno_btn" type="button" onclick="importSuno()">가져오기</button>
+    </div>
     <form method="post" action="/generate" enctype="multipart/form-data">
       <label for="title">제목</label>
       <input id="title" name="title" type="text" value="{html.escape(song.get("title", ""))}">
@@ -354,7 +555,7 @@ def render_results() -> str:
       </label>
 
       <div class="actions">
-        <button type="submit">다시 생성</button>
+        <button type="submit" style="background: var(--accent-strong); font-size: 16px;">Generate Storyboard</button>
         <a class="button secondary" href="/api/song_master" target="_blank">song_master.json</a>
         <a class="button secondary" href="/api/story_arc" target="_blank">story_arc.json</a>
         <a class="button secondary" href="/api/scene_list" target="_blank">scene_list.json</a>
@@ -362,6 +563,10 @@ def render_results() -> str:
         <a class="button secondary" href="/story-summary" target="_blank">전체 스토리</a>
       </div>
     </form>
+    <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--line);">
+      <button id="learn_btn" type="button" class="secondary" onclick="learnConfig()"
+              style="width:100%; font-size:13px;">Config 자동 학습 (Suno 이력 반영)</button>
+    </div>
   </section>
   <div class="results">
     <section class="panel summary">
@@ -420,6 +625,211 @@ def render_character_model_sheet(character_model_sheet: dict[str, Any]) -> str:
 """
 
 
+def render_theme_options(selected_id: str | None = None) -> str:
+    config = load_config("visual_styles")
+    styles = config.get("styles", {})
+    default_id = config.get("default_style", "cyber_noir")
+    selected_id = selected_id or default_id
+    options = []
+    for sid, data in styles.items():
+        is_selected = " selected" if sid == selected_id else ""
+        name = data.get("name", sid)
+        options.append(f'<option value="{sid}"{is_selected}>{html.escape(name)}</option>')
+    return "\n".join(options)
+
+
+
+
+def clean_tags(tags_str: str) -> list[str]:
+    if not tags_str: return []
+    # Normalize: lower case, remove special characters, split by comma or semicolon
+    raw = re.split(r'[,;]', tags_str.lower())
+    cleaned = []
+    for t in raw:
+        t = t.strip()
+        # Remove common filler words or redundant phrases
+        t = re.sub(r'^(a|the|with|and|of)\s+', '', t)
+        if t and len(t) > 1 and t not in cleaned:
+            cleaned.append(t)
+    return cleaned
+
+
+_BPM_RE          = re.compile(r"(\d{2,3})\s*bpm", re.I)
+_NON_GENRE_RE    = re.compile(r"^\d+\s*bpm$|^\d+/\d+$|^\d{1,2}$|^[a-g]#?\s*(major|minor|maj|min)$", re.I)
+# split_csv가 /로도 분리하므로 파서 넘기기 전에 태그 문자열에서 미리 제거
+_STRIP_TAG_RE    = re.compile(r"\b\d{2,3}\s*bpm\b|\b\d+/\d+\b|\b[a-g]#?\s*(?:major|minor|maj|min)\b", re.I)
+
+
+def analyze_song_patterns(title: str, tags: str, lyrics: str) -> dict[str, Any]:
+    """Extract structured patterns from raw song data (tags + lyrics)."""
+    # 태그 감싼 따옴표 제거 (Suno가 'tag...' 형태로 저장하는 경우)
+    tags = tags.strip("'\"").strip()
+
+    # 가사 정규화: literal \n → 실제 줄바꿈, Suno 내부 ID 접두사 제거
+    lyrics = lyrics.replace("\\n", "\n")
+    if lyrics and "[" in lyrics:
+        first_bracket = lyrics.index("[")
+        if first_bracket > 0:
+            lyrics = lyrics[first_bracket:]
+
+    # BPM: 태그 문자열에서 직접 추출 (parser가 key:value 라인을 우선하기 때문)
+    bpm: int | None = None
+    m = _BPM_RE.search(tags)
+    if m:
+        bpm = int(m.group(1))
+
+    # 파서에 넘기기 전 태그에서 BPM/박자/조성 토큰 제거 (split_csv가 /로도 분리하므로 미리 처리)
+    tags_for_parser = re.sub(r",\s*,", ",", _STRIP_TAG_RE.sub("", tags)).strip(", ")
+
+    parts: list[str] = []
+    if title:
+        parts.append(f"Title: {title}")
+    if bpm:
+        parts.append(f"BPM: {bpm}")
+    if tags_for_parser:
+        parts.append(f"Music style tags: {tags_for_parser}")
+    if lyrics:
+        parts.append(lyrics)
+    synthetic = "\n".join(parts)
+
+    metadata = song_parser.extract_metadata(synthetic)
+    sections  = song_parser.parse_sections(synthetic) if lyrics.strip() else []
+
+    # BPM/박자/조성 등 비장르 항목 제거 후 장르 정제
+    clean_tags = [t for t in metadata.get("style_tags", []) if not _NON_GENRE_RE.match(t.strip())]
+    genre = ", ".join(clean_tags[:3]) if clean_tags else metadata.get("genre", "")
+
+    vocal_keywords = ["female vocals", "male vocals", "female vocal", "male vocal",
+                      "rap", "choir", "a cappella", "instrumental"]
+    tag_lower = tags.lower()
+    vocal_style = next((k for k in vocal_keywords if k in tag_lower), "")
+
+    return {
+        "genre":             genre,
+        "bpm":               bpm or metadata.get("bpm"),
+        "mood":              metadata.get("mood", []),
+        "energy":            metadata.get("energy", ""),
+        "instruments":       metadata.get("instruments", []),
+        "style_tags":        clean_tags,
+        "vocal_style":       vocal_style,
+        "section_structure": [s["section"] for s in sections],
+        "section_count":     len(sections),
+    }
+
+
+def save_to_suno_history(url: str, data: dict[str, Any]) -> None:
+    history_dir = PROJECT_ROOT / "data"
+    history_dir.mkdir(exist_ok=True)
+    history_file = history_dir / "suno_history.jsonl"
+
+    title   = data.get("title", "")
+    tags    = data.get("tags", "")
+    lyrics  = data.get("lyrics", "")
+    cleaned_tags = clean_tags(tags)
+    patterns = analyze_song_patterns(title, tags, lyrics)
+
+    log_entry = {
+        "timestamp":      timestamp(),
+        "source":         "suno_import",
+        "url":            url,
+        "title":          title,
+        "raw_tags":       tags,
+        "cleaned_tags":   cleaned_tags,
+        "lyrics_len":     len(lyrics),
+        "lyrics_preview": (lyrics[:100] + "...") if lyrics else "",
+        "patterns":       patterns,
+    }
+
+    with open(history_file, "a", encoding="utf-8") as f:
+        f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+
+
+def fetch_suno_metadata(url: str) -> dict[str, Any]:
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            },
+        )
+        with urllib.request.urlopen(req, timeout=10) as response:
+            html_content = response.read().decode("utf-8", errors="replace")
+
+        # Robust extraction logic
+        def clean_val(val):
+            if not val: return ""
+            try:
+                # Handle unicode escape (\u1234)
+                val = val.encode('utf-8').decode('unicode-escape')
+                # Handle double-encoding mojibake
+                if any(ord(c) > 127 for c in val):
+                    try: val = val.encode('latin1').decode('utf-8')
+                    except: pass
+            except: pass
+            return val.replace('\\n', '\n').replace('\\"', '"')
+
+        def extract_json_field(field_name, text):
+            patterns = [
+                rf'"{field_name}":"(.*?)"',        
+                rf'\\"{field_name}\\":\\"(.*?)\\"', 
+                rf'\\\\"{field_name}\\\\":\\\\"(.*?)\\\\"' 
+            ]
+            for p in patterns:
+                m = re.search(p, text)
+                if m: return clean_val(m.group(1))
+            return ""
+
+        # 1. Try to get chunks from self.__next_f.push
+        chunks = []
+        matches = re.finditer(r'self\.__next_f\.push\(\[1,"(.*?)"\]\)', html_content)
+        for m in matches:
+            chunks.append(m.group(1).replace('\\"', '"').replace('\\\\', '\\'))
+        
+        # 2. Extract basic info
+        title = extract_json_field("title", html_content)
+        tags = extract_json_field("tags", html_content) or extract_json_field("display_tags", html_content)
+        
+        # 3. Extract lyrics (can be in a field or a raw chunk)
+        # Try JSON fields first (lyrics or prompt)
+        lyrics = extract_json_field("lyrics", html_content) or extract_json_field("prompt", html_content)
+        
+        # If still no lyrics, look for the "lyrics chunk" (usually starts with section markers)
+        if not lyrics or len(lyrics) < 20:
+            for chunk in chunks:
+                if "[Intro]" in chunk or "[Verse" in chunk or "[Chorus]" in chunk:
+                    # Found a chunk that looks like lyrics
+                    # Sometimes it's inside a JSON-like array string, let's clean it
+                    clean_chunk = chunk
+                    if clean_chunk.startswith("49:["): # Common Next.js RSC prefix
+                        try:
+                            # Try a very loose extraction of the first large string block
+                            text_match = re.search(r'\["(.*?)",', clean_chunk)
+                            if text_match: clean_chunk = text_match.group(1)
+                        except: pass
+                    
+                    if len(clean_chunk) > len(lyrics):
+                        lyrics = clean_chunk
+
+        if lyrics or tags:
+            cleaned = clean_tags(tags)
+            data = {
+                "title": html.unescape(title),
+                "lyrics": html.unescape(lyrics),
+                "tags": ", ".join(cleaned), # Saved as cleaned CSV
+                "analysis": {
+                    "tag_count": len(cleaned),
+                    "lyrics_chars": len(lyrics),
+                    "top_tags": cleaned[:5]
+                }
+            }
+            save_to_suno_history(url, data)
+            return data
+
+        return {"error": "데이터를 찾을 수 없습니다. 공개된 곡인지 확인해 주세요."}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 def render_scene(scene: dict[str, Any]) -> str:
     lyrics = scene.get("lyrics_excerpt", "").strip() or "(instrumental)"
     return f"""
@@ -473,6 +883,113 @@ def save_ui_state(state: dict) -> None:
     path.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
 
 
+def backfill_history_patterns() -> int:
+    """모든 이력 항목에 최신 패턴 분석 재적용 + URL 기준 중복 제거."""
+    history_file = PROJECT_ROOT / "data" / "suno_history.jsonl"
+    if not history_file.exists():
+        return 0
+
+    lines = [l for l in history_file.read_text(encoding="utf-8").splitlines() if l.strip()]
+    updated = 0
+    seen_urls: dict[str, dict] = {}   # url → entry (가장 최근 항목 유지)
+
+    for line in lines:
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+
+        if not entry.get("source"):
+            entry["source"] = "suno_import"
+
+        if entry.get("source") == "generate_storyboard":
+            # song_master.json 완전 처리 결과를 그대로 보존 (덮어쓰지 않음)
+            pass
+        else:
+            # suno_import: 최신 로직으로 패턴 재분석
+            raw_tags = entry.get("raw_tags") or entry.get("tags") or ""
+            title    = entry.get("title") or ""
+            preview  = entry.get("lyrics_preview") or entry.get("lyrics") or ""
+            patterns = analyze_song_patterns(title, raw_tags, preview)
+            patterns["section_structure"] = []
+            patterns["section_count"]     = 0
+            entry["patterns"] = patterns
+            updated += 1
+
+        url = entry.get("url") or entry.get("timestamp", "")
+        seen_urls[url] = entry   # 같은 URL이면 마지막 항목으로 덮어쓰기
+
+    new_lines = [json.dumps(e, ensure_ascii=False) for e in seen_urls.values()]
+    history_file.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+    return updated
+
+
+def save_generate_to_history(song: dict[str, Any]) -> None:
+    """Generate Storyboard 실행 시 song_master 분석 결과를 이력에 저장."""
+    history_dir = PROJECT_ROOT / "data"
+    history_dir.mkdir(exist_ok=True)
+    history_file = history_dir / "suno_history.jsonl"
+
+    sections = song.get("sections", [])
+    style_tags = song.get("style_tags", [])
+
+    log_entry = {
+        "timestamp":      timestamp(),
+        "source":         "generate_storyboard",
+        "url":            "",
+        "title":          song.get("title", ""),
+        "raw_tags":       ", ".join(style_tags),
+        "cleaned_tags":   style_tags,
+        "lyrics_len":     sum(len(s.get("lyrics", "")) for s in sections),
+        "lyrics_preview": sections[0].get("lyrics", "")[:100] if sections else "",
+        "patterns": {
+            "genre":             song.get("genre", ""),
+            "bpm":               song.get("bpm"),
+            "mood":              song.get("mood", []),
+            "energy":            song.get("energy", ""),
+            "instruments":       song.get("instruments", []),
+            "style_tags":        style_tags,
+            "vocal_style":       next(
+                (k for k in ["female vocals", "male vocals", "rap", "choir"]
+                 if any(k in t.lower() for t in style_tags)), ""
+            ),
+            "section_structure": [s.get("name", "") for s in sections],
+            "section_count":     len(sections),
+        },
+    }
+
+    with open(history_file, "a", encoding="utf-8") as f:
+        f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+
+
+def safe_folder_name(title: str) -> str:
+    """Remove Windows-forbidden path characters from song title."""
+    name = re.sub(r'[\\/:*?"<>|]', "_", title.strip())
+    return name or "untitled"
+
+
+def save_prompts_to_song_dir(song_title: str) -> Path:
+    """Copy generated prompts into output/<song_title>/ and return the folder."""
+    out_dir = PROJECT_ROOT / "output" / safe_folder_name(song_title)
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    char_ref = PROJECT_ROOT / "character" / "character_reference_prompt.md"
+    if char_ref.exists():
+        shutil.copy2(char_ref, out_dir / "character_reference_prompt.md")
+
+    img_src = PROJECT_ROOT / "prompts" / "image_prompts"
+    if img_src.exists():
+        shutil.copytree(img_src, out_dir / "image_prompts", dirs_exist_ok=True)
+
+    vid_src = PROJECT_ROOT / "prompts" / "video_prompts"
+    if vid_src.exists():
+        shutil.copytree(vid_src, out_dir / "video_prompts", dirs_exist_ok=True)
+
+    return out_dir
+
+
 def safe_filename(value: str, fallback: str) -> str:
     name = Path(value or fallback).name
     suffix = Path(name).suffix.lower()
@@ -501,12 +1018,13 @@ def generate_from_form(form: FieldStorage) -> Path:
 
     lyrics_raw = form.getfirst("lyrics", "").replace("\r\n", "\n").replace("\r", "\n").strip()
     title = form.getfirst("title", "").strip()
+    style_id = form.getfirst("style_id", "cyber_noir").strip()
     apply_audio_analysis = bool(form.getfirst("apply_audio_analysis"))
     if not lyrics_raw:
         raise ValueError("가사 또는 메타 정보를 입력해 주세요.")
     lyrics_for_pipeline = f"Title: {title}\n{lyrics_raw}" if title else lyrics_raw
 
-    save_ui_state({"apply_audio_analysis": apply_audio_analysis})
+    save_ui_state({"apply_audio_analysis": apply_audio_analysis, "style_id": style_id})
     raw_path = run_input_dir / "raw_song.txt"
     write_text(raw_path, lyrics_for_pipeline)
     write_text(PROJECT_ROOT / "input" / "raw_song.txt", lyrics_raw)
@@ -537,44 +1055,49 @@ def generate_from_form(form: FieldStorage) -> Path:
         apply_audio_analysis=apply_audio_analysis,
     )
     emotion_engine.run()
-    scene_generator.run()
+    scene_generator.run(style_id=style_id)
     image_prompt_generator.run()
     video_prompt_generator.run()
 
     song = read_json(PROJECT_ROOT / "input" / "song_master.json")
-    snapshot_dir = snapshot_outputs(slugify(song["title"]))
+    save_generate_to_history(song)
+    song_dir = save_prompts_to_song_dir(song["title"])
     if audio_uploads:
-        audio_snapshot_dir = snapshot_dir / "input" / "audio"
-        audio_snapshot_dir.mkdir(parents=True, exist_ok=True)
+        audio_dst_dir = song_dir / "audio"
+        audio_dst_dir.mkdir(parents=True, exist_ok=True)
         for audio_path in audio_uploads:
-            shutil.copy2(audio_path, audio_snapshot_dir / audio_path.name)
-    return snapshot_dir
+            shutil.copy2(audio_path, audio_dst_dir / audio_path.name)
+    return song_dir
 
 
 class WebHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed = urllib.parse.urlparse(self.path)
-        if parsed.path in {"/", "/results"}:
-            self.send_html(page_shell(render_results() if parsed.path == "/results" else render_form(load_recent_raw_text())))
-            return
-        if parsed.path == "/api/song_master":
+        if parsed.path == "/":
+            self.send_home()
+        elif parsed.path == "/results":
+            self.send_results()
+        elif parsed.path == "/api/import_suno":
+            self.handle_import_suno(parsed.query)
+        elif parsed.path == "/api/config_learn":
+            self.handle_config_learn(dry_run=True)
+        elif parsed.path == "/api/song_master":
             self.send_json_file(PROJECT_ROOT / "input" / "song_master.json")
-            return
-        if parsed.path == "/api/story_arc":
+        elif parsed.path == "/api/story_arc":
             self.send_json_file(PROJECT_ROOT / "storyboard" / "story_arc.json")
-            return
-        if parsed.path == "/api/scene_list":
+        elif parsed.path == "/api/scene_list":
             self.send_json_file(PROJECT_ROOT / "storyboard" / "scene_list.json")
-            return
-        if parsed.path == "/character-reference":
+        elif parsed.path == "/character-reference":
             self.send_text_file(PROJECT_ROOT / "character" / "character_reference_prompt.md")
-            return
-        if parsed.path == "/story-summary":
+        elif parsed.path == "/story-summary":
             self.send_text_file(PROJECT_ROOT / "storyboard" / "story_summary.md")
-            return
-        self.send_error(404)
+        else:
+            self.send_error(404)
 
     def do_POST(self) -> None:
+        if self.path == "/api/config_learn":
+            self.handle_config_learn(dry_run=False)
+            return
         if self.path != "/generate":
             self.send_error(404)
             return
@@ -594,9 +1117,36 @@ class WebHandler(BaseHTTPRequestHandler):
         except Exception as exc:
             self.send_html(page_shell(render_form(load_recent_raw_text()), f"오류: {exc}"), status=500)
 
+    def handle_config_learn(self, dry_run: bool) -> None:
+        try:
+            report = config_learner.run(dry_run=dry_run)
+        except Exception as exc:
+            report = {"status": "error", "reason": str(exc)}
+        self._send_json(report)
+
+    def handle_import_suno(self, query_str: str) -> None:
+        query = urllib.parse.parse_qs(query_str)
+        url = query.get("url", [""])[0]
+        data = {"error": "No URL provided"} if not url else fetch_suno_metadata(url)
+        self._send_json(data)
+
+    def send_home(self) -> None:
+        self.send_html(page_shell(render_form(load_recent_raw_text())))
+
+    def send_results(self) -> None:
+        self.send_html(page_shell(render_results()))
+
     def send_html(self, body: bytes, status: int = 200) -> None:
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _send_json(self, data: Any) -> None:
+        body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -631,6 +1181,9 @@ def main() -> None:
     args = parser.parse_args()
 
     ensure_directories()
+    filled = backfill_history_patterns()
+    if filled:
+        print(f"History backfill: {filled}개 항목에 패턴 분석 추가 완료")
     server = ThreadingHTTPServer((args.host, args.port), WebHandler)
     print(f"Web UI running at http://{args.host}:{args.port}")
     server.serve_forever()

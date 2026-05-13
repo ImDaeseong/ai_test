@@ -13,11 +13,15 @@ from common import (
     DEFAULT_SECTIONS,
     PROJECT_ROOT,
     ensure_directories,
+    load_config,
     normalize_section_name,
     read_text,
     split_csv,
     write_json,
 )
+
+_BPM_CONFIG = load_config("bpm_thresholds")
+_SECTIONS_CONFIG = load_config("song_sections")
 
 
 KEY_ALIASES = {
@@ -28,6 +32,7 @@ KEY_ALIASES = {
     "emotion": "mood",
     "energy": "energy",
     "instruments": "instruments",
+    "style": "style_tags",
     "music style tags": "style_tags",
     "style tags": "style_tags",
     "negative tags": "negative_tags",
@@ -46,6 +51,21 @@ SRT_TIME_PATTERN = re.compile(
     r"(\d{2}):(\d{2}):(\d{2}),(\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2}),(\d{3})"
 )
 AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"}
+_FFMPEG_AVAILABLE: bool | None = None
+
+
+def check_ffmpeg() -> bool:
+    global _FFMPEG_AVAILABLE
+    if _FFMPEG_AVAILABLE is not None:
+        return _FFMPEG_AVAILABLE
+    try:
+        subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
+        subprocess.run(["ffprobe", "-version"], capture_output=True, check=True)
+        _FFMPEG_AVAILABLE = True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        _FFMPEG_AVAILABLE = False
+        print("WARNING: ffmpeg or ffprobe not found in system PATH. Audio analysis will be skipped.")
+    return _FFMPEG_AVAILABLE
 
 
 def seconds_from_lrc_match(match: re.Match[str]) -> float:
@@ -157,6 +177,9 @@ def extract_metadata(text: str) -> dict[str, Any]:
             metadata[normalized] = split_csv(value)
         else:
             metadata[normalized] = value
+    # Derive genre from style_tags if not explicitly set
+    if metadata["genre"] == "anime cinematic pop" and metadata["style_tags"]:
+        metadata["genre"] = ", ".join(metadata["style_tags"][:3])
     return metadata
 
 
@@ -257,6 +280,9 @@ def discover_input_files(input_path: Path) -> dict[str, list[Path]]:
 
 
 def probe_audio_duration(path: Path) -> float | None:
+    if not check_ffmpeg():
+        return None
+
     if path.suffix.lower() == ".wav":
         with contextlib.suppress(Exception), wave.open(str(path), "rb") as wav_file:
             frames = wav_file.getnframes()
@@ -283,6 +309,8 @@ def probe_audio_duration(path: Path) -> float | None:
 
 
 def probe_audio_stream(path: Path) -> dict[str, Any]:
+    if not check_ffmpeg():
+        return {}
     command = [
         "ffprobe",
         "-v",
@@ -310,6 +338,8 @@ def probe_audio_stream(path: Path) -> dict[str, Any]:
 
 
 def probe_audio_loudness(path: Path) -> dict[str, Any]:
+    if not check_ffmpeg():
+        return {}
     command = [
         "ffmpeg",
         "-hide_banner",
@@ -337,9 +367,14 @@ def probe_audio_loudness(path: Path) -> dict[str, Any]:
 def classify_audio_energy(mean_volume_db: float | None, max_volume_db: float | None) -> str:
     if mean_volume_db is None:
         return "medium"
-    if mean_volume_db >= -14 or (max_volume_db is not None and max_volume_db >= -1):
+    audio_cfg = _BPM_CONFIG.get("audio_energy", {})
+    high_cfg = audio_cfg.get("high", {})
+    low_cfg = audio_cfg.get("low", {})
+    if mean_volume_db >= high_cfg.get("min_mean_db", -14) or (
+        max_volume_db is not None and max_volume_db >= high_cfg.get("min_max_db", -1)
+    ):
         return "high"
-    if mean_volume_db <= -24:
+    if mean_volume_db <= low_cfg.get("max_mean_db", -24):
         return "low"
     return "medium"
 
@@ -473,14 +508,13 @@ def build_song_master_from_input(input_path: Path, apply_audio_analysis: bool = 
 
 
 def infer_intensity(section: str, index: int, total: int, energy: str) -> str:
+    intensity_defaults = _SECTIONS_CONFIG.get("intensity_defaults", {})
     if section == "Chorus":
-        return "high" if "high" in energy.lower() or "rising" in energy.lower() else "medium-high"
-    if section == "Bridge":
-        return "emotional peak"
-    if section == "Intro":
-        return "low"
+        return intensity_defaults.get("Chorus", "high") if ("high" in energy.lower() or "rising" in energy.lower()) else "medium-high"
+    if section in intensity_defaults:
+        return intensity_defaults[section]
     if index >= total - 1:
-        return "falling"
+        return _SECTIONS_CONFIG.get("final_section_intensity", "falling")
     return "medium"
 
 
@@ -530,13 +564,17 @@ def build_song_master(text: str, source_name: str) -> dict[str, Any]:
 
 
 def infer_pacing(bpm: int | None, energy: str) -> str:
-    if bpm and bpm >= 130:
-        return "fast cuts with energetic camera movement"
-    if bpm and bpm <= 80:
-        return "slow cinematic cuts with lingering frames"
+    thresholds = _BPM_CONFIG.get("thresholds", {})
+    fast_bpm = thresholds.get("fast", {}).get("min_bpm", 120)
+    slow_bpm = thresholds.get("slow", {}).get("max_bpm", 80)
+    pacing_desc = _BPM_CONFIG.get("pacing_desc", {})
+    if bpm and bpm >= fast_bpm:
+        return pacing_desc.get("fast", "fast cuts with energetic camera movement")
+    if bpm and bpm <= slow_bpm:
+        return pacing_desc.get("slow", "slow cinematic cuts with lingering frames")
     if "rising" in energy.lower():
-        return "measured pacing that expands in chorus sections"
-    return "medium cinematic pacing"
+        return pacing_desc.get("rising", "measured pacing that expands in chorus sections")
+    return pacing_desc.get("default", "medium cinematic pacing")
 
 
 def run(

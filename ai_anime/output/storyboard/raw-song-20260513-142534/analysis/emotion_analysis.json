@@ -1,0 +1,115 @@
+{
+  "primary_emotion": "sad",
+  "secondary_emotions": [
+    "cinematic"
+  ],
+  "emotional_progression": [
+    {
+      "section": "Intro",
+      "intensity": "low",
+      "emotion": "sad",
+      "visual_symbols": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
+    },
+    {
+      "section": "Verse",
+      "intensity": "medium",
+      "emotion": "sad",
+      "visual_symbols": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
+    },
+    {
+      "section": "Verse",
+      "intensity": "medium",
+      "emotion": "sad",
+      "visual_symbols": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
+    },
+    {
+      "section": "Pre-Chorus",
+      "intensity": "medium",
+      "emotion": "sad",
+      "visual_symbols": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
+    },
+    {
+      "section": "Bridge",
+      "intensity": "emotional peak",
+      "emotion": "sad",
+      "visual_symbols": [
+        "rain on glass",
+        "empty bench",
+        "flickering streetlamp"
+      ],
+      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+      "environment": "night street or train window",
+      "camera_emotion": "close-up profile, slow tilt down"
+    },
+    {
+      "section": "Outro",
+      "intensity": "falling",
+      "emotion": "hope",
+      "visual_symbols": [
+        "sunrise edge",
+        "opening sky",
+        "upward drifting signature prop"
+      ],
+      "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
+      "environment": "rooftop at dawn",
+      "camera_emotion": "upward angle, slow crane rise"
+    }
+  ],
+  "visual_symbolism": [
+    "rain on glass",
+    "empty bench",
+    "flickering streetlamp"
+  ],
+  "emotional_climax": {
+    "section": "Bridge",
+    "intensity": "emotional peak",
+    "emotion": "sad",
+    "visual_symbols": [
+      "rain on glass",
+      "empty bench",
+      "flickering streetlamp"
+    ],
+    "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
+    "environment": "night street or train window",
+    "camera_emotion": "close-up profile, slow tilt down"
+  },
+  "seasonal_atmosphere": "rainy late spring night",
+  "urban_rural_mood": "urban emotional atmosphere",
+  "cinematic_pacing": "fast cuts with energetic camera movement",
+  "tension_curve": [
+    "low",
+    "medium",
+    "medium",
+    "medium",
+    "emotional peak",
+    "falling"
+  ]
+}

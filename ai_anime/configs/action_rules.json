@@ -1,0 +1,86 @@
+{
+  "rules": [
+    {
+      "keys": ["hide", "숨", "secret", "비밀"],
+      "action": "presses {prop} close to the chest, partially concealing it in shadow"
+    },
+    {
+      "keys": ["alone", "혼자", "lonely", "외로"],
+      "action": "turns slightly away from the light, {prop} held loosely at one side"
+    },
+    {
+      "keys": ["smile", "laugh", "웃"],
+      "action": "holds a controlled smile while {prop} flickers in the reflection"
+    },
+    {
+      "keys": ["cry", "tear", "울", "눈물"],
+      "action": "tries to hide tears as {prop} catches the cyber-pink rim light"
+    },
+    {
+      "keys": ["run", "달리", "escape", "뛰"],
+      "action": "breaks into motion, {prop} trailing light behind"
+    },
+    {
+      "keys": ["wait", "기다", "stay", "멈", "머물"],
+      "action": "stands still, fingers resting on {prop} as time seems suspended"
+    },
+    {
+      "keys": ["love", "사랑", "hold", "안아", "곁"],
+      "action": "reaches forward slowly, {prop} glowing between open hands"
+    },
+    {
+      "keys": ["angry", "rage", "fight", "분노", "화"],
+      "action": "grips {prop} tight, shoulders tense, frame locked in controlled tension"
+    },
+    {
+      "keys": ["remember", "memory", "past", "기억", "그날"],
+      "action": "looks slightly past the camera as {prop} pulses with stored light"
+    },
+    {
+      "keys": ["dream", "꿈", "float", "fly", "몽"],
+      "action": "drifts forward with {prop} trailing soft light above the grip"
+    },
+    {
+      "keys": ["break", "shatter", "무너", "깨", "부서"],
+      "action": "lets {prop} hang low, its light fragmenting across the floor"
+    },
+    {
+      "keys": ["walk", "걷", "move", "step"],
+      "action": "walks slowly forward, {prop} catching each passing neon light"
+    },
+    {
+      "keys": ["look", "stare", "gaze", "바라", "보다"],
+      "action": "holds a long gaze forward while {prop} rests quietly in the palm"
+    },
+    {
+      "keys": ["sing", "vocal", "노래", "harmony"],
+      "action": "opens the mouth slightly, {prop} vibrating with the vocal resonance"
+    },
+    {
+      "keys": ["rap", "syncopated", "bass", "rhythm"],
+      "action": "moves in clipped rhythmic steps, keeping {prop} close to the chest"
+    }
+  ],
+  "default": "shows the section emotion through posture, hand movement, and the recurring {prop}",
+  "section_overrides": {
+    "Bridge": {
+      "hide_keywords": ["숨", "hide", "secret", "비밀"],
+      "hide_action": "mask finally slips, {prop} trembling as buried emotion breaks through the neon surface",
+      "default_action": "looks past the camera as long-held emotion surfaces, {prop} vibrating faintly with the vocal line"
+    },
+    "Outro": {
+      "cry_keywords": ["울", "cry", "눈물", "tear"],
+      "cry_action": "lets the smile fall; {prop} dims as tears trace the neon edge into silence",
+      "default_action": "slows to stillness, {prop} settling into the final graphite reflection"
+    },
+    "Chorus": {
+      "smile_keywords": ["웃", "smile", "laugh"],
+      "smile_action": "surges forward with {prop} raised, forced smile vivid against the neon light",
+      "default_action": "pushes forward through the brightest neon layer with {prop} leading the frame"
+    },
+    "Intro": {
+      "music_cue_prefix": "music cue:",
+      "music_cue_action": "stands in controlled stillness, making a small hand gesture as {prop} begins to glow"
+    }
+  }
+}

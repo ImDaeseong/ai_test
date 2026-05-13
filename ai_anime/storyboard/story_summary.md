@@ -1,30 +1,29 @@
-# 전체 스토리 설명
+# Story Summary
 
-## 로그라인
-'Raw Song'은 종이학을 든 외로운 청소년 주인공이 주요 공간인 비가 그친 조용한 도시 거리를 지나며 실루엣, 바람, 멀리 보이는 도시 불빛, 텅 빈 거리 같은 상징을 단서처럼 따라가고, 마지막에는 네온 마젠타와 사이버 핑크 빛 속에서 작은 결심을 되찾는 사이버 애니메이션 MV입니다.
+## Logline
+'UPGRADE'는 defiant anime performer carrying unresolved emotion like stage feedback가 a forced smile reflected as a split neon expression를 따라가며 window-lit room above a quiet street, abandoned live house exterior, quiet city street after rain를 통과하는 high-contrast rock anime noir MV입니다.
 
-## 줄거리
-이 뮤직비디오는 쓸쓸하고 서정적인 감정에서 출발합니다. 주인공은 같은 옷차림과 종이학을 지닌 채 비에 젖은 도시를 걷고, 각 장면은 도망치거나 멈춰 서는 대신 조금씩 앞으로 이동하는 행동으로 이어집니다. 벌스에서는 아직 말하지 못한 감정을 품고 걷고, 프리코러스에서는 신호등과 빛의 변화가 내면의 망설임을 흔듭니다. 코러스에서는 카메라와 걸음이 함께 앞으로 밀려 나가며 감정이 커지고, 마지막 아웃트로에서는 종이학과 악센트 빛이 남아 주인공이 과거를 지우지 않은 채 다음 아침으로 넘어간다는 결말을 만듭니다.
+## Summary
+이 뮤직비디오는 고정된 색상톤은 유지하되, 장면과 캐릭터는 'Hardcore Punk, Garage Rock, 175 BPM'의 리듬, 175 BPM의 속도감, 섹션별 가사와 감정 변화에 맞춰 전개됩니다. 반복 상징은 a forced smile reflected as a split neon expression이며, 각 장면은 같은 주인공을 유지하면서도 장소, 행동, 카메라, 영상 움직임을 다르게 설계합니다.
 
-## 씬별 서사 흐름
-1. Intro: Intro에서는 주인공이 비가 그친 조용한 도시 거리에 홀로 등장하며, 종이학과 빛의 규칙을 처음 보여줍니다.
-2. Verse: Verse에서는 주인공이 멈추지 않고 이동하면서 가사 속 감정을 도시의 반사와 신호로 마주합니다.
-3. Verse: Verse에서는 주인공이 멈추지 않고 이동하면서 가사 속 감정을 도시의 반사와 신호로 마주합니다.
-4. Pre-Chorus: Pre-Chorus에서는 주인공이 멈추지 않고 이동하면서 가사 속 감정을 도시의 반사와 신호로 마주합니다.
-5. Chorus: Chorus에서는 반복되던 감정이 가장 크게 터지고, 주인공은 같은 소품을 쥔 채 빛을 향해 나아갑니다.
-6. Verse: Verse에서는 주인공이 멈추지 않고 이동하면서 가사 속 감정을 도시의 반사와 신호로 마주합니다.
-7. Bridge: Bridge에서는 주인공이 멈추지 않고 이동하면서 가사 속 감정을 도시의 반사와 신호로 마주합니다.
-8. Chorus: Chorus에서는 반복되던 감정이 가장 크게 터지고, 주인공은 같은 소품을 쥔 채 빛을 향해 나아갑니다.
-9. Outro: Outro에서는 종이학과 악센트 빛을 남기며 주인공이 과거를 품은 채 다음 아침으로 넘어갑니다.
+## Scene Flow
+1. Intro: In the Intro, the protagonist introduces a forced smile reflected as a split neon expression; action: shows the section emotion through posture, hand movement, and the recurring scratched guitar pick glowing cyber pink.
+2. Verse: In the Verse, the lyric emotion becomes visible through the action: shows the section emotion through posture, hand movement, and the recurring scratched guitar pick glowing cyber pink.
+3. Pre-Chorus: In the Pre-Chorus, the lyric emotion becomes visible through the action: shows the section emotion through posture, hand movement, and the recurring scratched guitar pick glowing cyber pink.
+4. Chorus: In the Chorus, the repeated emotion peaks while the camera follows the action: pushes forward through the brightest neon layer with scratched guitar pick glowing cyber pink leading the frame.
+5. Verse: In the Verse, the lyric emotion becomes visible through the action: presses scratched guitar pick glowing cyber pink close to the chest, partially concealing it in shadow.
+6. Bridge: In the Bridge, the repeated emotion peaks while the camera follows the action: looks past the camera as long-held emotion surfaces, scratched guitar pick glowing cyber pink vibrating faintly with the vocal line.
+7. Chorus: In the Chorus, the repeated emotion peaks while the camera follows the action: pushes forward through the brightest neon layer with scratched guitar pick glowing cyber pink leading the frame.
+8. Outro: In the Outro, a forced smile reflected as a split neon expression settles into the final image as the motion slows into resolution.
 
-## 일관성 규칙
-- 모든 씬은 같은 주인공, 같은 헤어스타일, 같은 의상, 같은 종이학 소품을 유지합니다.
-- 각 씬의 이동 방향은 이전 씬의 감정에서 다음 씬의 감정으로 이어지는 흐름을 보여줍니다.
-- 채널 브랜드 팔레트와 네온 마젠타와 사이버 핑크 중심의 사이버 컬러 규칙은 전체 영상에서 유지됩니다.
-- 씬 전환은 비, 반사, 종이학, 신호등, 도시의 빛 같은 반복 심볼을 이용합니다.
+## Continuity Rules
+- 한 곡 안에서는 같은 주인공, 같은 의상, 같은 대표 소품을 유지합니다.
+- 곡이 바뀌면 장르, BPM, 가사, 분위기에 맞춰 새 주인공과 새 소품을 생성합니다.
+- 색상톤은 유지합니다: limited-color anime palette: crimson red dominant, dark shadows, near-black backgrounds, subtle secondary reflections, silver-white rim highlights.
+- 각 섹션은 가사, 섹션 설명, 강도, BPM에 따라 다른 장소, 행동, 카메라 움직임을 가져야 합니다.
 
-## 권장 제작 순서
-1. `character/character_reference_prompt.md`로 정면, 좌우 측면, 후면, 3/4뷰, 얼굴 클로즈업이 포함된 캐릭터 턴어라운드 모델시트를 먼저 생성합니다.
-2. 각 씬의 이미지 프롬프트를 실행할 때 같은 모델시트를 참조 이미지로 첨부합니다.
-3. 씬별 이미지가 완성되면 그 이미지를 비디오 생성의 첫 프레임 또는 이미지 투 비디오 입력으로 사용합니다.
-4. 비디오 생성 도구가 여러 참조 이미지를 지원하면 씬 이미지와 함께 캐릭터 모델시트도 보조 참조로 첨부합니다.
+## Recommended Production Order
+1. Generate `character/character_reference_prompt.md` as the song-specific character model sheet.
+2. Attach that model sheet when generating every scene image for this song.
+3. Use each approved scene image as the first-frame/image-to-video input for that scene.
+4. Keep the fixed neon magenta/cyber pink palette, but vary action, location, rhythm, and symbolism per song and section.

@@ -1,28 +1,25 @@
 {
   "role": "unique protagonist for this song",
-  "identity": "solitary anime teenager carrying a folded paper crane",
-  "age_style": "late-teen anime character, stylized and non-photorealistic",
-  "hair": "short layered black hair with a long side fringe, slightly wind-tossed",
-  "outfit": "dark school coat over a white shirt, narrow tie, simple shoulder bag",
-  "silhouette": "slim figure, coat hem and side fringe readable in silhouette",
+  "identity": "defiant anime performer carrying unresolved emotion like stage feedback",
+  "age_style": "anime character, stylized and non-photorealistic",
+  "hair": "messy dark hair with sharp crimson red streaks and wind-cut strands",
+  "outfit": "dark fitted jacket, asymmetric straps, worn boots, metallic detail accents",
+  "silhouette": "strong angular stance with performance-ready shoulders",
   "emotional_state": "melancholic, cinematic, audio-informed",
-  "signature_prop": "small paper crane",
-  "accent_detail": "neon magenta/cyber pink is dominant, with deep plum shadows, subtle icy cyan reflections, and silver-white rim highlights",
+  "signature_prop": "scratched guitar pick glowing cyber pink",
+  "accent_detail": "crimson red remains dominant, but the prop and gestures follow this song motif: a forced smile reflected as a split neon expression",
   "consistency_rules": [
-    "Keep the same hairstyle in every scene.",
-    "Keep the same outfit and shoulder bag in every scene.",
-    "Preserve the paper crane as the recurring symbol.",
+    "Keep the same face, hairstyle, outfit, body proportions, and signature prop within this song only.",
+    "Do not reuse this character design for a different song unless the user explicitly requests a series identity.",
+    "Let pose, expression, setting, and action change per section according to lyrics, genre, intensity, and BPM.",
     "Use anime cinematic styling, never live-action realism.",
-    "First create a full character turnaround model sheet from character_reference_prompt.md.",
-    "The model sheet must show front, left side, right side, back, and three-quarter views.",
-    "Attach that same character model sheet when generating every scene image.",
-    "Attach the final scene image as the primary image-to-video reference when generating the video for that scene.",
-    "If the video tool supports multiple references, also attach the character model sheet as a secondary identity reference."
+    "First generate Step 00 (character turnaround model sheet) before creating any scene image.",
+    "Attach that same character model sheet when generating every scene image for this song.",
+    "Attach the final scene image as the primary image-to-video reference when generating the video for that scene."
   ],
   "reference_workflow": [
-    "Generate a clean character turnaround model sheet before scene production.",
-    "The model sheet should include front, back, left side, right side, three-quarter view, full body, and face close-up references.",
-    "Use the same model sheet as an input/reference for every scene image prompt.",
+    "Generate a clean song-specific character turnaround model sheet before scene production.",
+    "Use the same model sheet as an input/reference for every scene image prompt in this song.",
     "After each scene image is approved, use that scene image as the primary image-to-video input with the matching video prompt.",
     "When possible, include the model sheet as a secondary reference during video generation to protect character identity."
   ],
@@ -33,6 +30,6 @@
     "back full-body view",
     "three-quarter full-body view",
     "face close-up",
-    "prop close-up of the paper crane"
+    "prop close-up of scratched guitar pick glowing cyber pink"
   ]
 }

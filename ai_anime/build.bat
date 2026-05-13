@@ -1,38 +1,45 @@
 @echo off
 setlocal
+title AI Anime MV Builder - Build
+
 cd /d "%~dp0"
 
-echo === AI Anime MV Builder - PyInstaller Build ===
+echo === AI Anime MV Builder - Build System ===
 echo.
 
-where python >nul 2>nul
+echo [1/4] Checking Python environment...
+python --version >nul 2>nul
 if errorlevel 1 (
-    echo [ERROR] Python not found. Please add Python to PATH.
+    echo [ERROR] Python not found.
     pause
     exit /b 1
 )
 
-python -c "import PyInstaller" >nul 2>nul
-if errorlevel 1 (
-    echo Installing PyInstaller...
-    pip install pyinstaller
-    if errorlevel 1 (
-        echo [ERROR] Failed to install PyInstaller.
-        pause
-        exit /b 1
-    )
-)
+echo [2/4] Installing dependencies (PyInstaller)...
+python -m pip install --upgrade pip
+python -m pip install pyinstaller
 
-if exist dist\ai_anime_mv_builder (
-    echo Removing previous build...
-    rmdir /s /q dist\ai_anime_mv_builder
-)
+echo [3/4] Cleaning previous builds...
+if exist dist rmdir /s /q dist
 if exist build rmdir /s /q build
 
-echo Building...
+echo [4/4] Starting build process...
 echo.
 
-pyinstaller --name ai_anime_mv_builder --noconsole --paths scripts --hidden-import emotion_engine --hidden-import image_prompt_generator --hidden-import video_prompt_generator --hidden-import scene_generator --hidden-import run_pipeline --hidden-import song_parser --hidden-import common --hidden-import web_app scripts\main_entry.py
+python -m PyInstaller ^
+    --name ai_anime_mv_builder ^
+    --noconsole ^
+    --onefile ^
+    --paths scripts ^
+    --hidden-import emotion_engine ^
+    --hidden-import image_prompt_generator ^
+    --hidden-import video_prompt_generator ^
+    --hidden-import scene_generator ^
+    --hidden-import run_pipeline ^
+    --hidden-import song_parser ^
+    --hidden-import common ^
+    --hidden-import web_app ^
+    scripts\main_entry.py
 
 if errorlevel 1 (
     echo.
@@ -42,9 +49,6 @@ if errorlevel 1 (
 )
 
 echo.
-echo === Build complete ===
-echo Output: dist\ai_anime_mv_builder\ai_anime_mv_builder.exe
-echo Copy the entire dist\ai_anime_mv_builder\ folder to deploy.
+echo === Build Complete! (dist\ai_anime_mv_builder.exe) ===
 echo.
-
 pause

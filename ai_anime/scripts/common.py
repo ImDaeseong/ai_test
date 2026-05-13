@@ -13,7 +13,25 @@ if getattr(sys, "frozen", False):
     PROJECT_ROOT = Path(sys.executable).parent
 else:
     PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SECTIONS = ["Intro", "Verse", "Pre-Chorus", "Chorus", "Bridge", "Outro"]
+
+
+def read_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_config(name: str) -> Any:
+    path = PROJECT_ROOT / "configs" / f"{name}.json"
+    if not path.exists():
+        return {}
+    return read_json(path)
+
+
+_sections_config = load_config("song_sections")
+DEFAULT_SECTIONS: list[str] = _sections_config.get(
+    "default_sections",
+    ["Intro", "Verse", "Pre-Chorus", "Chorus", "Bridge", "Outro"],
+)
+_SECTION_ALIASES: dict[str, str] = _sections_config.get("aliases", {})
 
 
 def ensure_directories() -> None:
@@ -44,10 +62,6 @@ def write_json(path: Path, data: dict[str, Any]) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     return path
-
-
-def read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def write_text(path: Path, content: str) -> Path:
@@ -82,14 +96,4 @@ def split_csv(value: str) -> list[str]:
 
 def normalize_section_name(name: str) -> str:
     compact = re.sub(r"\s+", " ", name.strip()).lower()
-    aliases = {
-        "pre chorus": "Pre-Chorus",
-        "pre-chorus": "Pre-Chorus",
-        "prechorus": "Pre-Chorus",
-        "intro": "Intro",
-        "verse": "Verse",
-        "chorus": "Chorus",
-        "bridge": "Bridge",
-        "outro": "Outro",
-    }
-    return aliases.get(compact, name.strip().title())
+    return _SECTION_ALIASES.get(compact, name.strip().title())

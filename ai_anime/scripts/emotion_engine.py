@@ -4,47 +4,23 @@ import argparse
 from pathlib import Path
 from typing import Any
 
-from common import PROJECT_ROOT, ensure_directories, read_json, write_json
+from common import PROJECT_ROOT, ensure_directories, load_config, read_json, write_json
 
 
-EMOTION_MAP = {
-    "lonely": {
-        "symbols": ["empty train platform", "unanswered signal light", "single window glow"],
-        "lighting": "cold graphite darkness with restrained neon magenta glow, silver rim light, and faint icy cyan reflections",
-        "camera": "wide static frame, small figure against negative space",
-        "environment": "rainy city night",
-    },
-    "loneliness": {
-        "symbols": ["empty street", "distant apartment lights", "wet pavement reflection"],
-        "lighting": "low-key graphite shadows with soft cyber pink spill and subtle icy cyan pavement reflections",
-        "camera": "slow lateral dolly with strong silhouette",
-        "environment": "urban backstreet after rain",
-    },
-    "nostalgic": {
-        "symbols": ["paper crane", "old station sign", "wind through curtains"],
-        "lighting": "muted deep plum shadows with softened cyber pink memory glow and silver-white highlights",
-        "camera": "gentle push-in, shallow atmospheric depth",
-        "environment": "quiet transit spaces and rooftops",
-    },
-    "hope": {
-        "symbols": ["sunrise edge", "opening sky", "upward drifting paper crane"],
-        "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
-        "camera": "upward angle, slow crane rise",
-        "environment": "rooftop at dawn",
-    },
-    "hopeful": {
-        "symbols": ["thin line of dawn", "opening hand", "city lights turning off"],
-        "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
-        "camera": "forward tracking shot into open space",
-        "environment": "city morning after rain",
-    },
-    "sad": {
-        "symbols": ["rain on glass", "empty bench", "flickering streetlamp"],
-        "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
-        "camera": "close-up profile, slow tilt down",
-        "environment": "night street or train window",
-    },
-}
+_CONFIG = load_config("emotions")
+EMOTION_MAP = _CONFIG.get("emotions", {})
+EMOTION_ALIASES = _CONFIG.get("aliases", {})
+
+_TRANSITIONS = load_config("emotion_transitions")
+_CHORUS_LIFT = set(_TRANSITIONS.get("chorus_lift_emotions", []))
+_CHORUS_LIFT_TARGET = _TRANSITIONS.get("chorus_lift_target", "hopeful")
+_CHORUS_LIFT_EXCEPTIONS = _TRANSITIONS.get("chorus_lift_exceptions", {})
+_BRIDGE_DEEPEN = _TRANSITIONS.get("bridge_deepen", {})
+_OUTRO_RESOLVE = _TRANSITIONS.get("outro_resolve", {})
+_OUTRO_DEFAULT = _TRANSITIONS.get("outro_resolve_default", "hope")
+_CLIMAX_SECTIONS = set(_TRANSITIONS.get("climax_sections", ["Chorus", "Bridge"]))
+
+_ATMOSPHERE = load_config("atmosphere_rules")
 
 
 def choose_primary_emotion(moods: list[str]) -> str:
@@ -52,6 +28,9 @@ def choose_primary_emotion(moods: list[str]) -> str:
         key = mood.lower().strip()
         if key in EMOTION_MAP:
             return key
+        alias = EMOTION_ALIASES.get(key)
+        if alias and alias in EMOTION_MAP:
+            return alias
     return moods[0].lower().strip() if moods else "melancholic"
 
 
@@ -77,11 +56,14 @@ def analyze_song(song: dict[str, Any]) -> dict[str, Any]:
         section_name = section["name"]
         intensity = section["intensity"]
         if section_name == "Chorus":
-            emotion = "hopeful" if "hopeful" in [m.lower() for m in moods] else primary
+            if primary in _CHORUS_LIFT:
+                emotion = _CHORUS_LIFT_TARGET
+            else:
+                emotion = _CHORUS_LIFT_EXCEPTIONS.get(primary, primary)
         elif section_name == "Bridge":
-            emotion = "sad" if primary in {"lonely", "loneliness", "nostalgic"} else primary
+            emotion = _BRIDGE_DEEPEN.get(primary, primary)
         elif section_name == "Outro":
-            emotion = "hope"
+            emotion = _OUTRO_RESOLVE.get(primary, _OUTRO_DEFAULT)
         else:
             emotion = primary
         mapped = map_emotion(emotion)
@@ -103,7 +85,7 @@ def analyze_song(song: dict[str, Any]) -> dict[str, Any]:
         "emotional_progression": progression,
         "visual_symbolism": primary_map["symbols"],
         "emotional_climax": next(
-            (item for item in progression if item["section"] in {"Chorus", "Bridge"}),
+            (item for item in progression if item["section"] in _CLIMAX_SECTIONS),
             progression[-1] if progression else {},
         ),
         "seasonal_atmosphere": infer_season(song),
@@ -115,19 +97,18 @@ def analyze_song(song: dict[str, Any]) -> dict[str, Any]:
 
 def infer_season(song: dict[str, Any]) -> str:
     text = " ".join(song.get("visual_cues", []) + song.get("mood", [])).lower()
-    if "summer" in text:
-        return "summer nostalgia"
-    if "snow" in text or "winter" in text:
-        return "winter stillness"
-    if "rain" in text:
-        return "rainy late spring night"
-    return "season-neutral cinematic night"
+    for rule in _ATMOSPHERE.get("season_rules", []):
+        if any(k in text for k in rule["keys"]):
+            return rule["season"]
+    return _ATMOSPHERE.get("season_default", "season-neutral cinematic night")
 
 
 def infer_urban_rural(song: dict[str, Any]) -> str:
     text = " ".join(song.get("visual_cues", [])).lower()
-    urban_terms = ["city", "train", "subway", "street", "rooftop", "neon", "platform"]
-    return "urban emotional atmosphere" if any(term in text for term in urban_terms) else "quiet rural or liminal atmosphere"
+    urban_terms = _ATMOSPHERE.get("urban_keywords", ["city", "street", "neon"])
+    urban_mood = _ATMOSPHERE.get("urban_mood", "urban emotional atmosphere")
+    rural_mood = _ATMOSPHERE.get("rural_mood", "quiet rural or liminal atmosphere")
+    return urban_mood if any(term in text for term in urban_terms) else rural_mood
 
 
 def run(

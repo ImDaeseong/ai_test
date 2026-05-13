@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "keys": ["room", "방", "창", "window", "mirror", "거울"],
+      "location": "window-lit room above a quiet street"
+    },
+    {
+      "keys": ["guitar", "amp", "공연", "무대"],
+      "location": "abandoned live house exterior",
+      "word_boundary": true
+    },
+    {
+      "keys": ["train", "platform", "subway", "station", "기차", "지하철", "역"],
+      "location": "empty late-night train platform"
+    },
+    {
+      "keys": ["rooftop", "옥상", "roof", "skyline"],
+      "location": "rain-wet rooftop skyline"
+    },
+    {
+      "keys": ["cafe", "coffee", "카페"],
+      "location": "quiet corner of a late-night cafe"
+    },
+    {
+      "keys": ["park", "bench", "공원"],
+      "location": "empty park bench under a streetlamp"
+    },
+    {
+      "keys": ["다리", "overpass"],
+      "location": "empty pedestrian bridge over neon-reflected water"
+    },
+    {
+      "keys": ["school", "classroom", "복도"],
+      "location": "empty school corridor at dusk"
+    },
+    {
+      "keys": ["술"],
+      "location": "dim-lit late-night bar with neon window"
+    },
+    {
+      "keys": ["rain", "비", "wet", "puddle", "빗"],
+      "location": "quiet city street after rain",
+      "word_boundary": true
+    },
+    {
+      "keys": ["dawn", "sunrise", "새벽", "아침"],
+      "location": "open skyline before dawn"
+    },
+    {
+      "keys": ["sea", "바다", "beach", "shore", "ocean"],
+      "location": "shoreline edge under neon-tinted sky"
+    },
+    {
+      "keys": ["highway", "차", "도로"],
+      "location": "empty night highway with neon overhead signs"
+    }
+  ]
+}
