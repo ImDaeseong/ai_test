@@ -1,25 +1,21 @@
 # AI Anime Cinematic MV System
 
-A reusable Python pipeline for turning raw song information into an anime-style cinematic music video package.
-
----
-
-## 프로젝트 개요 (한국어)
-
 곡 정보(가사, 장르, BPM 등)를 입력하면 애니메이션 스타일의 뮤직비디오 제작용 스토리보드와 이미지·영상 프롬프트를 자동으로 생성하는 로컬 파이프라인입니다.  
 외부 AI API 없이 Python 표준 라이브러리만으로 동작하며, 웹 UI를 통해 브라우저에서 바로 사용할 수 있습니다.
 
-### 시작하기
+---
+
+## 빠른 시작
 
 ```bat
 run_web.bat
 ```
 
-배치파일을 더블클릭하면 웹 서버가 실행되고 브라우저에서 `http://127.0.0.1:8000` 이 열립니다.
+배치 파일을 더블클릭하면 웹 서버가 실행되고 브라우저에서 `http://127.0.0.1:8000` 이 자동으로 열립니다.
 
 ---
 
-## 폴더 구조 및 기능 설명
+## 폴더 구조
 
 ```text
 ai_anime/
@@ -28,13 +24,24 @@ ai_anime/
 ├─ character/          ← 주인공 캐릭터 설정 및 프롬프트
 ├─ storyboard/         ← 생성된 스토리보드 전체
 ├─ prompts/            ← 씬별 이미지·영상 프롬프트
+│  ├─ image_prompts/
+│  └─ video_prompts/
 ├─ configs/            ← 파이프라인 동작 규칙 설정 파일 (15개)
 ├─ data/               ← Suno 이력 및 Config 자동 학습 데이터
 ├─ output/             ← 파이프라인 실행 결과물 저장소
-└─ scripts/            ← 핵심 Python 스크립트
+│  ├─ <노래제목>/       ← 웹 UI Generate 결과
+│  ├─ storyboard/      ← CLI --snapshot 결과
+│  ├─ web_inputs/      ← 웹 UI 입력 파일 자동 백업
+│  ├─ images/          ← 생성된 이미지 보관 (향후)
+│  └─ videos/          ← 생성된 영상 보관 (향후)
+├─ scripts/            ← 핵심 Python 스크립트 (11개)
+├─ build.bat           ← PyInstaller EXE 빌드
+└─ run_web.bat         ← 웹 UI 실행
 ```
 
 ---
+
+## 폴더별 상세 설명
 
 ### `input/` — 곡 입력 파일
 
@@ -64,7 +71,7 @@ ai_anime/
 
 곡 안에서 일관성을 유지하는 주인공 비주얼 아이덴티티를 정의합니다.
 
-| 파일 | 설명 |
+| 파일/폴더 | 설명 |
 |---|---|
 | `protagonist_bible.json` | 헤어·의상·색상 규칙·성격 등 주인공 전체 설정 |
 | `character_prompt.md` | 이미지 생성 AI용 캐릭터 묘사 프롬프트 |
@@ -95,9 +102,12 @@ ai_anime/
 
 | 경로 | 설명 |
 |---|---|
+| `image_prompts/00_character_turnaround_model_sheet.md` | 캐릭터 모델시트 생성용 통합 프롬프트 |
 | `image_prompts/scene_XX_*.md` | 씬별 이미지 프롬프트 (Midjourney, DALL-E 등 사용) |
-| `video_prompts/scene_XX_*.md` | 씬별 영상 프롬프트 (Runway, Kling, Pika, Luma, Veo 등 사용) |
+| `video_prompts/scene_XX_*.md` | 씬별 영상 프롬프트 (9개 플랫폼 최적화) |
 | `style_rules.md` | 전체 시리즈에 적용되는 비주얼 스타일 규칙 |
+
+**지원 영상 생성 플랫폼 (9개):** Runway · Kling · Pika · Luma · Veo · Flow · Sora · Hailuo · PixVerse
 
 ---
 
@@ -109,7 +119,7 @@ ai_anime/
 | 파일 | 설명 |
 |---|---|
 | `genres.json` | 장르 프로파일 13종 및 스타일 키워드 (현재 1,602개) |
-| `color_palette.json` | 장르·분위기 키워드 → 주 색상 매핑 (9개 규칙, 기본값 neon magenta) |
+| `color_palette.json` | 장르·분위기 키워드 → 주 색상 매핑 (기본값: neon magenta) |
 | `emotions.json` | 17개 감정 키워드 및 시각적 연출 매핑 (66개 별칭 포함) |
 | `emotion_transitions.json` | 섹션 간 감정 전환 패턴 (Chorus 고조, Bridge 심화, Outro 해소) |
 | `atmosphere_rules.json` | 도시 키워드, 계절 규칙 등 분위기 설정 |
@@ -120,7 +130,7 @@ ai_anime/
 | `focus_rules.json` | 씬별 피사체 초점 및 구도 규칙 |
 | `motif_rules.json` | 반복 등장하는 시각적 모티프 설정 |
 | `prop_rules.json` | 소품 배치 규칙 |
-| `song_sections.json` | 곡 섹션(Intro/Verse/Chorus 등) 정의 |
+| `song_sections.json` | 곡 섹션(Intro/Verse/Chorus 등) 정의 및 동작 오버라이드 |
 | `visual_styles.json` | 비주얼 스타일 프리셋 |
 | `character_defaults.json` | 캐릭터 기본값 설정 |
 
@@ -128,12 +138,12 @@ ai_anime/
 
 ### `data/` — 학습 데이터
 
-이 폴더가 파이프라인의 핵심 데이터 자산입니다. `configs/`와 함께 별도로 관리·백업하는 것을 권장합니다.
+파이프라인의 핵심 데이터 자산입니다. `configs/`와 함께 별도로 관리·백업하는 것을 권장합니다.
 
-| 파일 | 설명 |
+| 파일/폴더 | 설명 |
 |---|---|
-| `suno_history.jsonl` | Suno 곡 이력 (현재 196곡). 웹 UI의 **가져오기** 버튼과 **Generate Storyboard** 버튼 클릭 시 모두 누적됨 |
-| `config_backups/` | Config 자동 학습 적용 시 자동 생성되는 백업 (모든 이력 누적 보관) |
+| `suno_history.jsonl` | Suno 곡 이력 (현재 196곡). 웹 UI의 **가져오기**·**Generate Storyboard** 클릭 시 누적 |
+| `config_backups/` | Config 자동 학습 적용 시 타임스탬프별 자동 생성되는 백업 |
 
 #### 두 수집 경로의 데이터 품질 차이
 
@@ -141,10 +151,10 @@ ai_anime/
 |---|---|---|
 | 태그·장르 | Suno 페이지 HTML 파싱 | song_master.json 완전 처리 결과 |
 | mood / energy / instruments | 태그에서 추정 (불완전) | 가사 전체 분석 결과 |
-| section_structure | 항상 빈 값 | 실제 섹션 구조 [Intro, Verse, Chorus...] |
+| section_structure | 항상 빈 값 | 실제 섹션 구조 [Intro, Verse, Chorus…] |
 | Config 자동 학습 기여도 | 장르·분위기 키워드 | 위 항목 모두 + 정확한 섹션 구조 |
 
-> **앱 시작 시 자동 처리:** `suno_import` 항목은 최신 패턴 분석 로직으로 재적용하고 URL 기준 중복 제거합니다. `generate_storyboard` 항목은 song_master.json 기반의 고품질 데이터를 그대로 보존합니다.
+> **앱 시작 시 자동 처리:** `suno_import` 항목은 최신 패턴 분석 로직으로 재적용하고 URL 기준 중복을 제거합니다. `generate_storyboard` 항목은 song_master.json 기반 고품질 데이터를 그대로 보존합니다.
 
 ---
 
@@ -154,129 +164,43 @@ ai_anime/
 
 | 경로 | 설명 |
 |---|---|
-| `output/<노래제목>/` | 웹 UI에서 Generate Storyboard 실행 시 자동 생성 (이미지·영상 프롬프트 파일 저장) |
-| `output/storyboard/<slug-timestamp>/` | CLI `--snapshot` 옵션 사용 시 타임스탬프별 스토리보드 전체 패키지 저장 |
+| `output/<노래제목>/` | 웹 UI에서 Generate Storyboard 실행 시 자동 생성 (analysis·character·storyboard·prompts 전체 복사) |
+| `output/storyboard/<slug-timestamp>/` | CLI `--snapshot` 옵션 사용 시 타임스탬프별 전체 패키지 저장 |
+| `output/web_inputs/<timestamp>/` | 웹 UI 입력 파일 자동 백업 |
+| `output/images/` | 생성된 이미지 보관 (향후) |
+| `output/videos/` | 생성된 영상 보관 (향후) |
 
 ---
 
-### `scripts/` — 핵심 스크립트
+### `scripts/` — 핵심 스크립트 (11개)
 
 | 파일 | 역할 |
 |---|---|
 | `main_entry.py` | EXE 빌드용 진입점. 웹 서버 실행 후 브라우저를 자동으로 엽니다 |
-| `web_app.py` | 웹 UI 서버. `run_web.bat`으로 실행. Suno 가져오기·패턴 분석·Config 자동 학습 포함 |
-| `song_parser.py` | raw_song.txt·lrc·srt·mp3를 파싱해 `song_master.json` 생성 |
-| `emotion_engine.py` | 감정 분석 및 비주얼 월드 생성 |
-| `scene_generator.py` | 스토리보드·씬 목록·카메라 연출 생성. 장르별 동적 색상 선택 포함 |
-| `image_prompt_generator.py` | 씬별 이미지 프롬프트 생성 |
-| `video_prompt_generator.py` | 씬별 영상 프롬프트 생성 |
-| `config_learner.py` | Suno 이력을 분석해 `configs/genres.json`·`atmosphere_rules.json` 자동 업데이트 |
-| `run_pipeline.py` | 위 단계를 순서대로 일괄 실행하는 엔트리포인트 |
-| `common.py` | 공통 경로·유틸리티 함수 |
+| `web_app.py` | 웹 UI 서버. Suno 가져오기·패턴 분석·Config 자동 학습·실시간 미리보기 포함 |
+| `run_pipeline.py` | 전체 파이프라인을 순서대로 일괄 실행하는 CLI 진입점 |
+| `song_parser.py` | raw_song.txt·lrc·srt·오디오 파일을 파싱해 `song_master.json` 생성 |
+| `emotion_engine.py` | 감정 분석 및 비주얼 월드 생성 (emotion_analysis·visual_world·cinematic_style) |
+| `scene_generator.py` | 스토리보드·씬 목록·카메라 연출 생성. 장르 기반 동적 색상 선택 포함 |
+| `image_prompt_generator.py` | 씬별 이미지 프롬프트 생성 (캐릭터 모델시트 포함) |
+| `video_prompt_generator.py` | 씬별 영상 프롬프트 생성 (9개 플랫폼 최적화) |
+| `config_learner.py` | Suno 이력 분석 → `genres.json`·`atmosphere_rules.json` 자동 업데이트 |
+| `common.py` | 공통 경로·JSON I/O·유틸리티 함수 (PyInstaller exe 호환 포함) |
+| `__init__.py` | 패키지 초기화 |
 
 ---
 
-### `build.bat` — EXE 빌드 (선택)
+## 입력 형식
 
-PyInstaller로 독립 실행 파일(.exe)을 생성합니다. 일반 사용 시에는 필요하지 않습니다.
+`input/` 폴더에 곡 파일을 넣거나 웹 UI에서 직접 입력합니다. 파서가 폴더를 스캔해 `song_master.json`을 자동 생성합니다.
 
-```bat
-build.bat
-```
+**지원 파일 형식:**
+- `.txt` — 가사 + 메타데이터 (권장)
+- `.lrc` — 타임스탬프 가사 (`MM:SS.centiseconds`)
+- `.srt` — 자막 형식 타임스탬프 (`HH:MM:SS,milliseconds`)
+- `.mp3`, `.wav`, `.m4a`, `.aac`, `.flac`, `.ogg` — 오디오 참조 메타데이터 (선택)
 
----
-
-## Concept
-
-Each song becomes its own emotional cinematic world. Characters may change between songs, but within one song the protagonist identity, hairstyle, outfit, color rules, atmosphere, and visual tone stay consistent.
-
-The visual identity is dynamically generated per song:
-
-- anime cinematic style
-- **dominant color selected by genre/mood** — e.g. crimson red for rock, amber gold for jazz, electric blue for k-pop, neon magenta for dark/noir/urban (default)
-- dark shadows and near-black backgrounds
-- subtle secondary reflections and silver-white rim highlights
-- emotional composition tied to lyric content (emotion alignment / affective synchronization)
-- 17 mapped emotions: lonely, nostalgic, sad, hopeful, hope, angry, defiant, romantic, longing, anxious, peaceful, excited, bittersweet, fearful, dreamy, tense, and more via aliases
-- instrument-driven visual motion hints embedded in every prompt
-- soft cinematic lighting and atmospheric environments
-- strong silhouettes and film-like framing
-- non-photorealistic stylized visuals
-
----
-
-## Requirements
-
-Python 3.10 or newer is recommended.
-
-No third-party dependencies are required for the core pipeline.
-
----
-
-## Folder Structure
-
-```text
-ai_anime/
-├─ input/
-│  ├─ raw_song.txt
-│  ├─ song_master.json
-│  └─ ui_state.json
-├─ analysis/
-│  ├─ emotion_analysis.json
-│  ├─ visual_world.json
-│  └─ cinematic_style.json
-├─ character/
-│  ├─ protagonist_bible.json
-│  ├─ character_prompt.md
-│  ├─ character_reference_prompt.md
-│  └─ character_reference/
-├─ storyboard/
-│  ├─ scene_list.json
-│  ├─ story_arc.json
-│  ├─ story_summary.md
-│  ├─ storyboard_prompts.md
-│  └─ camera_directions.md
-├─ prompts/
-│  ├─ image_prompts/
-│  ├─ video_prompts/
-│  └─ style_rules.md
-├─ configs/
-│  └─ (15개 JSON 설정 파일)
-├─ data/
-│  ├─ suno_history.jsonl
-│  └─ config_backups/
-├─ output/
-│  ├─ <노래제목>/          ← 웹 UI Generate 결과
-│  └─ storyboard/          ← CLI --snapshot 결과
-└─ scripts/
-   ├─ main_entry.py
-   ├─ web_app.py
-   ├─ run_pipeline.py
-   ├─ song_parser.py
-   ├─ emotion_engine.py
-   ├─ scene_generator.py
-   ├─ image_prompt_generator.py
-   ├─ video_prompt_generator.py
-   ├─ config_learner.py
-   └─ common.py
-```
-
----
-
-## Input Format
-
-Copy the base files for a song into `input/`. The parser scans the folder and builds `input/song_master.json` from the available files.
-
-Supported input files:
-
-- `.txt` for style, metadata, and section lyrics
-- `.lrc` for timestamped lyrics
-- `.srt` for subtitle-style timestamped lyrics
-- Optional audio files (`.mp3`, `.wav`, `.m4a`, `.aac`, `.flac`, `.ogg`) for reference metadata such as duration
-
-If multiple files are present, `raw_song.txt` is used as the primary metadata/section source when available, `.lrc` or `.srt` is used for timed lyrics, and audio files are stored as optional reference metadata.
-
-Supported metadata fields:
+**지원 메타데이터 필드:**
 
 ```text
 Genre:
@@ -291,23 +215,17 @@ Atmosphere:
 Pacing:
 ```
 
-Supported section labels:
+**지원 섹션 레이블:**
 
 ```text
-[Intro]
-[Verse]
-[Pre-Chorus]
-[Chorus]
-[Post-Chorus]
-[Bridge]
-[Outro]
+[Intro]  [Verse]  [Pre-Chorus]  [Chorus]  [Post-Chorus]  [Bridge]  [Outro]
 ```
-
-LRC timestamped lyrics are also recognized when present.
 
 ---
 
-## Run the Web UI
+## 실행 방법
+
+### 웹 UI (권장)
 
 ```bat
 run_web.bat
@@ -319,45 +237,33 @@ run_web.bat
 python scripts/web_app.py
 ```
 
-Then open: `http://127.0.0.1:8000`
+브라우저에서 `http://127.0.0.1:8000` 열기
 
-웹 UI 주요 기능:
+**웹 UI 주요 기능:**
 
 - **가져오기**: Suno URL에서 제목·태그·가사를 자동 추출해 `data/suno_history.jsonl`에 저장
-- **Generate Storyboard**: 전체 파이프라인 실행 후 `output/<노래제목>/`에 프롬프트 파일 저장
+- **Generate Storyboard**: 전체 파이프라인 실행 → `output/<노래제목>/`에 결과물 저장
 - **Config 자동 학습**: `suno_history.jsonl` 분석 → `configs/genres.json`·`atmosphere_rules.json` 자동 업데이트
-- 씬·이미지 프롬프트·영상 프롬프트·JSON 결과 브라우저에서 바로 확인
+- 씬·이미지 프롬프트·영상 프롬프트·JSON 결과를 브라우저에서 바로 확인
 
----
-
-## Run the Full Pipeline (CLI)
+### CLI 전체 파이프라인
 
 ```powershell
+# 기본 실행
 python scripts/run_pipeline.py
-```
 
-타임스탬프 스냅샷과 함께 실행:
-
-```powershell
+# 타임스탬프 스냅샷 저장
 python scripts/run_pipeline.py --snapshot
-```
 
-커스텀 입력 파일 또는 폴더 지정:
-
-```powershell
+# 커스텀 입력 파일 또는 폴더
 python scripts/run_pipeline.py --input input/my_song.txt --snapshot
 python scripts/run_pipeline.py --input input --snapshot
-```
 
-오디오 분석 힌트 적용:
-
-```powershell
+# 오디오 분석 힌트 적용 (ffmpeg 필요)
 python scripts/run_pipeline.py --input input --apply-audio-analysis --snapshot
 ```
 
----
-
-## Run Individual Steps
+### 단계별 개별 실행
 
 ```powershell
 python scripts/song_parser.py --input input
@@ -369,69 +275,116 @@ python scripts/config_learner.py --dry-run   # 분석만 (파일 변경 없음)
 python scripts/config_learner.py             # 분석 후 configs/ 업데이트
 ```
 
+### EXE 빌드 (선택)
+
+```bat
+build.bat
+```
+
+PyInstaller로 `dist/ai_anime_mv_builder.exe` 생성. 일반 사용 시에는 필요하지 않습니다.
+
 ---
 
-## Pipeline
+## 파이프라인 흐름
 
 ```text
-[Suno URL 가져오기]──────────────────────────────┐
-                                                  ↓
-                                         suno_history.jsonl
-                                                  ↓
-                                        [Config 자동 학습]
-                                                  ↓
-                                        configs/ 업데이트
+[Suno URL 가져오기]
+        │
+        ↓
+data/suno_history.jsonl ──→ [Config 자동 학습] ──→ configs/ 업데이트
+                                                      (config_backups/ 자동 백업)
 
-[RAW MUSIC INPUT (txt/lrc/srt/mp3)]
-↓
+[입력 파일 (txt / lrc / srt / 오디오)]
+        │
+        ↓
 song_parser.py
-↓
-song_master.json
-↓
-emotion_engine.py  ←── emotions.json / emotion_transitions.json
-↓
-scene_generator.py ←── color_palette.json / character_defaults.json
-↓                       genres.json / atmosphere_rules.json
-storyboard + scene_list.json
-↓
-image_prompt_generator.py
-↓
-video_prompt_generator.py
-↓
-output/<노래제목>/  (프롬프트 파일)
+        │
+        ↓
+input/song_master.json
+        │
+        ├──→ emotion_engine.py ←── emotions.json / emotion_transitions.json
+        │           │
+        │           ↓
+        │    analysis/ (emotion_analysis, visual_world, cinematic_style)
+        │           │
+        └──→ scene_generator.py ←── color_palette.json / shot_rules.json
+                    │                genres.json / atmosphere_rules.json
+                    ↓
+        storyboard/ (scene_list, story_arc, story_summary, camera_directions)
+        character/  (protagonist_bible, character_prompt)
+                    │
+                    ↓
+        image_prompt_generator.py
+                    │
+                    ↓
+        prompts/image_prompts/scene_XX_*.md
+                    │
+                    ↓
+        video_prompt_generator.py
+                    │
+                    ↓
+        prompts/video_prompts/scene_XX_*.md
+        (Runway · Kling · Pika · Luma · Veo · Flow · Sora · Hailuo · PixVerse)
+                    │
+                    ↓
+        output/<노래제목>/  ←── 웹 UI Generate Storyboard 실행 시 전체 복사
+        output/storyboard/<slug-timestamp>/  ←── CLI --snapshot 실행 시
 ```
 
 ---
 
-## Output
+## 출력 결과물
 
-The system creates:
+파이프라인 완료 시 생성되는 파일 목록:
 
-- `input/song_master.json`
-- `analysis/emotion_analysis.json`
-- `analysis/visual_world.json`
-- `analysis/cinematic_style.json`
-- `character/protagonist_bible.json`
-- `character/character_prompt.md`
-- `character/character_reference_prompt.md`
-- `storyboard/scene_list.json`
-- `storyboard/story_arc.json`
-- `storyboard/story_summary.md`
-- `storyboard/storyboard_prompts.md`
-- `storyboard/camera_directions.md`
-- per-scene image prompts (`prompts/image_prompts/`)
-- per-scene video prompts for Runway, Kling, Pika, Luma, Veo, Flow, Sora, Hailuo, and PixVerse (`prompts/video_prompts/`)
-- `output/<노래제목>/` — 웹 UI Generate Storyboard 실행 시 프롬프트 파일 복사본
+```text
+input/song_master.json
+analysis/
+  emotion_analysis.json
+  visual_world.json
+  cinematic_style.json
+character/
+  protagonist_bible.json
+  character_prompt.md
+  character_reference_prompt.md
+storyboard/
+  scene_list.json
+  story_arc.json
+  story_summary.md
+  storyboard_prompts.md
+  camera_directions.md
+prompts/
+  image_prompts/
+    00_character_turnaround_model_sheet.md
+    scene_XX_*.md  (씬별)
+  video_prompts/
+    scene_XX_*.md  (씬별, 9개 플랫폼 섹션 포함)
+output/<노래제목>/
+  (위 결과물 전체 복사본)
+```
 
 ---
 
-## Extension Points
+## 핵심 개념
 
-Good next modules to add:
+**Config 중심 설계**: 모든 규칙이 `configs/*.json`에 정의되고 Python은 순수 실행 엔진 역할만 합니다. 규칙 수정 시 Python 코드를 건드리지 않아도 됩니다.
 
-- OpenAI API integration for richer lyric interpretation
-- image generation adapter
-- Runway, Kling, Pika, Luma, Veo, Flow, Sora, Hailuo, or PixVerse export adapters
-- reference image management
-- prompt scoring and consistency checks
-- final edit decision list generation
+**동적 색상 선택**: 장르·분위기 키워드 기반으로 주 색상을 동적으로 선택합니다.
+- rock → crimson red, jazz → amber gold, k-pop → electric blue
+- dark / noir / urban 계열 → neon magenta (기본값)
+
+**감정 매핑**: 17개 감정(lonely, nostalgic, sad, hopeful, angry, defiant, romantic, longing, anxious, peaceful, excited, bittersweet, fearful, dreamy, tense 등)과 66개 별칭을 지원합니다. 섹션별 감정 전환이 자동 적용됩니다.
+
+**캐릭터 일관성**: 한 곡 내에서 주인공의 헤어·의상·색상 규칙을 일관되게 유지하며, 모든 씬 프롬프트에 동일한 캐릭터 ID가 포함됩니다.
+
+**자동 학습**: `config_learner.py`가 `suno_history.jsonl`을 분석해 장르 프로파일과 분위기 규칙을 자동으로 업데이트합니다. 변경 전 자동 백업이 생성됩니다.
+
+**멀티 플랫폼 최적화**: 각 영상 생성 AI 플랫폼의 특성에 맞게 최적화된 프롬프트를 씬마다 생성합니다.
+
+---
+
+## 요구사항
+
+- Python 3.10 이상
+- 외부 패키지 불필요 (표준 라이브러리만 사용)
+- 오디오 분석 힌트(`--apply-audio-analysis`) 사용 시 ffmpeg 필요 (선택)
