@@ -1,7 +1,7 @@
 # 소스 설명
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-05-12  
-> 총 14개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
+> 작성일: 2026-05-08 / 최종 수정: 2026-05-14  
+> 총 15개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
 
 ---
 
@@ -23,6 +23,7 @@
 | 12 | [security_scanning](#12-security_scanning) | 웹·시스템 보안 취약점 스캐너 | Python | ★★★★☆ |
 | 13 | [weather_alarm](#13-weather_alarm) | 기상청 날씨 → Discord/Telegram 알림 봇 | Python (asyncio) | ★★★★☆ |
 | 14 | [ai_anime](#14-ai_anime) | 가사 → 애니메이션 MV 스토리보드·AI 프롬프트 자동 생성 | Python (표준 라이브러리) | ★★★★☆ |
+| 15 | [findstring_foldfiles](#15-findstring_foldfiles) | 폴더·드라이브 문자열 멀티스레드 검색 GUI | Python (tkinter) | ★★★★★ |
 
 ---
 
@@ -761,6 +762,63 @@ python scripts/video_prompt_generator.py
 
 ### 개발 완성도: ★★★★☆
 파이프라인 완전 작동 확인. pip install 없이 Python 설치만으로 실행 가능. Runway·Kling·Pika·Luma 4개 영상 플랫폼 프롬프트 동시 생성. 향후 OpenAI API 연동 및 자동 이미지 생성 어댑터 추가 예정.
+
+---
+
+## 15. findstring_foldfiles
+
+### 기능 개요
+폴더 또는 전체 드라이브에서 특정 문자열을 **멀티스레드로 빠르게 검색**하는 Python 데스크톱 GUI 앱.  
+외부 패키지 없이 Python 표준 라이브러리(tkinter)만으로 동작하며 Windows/macOS/Linux 모두 지원.
+
+### 주요 기능
+- **폴더 검색**: Browse 버튼으로 폴더 선택 후 하위 전체 재귀 검색
+- **드라이브 검색**: 드롭다운에서 드라이브 선택 또는 "Search all drives" 체크로 전체 드라이브 동시 검색
+- **대소문자 구분**: "Case sensitive" 체크박스로 전환
+- **확장자 필터**: 직접 입력 또는 프리셋 선택 (C/C++, Java, Kotlin, Swift, Web, 전체 텍스트)
+- **바이너리 포함**: "Include binary-like files" 체크 시 모든 파일 검색
+- **결과 표시**: 파일 경로, 줄 번호, 미리보기를 목록으로 표시
+- **파일 열기**: 결과 더블클릭 또는 "Open selected file" 버튼으로 기본 앱에서 열기
+- **검색 중단**: Stop 버튼으로 언제든 검색 취소
+
+### 폴더 구조
+```
+findstring_foldfiles/
+├── find_string_app.py   # 메인 소스 (SearchWorker + FindStringApp)
+├── run.bat              # Windows 실행 배치파일
+└── README.md
+```
+
+### 아키텍처
+| 컴포넌트 | 클래스 | 설명 |
+|---|---|---|
+| 검색 엔진 | `SearchWorker(threading.Thread)` | 멀티스레드 파일 열거·검색, 결과를 `queue.Queue`에 PUT |
+| GUI | `FindStringApp(tk.Tk)` | 100ms마다 큐 폴링, 최대 200개/사이클로 UI 동결 방지 |
+| 결과 모델 | `@dataclass Match` | path, line_number, preview 저장 |
+
+**텍스트 파일 판별 로직:**
+1. 확장자가 49종 텍스트 목록(`.py`, `.js`, `.java`, `.go` 등)에 있으면 텍스트로 처리
+2. 목록에 없으면 앞 2 KB를 읽어 null 바이트(`\x00`) 없으면 텍스트로 판별
+3. `--include-binary-like` 옵션 시 모든 파일 강제 포함
+
+**검색 제외 디렉터리:** `.git`, `.hg`, `.svn`, `__pycache__`, `node_modules`, `$Recycle.Bin`, `System Volume Information`
+
+### 사용 방법
+```bat
+run.bat
+```
+또는:
+```powershell
+python find_string_app.py
+```
+
+### 기술 스택
+- Python 3.10+ / **외부 패키지 없음** (표준 라이브러리만 사용)
+- GUI: tkinter
+- 동시성: threading + queue
+
+### 개발 완성도: ★★★★★
+멀티스레드 검색·UI 동결 방지·확장자 프리셋·드라이브 전체 검색 모두 완성.
 
 ---
 
