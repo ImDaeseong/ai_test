@@ -1,4 +1,4 @@
-# AI Anime Cinematic MV System
+﻿# AI Anime Cinematic MV System
 
 곡 정보(가사, 장르, BPM 등)를 입력하면 애니메이션 스타일의 뮤직비디오 제작용 스토리보드와 이미지·영상 프롬프트를 자동으로 생성하는 로컬 파이프라인입니다.  
 외부 AI API 없이 Python 표준 라이브러리만으로 동작하며, 웹 UI를 통해 브라우저에서 바로 사용할 수 있습니다.
@@ -69,7 +69,7 @@ ai_anime/
 
 ### `character/` — 캐릭터 설정
 
-곡 안에서 일관성을 유지하는 주인공 비주얼 아이덴티티를 정의합니다.
+곡 안에서 일관성을 유지하는 주인공 또는 주요 비주얼 주체를 정의합니다. 먼저 곡 메타데이터로 `human_solo`, `human_duo`, `group`, `object_symbol`, `environment_only`를 판단하고, 사람 중심일 때는 남성형·여성형·혼성·중성 표현을 함께 반영합니다. 캐릭터는 장르 프로필을 기반으로 만들되, 곡 제목·장르·BPM·에너지·무드·섹션 구조에서 만든 고유 시드로 얼굴 디테일, 헤어 변주, 의상 포인트, 액세서리, 제스처를 추가합니다.
 
 | 파일/폴더 | 설명 |
 |---|---|
@@ -104,10 +104,10 @@ ai_anime/
 |---|---|
 | `image_prompts/00_character_turnaround_model_sheet.md` | 캐릭터 모델시트 생성용 통합 프롬프트 |
 | `image_prompts/scene_XX_*.md` | 씬별 이미지 프롬프트 (Midjourney, DALL-E 등 사용) |
-| `video_prompts/scene_XX_*.md` | 씬별 영상 프롬프트 (9개 플랫폼 최적화) |
+| `video_prompts/scene_XX_*.md` | 씬별 영상 프롬프트 (10개 플랫폼 최적화) |
 | `style_rules.md` | 전체 시리즈에 적용되는 비주얼 스타일 규칙 |
 
-**지원 영상 생성 플랫폼 (9개):** Runway · Kling · Pika · Luma · Veo · Flow · Sora · Hailuo · PixVerse
+**지원 영상 생성 플랫폼 (10개):** Runway · Kling · Pika · Luma · Veo · Flow · Sora · Hailuo · PixVerse · Remotion
 
 ---
 
@@ -132,7 +132,7 @@ ai_anime/
 | `prop_rules.json` | 소품 배치 규칙 |
 | `song_sections.json` | 곡 섹션(Intro/Verse/Chorus 등) 정의 및 동작 오버라이드 |
 | `visual_styles.json` | 비주얼 스타일 프리셋 |
-| `character_defaults.json` | 캐릭터 기본값 설정 |
+| `character_defaults.json` | 캐릭터 기본값 및 곡별 고유 변주 설정 |
 
 ---
 
@@ -183,7 +183,7 @@ ai_anime/
 | `emotion_engine.py` | 감정 분석 및 비주얼 월드 생성 (emotion_analysis·visual_world·cinematic_style) |
 | `scene_generator.py` | 스토리보드·씬 목록·카메라 연출 생성. 장르 기반 동적 색상 선택 포함 |
 | `image_prompt_generator.py` | 씬별 이미지 프롬프트 생성 (캐릭터 모델시트 포함) |
-| `video_prompt_generator.py` | 씬별 영상 프롬프트 생성 (9개 플랫폼 최적화) |
+| `video_prompt_generator.py` | 씬별 영상 프롬프트 생성 (10개 플랫폼 최적화) |
 | `config_learner.py` | Suno 이력 분석 → `genres.json`·`atmosphere_rules.json` 자동 업데이트 |
 | `common.py` | 공통 경로·JSON I/O·유틸리티 함수 (PyInstaller exe 호환 포함) |
 | `__init__.py` | 패키지 초기화 |
@@ -324,7 +324,7 @@ input/song_master.json
                     │
                     ↓
         prompts/video_prompts/scene_XX_*.md
-        (Runway · Kling · Pika · Luma · Veo · Flow · Sora · Hailuo · PixVerse)
+        (Runway · Kling · Pika · Luma · Veo · Flow · Sora · Hailuo · PixVerse · Remotion)
                     │
                     ↓
         output/<노래제목>/  ←── 웹 UI Generate Storyboard 실행 시 전체 복사
@@ -358,7 +358,7 @@ prompts/
     00_character_turnaround_model_sheet.md
     scene_XX_*.md  (씬별)
   video_prompts/
-    scene_XX_*.md  (씬별, 9개 플랫폼 섹션 포함)
+    scene_XX_*.md  (씬별, 10개 플랫폼 섹션 포함)
 output/<노래제목>/
   (위 결과물 전체 복사본)
 ```
@@ -375,7 +375,7 @@ output/<노래제목>/
 
 **감정 매핑**: 17개 감정(lonely, nostalgic, sad, hopeful, angry, defiant, romantic, longing, anxious, peaceful, excited, bittersweet, fearful, dreamy, tense 등)과 66개 별칭을 지원합니다. 섹션별 감정 전환이 자동 적용됩니다.
 
-**캐릭터 일관성**: 한 곡 내에서 주인공의 헤어·의상·색상 규칙을 일관되게 유지하며, 모든 씬 프롬프트에 동일한 캐릭터 ID가 포함됩니다.
+**주체/캐릭터 일관성**: 한 곡 내에서 주인공 또는 오브젝트/배경 주체를 일관되게 유지합니다. 보컬·장르·제목·시각 단서로 사람/듀오/그룹/오브젝트/배경 중심 여부와 성별 표현을 판단하고, 다른 노래로 생성할 때는 얼굴 디테일·헤어 변주·의상 포인트·액세서리·대표 제스처 또는 주요 오브젝트/환경 주체가 달라집니다.
 
 **자동 학습**: `config_learner.py`가 `suno_history.jsonl`을 분석해 장르 프로파일과 분위기 규칙을 자동으로 업데이트합니다. 변경 전 자동 백업이 생성됩니다.
 
@@ -388,3 +388,4 @@ output/<노래제목>/
 - Python 3.10 이상
 - 외부 패키지 불필요 (표준 라이브러리만 사용)
 - 오디오 분석 힌트(`--apply-audio-analysis`) 사용 시 ffmpeg 필요 (선택)
+

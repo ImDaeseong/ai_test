@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 from pathlib import Path
 from typing import Any
@@ -24,6 +25,7 @@ _SHOT_CONFIG     = load_config("shot_rules")
 _PROP_CONFIG     = load_config("prop_rules")
 _CHAR_CONFIG     = load_config("character_defaults")
 _COLOR_CONFIG    = load_config("color_palette")
+_INFERENCE_CONFIG = load_config("song_inference")
 
 GENRE_PROFILES: list[dict[str, Any]] = _GENRE_CONFIG if isinstance(_GENRE_CONFIG, list) else []
 
@@ -35,15 +37,18 @@ _VIDEO_NEGATIVE   = ". ".join(_ANIME.get("video_negative_enforcement", []))
 
 BRAND_PALETTE: dict[str, Any] = {}
 COLOR_BALANCE_BY_STAGE: dict[str, Any] = {}
+ACTIVE_STYLE_ID = ""
 
 
 def select_theme(style_id: str | None = None) -> None:
-    global BRAND_PALETTE, COLOR_BALANCE_BY_STAGE
-    style_id = style_id or _STYLE_CONFIG.get("default_style", "cyber_noir")
+    global BRAND_PALETTE, COLOR_BALANCE_BY_STAGE, ACTIVE_STYLE_ID
+    style_id = style_id or _STYLE_CONFIG.get("default_style", "dreamy_synth")
     style_data = _STYLE_CONFIG.get("styles", {}).get(style_id, {})
     if not style_data:
-        first_key = next(iter(_STYLE_CONFIG.get("styles", {}).keys()), "cyber_noir")
+        first_key = next(iter(_STYLE_CONFIG.get("styles", {}).keys()), "dreamy_synth")
+        style_id = first_key
         style_data = _STYLE_CONFIG.get("styles", {}).get(first_key, {})
+    ACTIVE_STYLE_ID = style_id
     BRAND_PALETTE = style_data.get("brand_palette", {})
     COLOR_BALANCE_BY_STAGE = style_data.get("color_balance_by_stage", {})
 
@@ -52,14 +57,35 @@ select_theme()
 
 _COLOR_SUB = re.compile(r"neon magenta(?: and cyber pink)?|cyber[- ]?pink", re.IGNORECASE)
 
+# Ambient palette substitution — replaces cyber_noir fallback colors when a different style is active
+_PALETTE_SHADOW_SUB    = re.compile(r"deep\s+plum(?:\s+and\s+dark\s+violet)?", re.IGNORECASE)
+_PALETTE_SECONDARY_SUB = re.compile(
+    r"(?:(?:subtle|faint|soft|gentle|minimal|unsteady|restrained)\s+)?"
+    r"icy\s+cyan"
+    r"(?:\s+(?:secondary\s+)?(?:pavement\s+)?(?:reflections?|edge\s+light|fringe|glow|flickers?))?",
+    re.IGNORECASE,
+)
+_PALETTE_HIGHLIGHT_SUB = re.compile(
+    r"silver[-\s]white(?:\s+(?:rim\s+)?(?:highlights?|light|glow|emphasis|bloom|shimmer))?"
+    r"|silver\s+rim\s+(?:light|highlights?)",
+    re.IGNORECASE,
+)
+_CYBER_STYLE_SUB = re.compile(r"\bcyber(?:punk|[-\s]?noir|[-\s]?anime)?\b", re.IGNORECASE)
+_NEON_STYLE_SUB = re.compile(r"\bneon(?:[-\s](?:lit|tinted|edged|reflected))?\b", re.IGNORECASE)
+_FUTURISTIC_STYLE_SUB = re.compile(r"\bfuturistic\b", re.IGNORECASE)
+
 
 def _inject_song_color(main_color: str) -> None:
-    """Override BRAND_PALETTE color fields with the song-derived single color."""
+    """Override BRAND_PALETTE main color while preserving style-specific highlights and identity."""
+    style_highlight = BRAND_PALETTE.get("highlight", "silver-white rim highlights")
+    style_secondary = BRAND_PALETTE.get("secondary_light", "subtle secondary reflections")
     BRAND_PALETTE["main_color"] = main_color
-    BRAND_PALETTE["visual_identity"] = f"dark anime with {main_color} dominance"
+    BRAND_PALETTE["visual_identity"] = _COLOR_SUB.sub(
+        main_color, BRAND_PALETTE.get("visual_identity", "dark anime")
+    )
     BRAND_PALETTE["palette_rule"] = (
         f"limited-color anime palette: {main_color} dominant, "
-        "dark shadows, near-black backgrounds, subtle secondary reflections, silver-white rim highlights"
+        f"dark shadows, near-black backgrounds, {style_secondary}, {style_highlight}"
     )
 
 
@@ -87,7 +113,8 @@ def _bpm_desc(bpm: int | None, key: str, fallback: str) -> str:
 
 
 def _bpm_lighting_desc(bpm: int | None) -> str:
-    return _bpm_desc(bpm, "lighting_desc", "measured cyber-pink pulses with subtle icy cyan response lights")
+    template = _bpm_desc(bpm, "lighting_desc", "measured {main_color} pulses with subtle secondary light response")
+    return template.format(main_color=BRAND_PALETTE.get("main_color", "accent color"))
 
 
 def _bpm_transition_desc(bpm: int | None) -> str:
@@ -128,9 +155,41 @@ def normalized_song_text(song: dict[str, Any]) -> str:
     return " ".join(fields).lower()
 
 
+def _has_any(text: str, terms: list[str]) -> bool:
+    return any(term.lower() in text for term in terms)
+
+
+def match_inference_profile_text(text: str) -> dict[str, Any]:
+    normalized = text.lower()
+    for profile in _INFERENCE_CONFIG.get("profiles", []):
+        if _has_any(normalized, profile.get("keys", [])):
+            return profile
+    return {}
+
+
+def match_inference_profile_song(song: dict[str, Any]) -> dict[str, Any]:
+    return match_inference_profile_text(normalized_song_text(song))
+
+
+def match_inference_profile_world(world: dict[str, Any]) -> dict[str, Any]:
+    text = " ".join(
+        [
+            world.get("visual_identity", ""),
+            world.get("genre_profile", ""),
+            world.get("song_motif", ""),
+            " ".join(world.get("core_locations", [])),
+            " ".join(world.get("recurring_symbols", [])),
+        ]
+    )
+    return match_inference_profile_text(text)
+
+
 def pick_main_color(song: dict[str, Any]) -> str:
     """Derive one accent color from song genre/mood/atmosphere."""
     text = normalized_song_text(song)
+    inference_profile = match_inference_profile_song(song)
+    if inference_profile.get("main_color"):
+        return inference_profile["main_color"]
     for rule in _COLOR_CONFIG.get("rules", []):
         if any(k in text for k in rule["keys"]):
             return rule["color"]
@@ -140,6 +199,176 @@ def pick_main_color(song: dict[str, Any]) -> str:
 def _apply_color(text: str, color: str) -> str:
     """Replace hardcoded color keywords in genre profile strings with the song's color."""
     return _COLOR_SUB.sub(color, text)
+
+
+def _apply_full_palette(text: str) -> str:
+    """Replace all cyber_noir ambient color tokens with the active style's palette values."""
+    text = _apply_color(text, BRAND_PALETTE.get("main_color", "neon magenta"))
+    text = _PALETTE_SHADOW_SUB.sub(BRAND_PALETTE.get("shadow_color", "deep plum and dark violet"), text)
+    text = _PALETTE_SECONDARY_SUB.sub(BRAND_PALETTE.get("secondary_light", "subtle icy cyan"), text)
+    text = _PALETTE_HIGHLIGHT_SUB.sub(BRAND_PALETTE.get("highlight", "silver-white rim highlights"), text)
+    if ACTIVE_STYLE_ID != "cyber_noir":
+        text = _CYBER_STYLE_SUB.sub("stylized", text)
+        text = _NEON_STYLE_SUB.sub("accent-light", text)
+        text = _FUTURISTIC_STYLE_SUB.sub("song-specific cinematic", text)
+    return text
+
+
+def _stable_choice(options: list[str], seed: str, salt: str) -> str:
+    """Pick a deterministic option so one song stays consistent while other songs diverge."""
+    if not options:
+        return ""
+    digest = hashlib.sha256(f"{seed}|{salt}".encode("utf-8")).hexdigest()
+    return options[int(digest[:8], 16) % len(options)]
+
+
+def song_character_seed(song: dict[str, Any]) -> str:
+    sections = "|".join(section.get("name", "") for section in song.get("sections", []))
+    return "|".join(
+        str(value)
+        for value in [
+            song.get("title", ""),
+            song.get("genre", ""),
+            song.get("bpm", ""),
+            song.get("energy", ""),
+            ",".join(song.get("mood", [])),
+            sections,
+        ]
+    )
+
+
+def song_unique_traits(song: dict[str, Any], main_color: str) -> dict[str, str]:
+    seed = song_character_seed(song)
+    variants = _CHAR_CONFIG.get("song_unique_variants", {})
+    title = song.get("title", "").strip()
+
+    def pick(key: str) -> str:
+        value = _stable_choice(variants.get(key, []), seed, key)
+        return value.format(main_color=main_color, title=title)
+
+    return {
+        "archetype": pick("archetypes"),
+        "face_shape": pick("face_shapes"),
+        "hair_base": pick("hair_bases"),
+        "face": pick("face_marks"),
+        "hair": pick("hair_variants"),
+        "body": pick("body_silhouettes"),
+        "outfit_base": pick("outfit_bases"),
+        "outfit": pick("outfit_accents"),
+        "accessory": pick("accessories"),
+        "gesture": pick("gesture_signatures"),
+        "identity_lock": pick("identity_locks"),
+    }
+
+
+def _with_color(text: str, main_color: str) -> str:
+    return text.format(main_color=main_color) if text else ""
+
+
+def infer_subject_profile(song: dict[str, Any], main_color: str) -> dict[str, Any]:
+    """Infer whether the MV should center a person, pair/group, object, or environment."""
+    positive_tags = [t for t in song.get("style_tags", []) if not t.lstrip().startswith(("‑", "-"))]
+    text = " ".join(
+        [
+            song.get("title", ""),
+            song.get("genre", ""),
+            " ".join(positive_tags),
+            " ".join(song.get("mood", [])),
+            " ".join(song.get("instruments", [])),
+            song.get("atmosphere", ""),
+            " ".join(song.get("visual_cues", [])),
+        ]
+    ).lower()
+    subject_rules = _CHAR_CONFIG.get("subject_rules", {})
+    gender_rules = _CHAR_CONFIG.get("gender_presentation_rules", {})
+
+    def rule_matches(rule: dict[str, Any]) -> bool:
+        return any(_key_matches(str(k).lower(), text) for k in rule.get("keys", []))
+
+    subject_type = "human_solo"
+    subject_rule: dict[str, Any] = {}
+    for candidate in ["human_duo", "group", "object_symbol", "environment_only"]:
+        rule = subject_rules.get(candidate, {})
+        if rule and rule_matches(rule):
+            subject_type = candidate
+            subject_rule = rule
+            break
+
+    male = rule_matches(gender_rules.get("male", {}))
+    female = rule_matches(gender_rules.get("female", {}))
+    androgynous = rule_matches(gender_rules.get("androgynous", {}))
+    has_lead_vocal = any(
+        _key_matches(k, text)
+        for k in [
+            "vocal",
+            "vocals",
+            "voice",
+            "singer",
+            "male vocal",
+            "male vocals",
+            "female vocal",
+            "female vocals",
+            "dry male vocals",
+            "upfront vocal presence",
+            "lead vocal",
+        ]
+    )
+    full_instrumental = any(
+        phrase in text
+        for phrase in [
+            "instrumental only",
+            "no vocals",
+            "no lead vocal",
+            "piano only",
+            "strings only",
+        ]
+    ) or text.strip() == "instrumental"
+    if subject_type == "environment_only" and has_lead_vocal and not full_instrumental:
+        subject_type = "human_solo"
+        subject_rule = {}
+    if subject_type in ("environment_only", "object_symbol"):
+        gender = "non-human / symbolic"
+    elif male and female:
+        gender = "mixed-gender"
+    elif female:
+        gender = gender_rules.get("female", {}).get("description", "female-presenting")
+    elif male:
+        gender = gender_rules.get("male", {}).get("description", "male-presenting")
+    elif androgynous:
+        gender = gender_rules.get("androgynous", {}).get("description", "androgynous")
+    else:
+        gender = "androgynous"
+
+    subject_label = {
+        "human_solo": "one human lead character",
+        "human_duo": "two human lead characters",
+        "group": "small human ensemble with a center lead",
+        "environment_only": "environment-led music video",
+        "object_symbol": "symbolic object-led music video",
+    }.get(subject_type, "one human lead character")
+
+    subject_prop = _with_color(subject_rule.get("prop", ""), main_color)
+    if subject_type == "object_symbol":
+        if any(_key_matches(k, text) for k in ["perfume", "scent", "향기", "향"]):
+            subject_prop = f"translucent perfume-like memory vial releasing {main_color} light and scent trails"
+        elif any(_key_matches(k, text) for k in ["letter", "편지"]):
+            subject_prop = f"folded handwritten letter glowing with {main_color} edges"
+        elif any(_key_matches(k, text) for k in ["photo", "사진"]):
+            subject_prop = f"old photo fragment carrying a soft {main_color} reflection"
+        elif any(_key_matches(k, text) for k in ["ring", "반지"]):
+            subject_prop = f"small ring catching a precise {main_color} rim light"
+
+    return {
+        "subject_type": subject_type,
+        "subject_label": subject_label,
+        "gender_presentation": gender,
+        "identity_prefix": subject_rule.get("identity_prefix", ""),
+        "identity": _with_color(subject_rule.get("identity", ""), main_color),
+        "silhouette": _with_color(subject_rule.get("silhouette", ""), main_color),
+        "prop": subject_prop,
+        "reference_views": subject_rule.get("reference_views", []),
+        "reference_note": subject_rule.get("reference_note", ""),
+    }
 
 
 def normalized_genre_text(song: dict[str, Any]) -> str:
@@ -200,22 +429,27 @@ def build_adaptive_default(song: dict[str, Any]) -> dict[str, Any]:
     prop = _PROP_CONFIG.get("default", "small glowing symbolic keepsake")
     for rule in prop_rules:
         if _rule_matches(rule, text):
-            prop = rule["prop"]
+            prop = _apply_full_palette(rule["prop"])
             break
 
     # 5. Locations (Using _LOC_CONFIG rules)
     locations: list[str] = []
     for rule in _LOC_CONFIG.get("rules", []):
         if _rule_matches(rule, text):
-            loc = rule["location"]
+            loc = _apply_full_palette(rule["location"])
             if loc not in locations:
                 locations.append(loc)
     
     if len(locations) < 2:
-        locations.extend(_LOC_CONFIG.get("fallbacks", ["quiet urban threshold space", "empty street under neon light"]))
+        locations.extend(
+            _apply_full_palette(loc)
+            for loc in _LOC_CONFIG.get("fallbacks", ["quiet emotional threshold space", "empty street under accent light"])
+        )
 
+    _adaptive_style_map = {"fast": "urban_noir", "slow": "warm_acoustic", "medium": "dreamy_synth"}
     return {
         "name": f"{mood} cinematic anime noir",
+        "style_id": _adaptive_style_map.get(energy_group, _STYLE_CONFIG.get("default_style", "dreamy_synth")),
         "identity": identity,
         "hair": hair,
         "outfit": outfit,
@@ -246,11 +480,12 @@ def choose_genre_profile(song: dict[str, Any]) -> dict[str, Any]:
 def has_broken_text(text: str) -> bool:
     if not text:
         return False
-    mojibake_markers = "里泥愿蹂嫄諛媛怨醫낆쒗꾨뵒쑝"
-    marker_count = text.count("?") + sum(text.count(m) for m in mojibake_markers)
+    mojibake_markers = ("�", "Ã", "Â", "ì", "ê", "ë", "í", "諛", "蹂", "醫", "怨", "媛")
+    marker_count = sum(text.count(marker) for marker in mojibake_markers)
     if marker_count >= 3:
         return True
-    return bool(re.search(r"[燎-﫿]", text))
+    suspicious_question_marks = len(re.findall(r"(?<!\w)\?(?!\w)|\?\?", text))
+    return suspicious_question_marks >= 3
 
 
 def clean_excerpt(value: str, limit: int = 180) -> str:
@@ -265,11 +500,15 @@ def clean_excerpt(value: str, limit: int = 180) -> str:
 # ---------------------------------------------------------------------------
 
 def infer_song_motif(song: dict[str, Any], profile: dict[str, Any]) -> str:
+    main_color = BRAND_PALETTE.get("main_color", "neon magenta")
     text = normalized_song_text(song)
+    inference_profile = match_inference_profile_song(song)
+    if inference_profile.get("motif_template"):
+        return _apply_full_palette(inference_profile["motif_template"].format(main_color=main_color))
     for rule in _MOTIF_CONFIG.get("rules", []):
         if any(k in text for k in rule["keys"]):
-            return rule["motif"]
-    return f"{profile['prop']} recurring as the song's main visual motif"
+            return _apply_full_palette(rule["motif"])
+    return f"{_apply_full_palette(profile['prop'])} recurring as the song's main visual motif"
 
 
 _INSTRUMENT_HINTS: dict[str, str] = {
@@ -297,25 +536,28 @@ def instrument_visual_hint(instruments: list[str]) -> str:
             if name in key and hint not in hints:
                 hints.append(hint)
                 break
-    return "; ".join(hints[:3])
+    return _apply_full_palette("; ".join(hints[:3]))
 
 
 def lighting_language(song: dict[str, Any], profile: dict[str, Any]) -> str:
     bpm = song.get("bpm") or 0
     tempo_light = _bpm_lighting_desc(bpm)
-    return f"{tempo_light}, {profile['texture']}, deep plum shadows, graphite darkness, silver-white rim highlights"
+    shadow = BRAND_PALETTE.get("shadow_color", "deep plum and dark violet shadows")
+    highlight = BRAND_PALETTE.get("highlight", "silver-white rim highlights")
+    return _apply_full_palette(f"{tempo_light}, {profile['texture']}, {shadow}, {highlight}")
 
 
 def transition_language(song: dict[str, Any], profile: dict[str, Any], motif: str) -> str:
     bpm = song.get("bpm") or 0
     rhythm = _bpm_transition_desc(bpm)
-    return f"{rhythm} through {motif}, neon reflections, and {profile['texture']}"
+    secondary = BRAND_PALETTE.get("secondary_accent", "accent light")
+    return _apply_full_palette(f"{rhythm} through {motif}, {secondary} reflections, and {profile['texture']}")
 
 
-def normalize_symbols(symbols: list[str], signature_prop: str) -> list[str]:
+def normalize_symbols(symbols: list[str]) -> list[str]:
     normalized = []
     for symbol in symbols:
-        value = str(symbol).replace("paper crane", signature_prop).strip()
+        value = str(symbol).strip()
         if value and value not in normalized:
             normalized.append(value)
     return normalized
@@ -324,22 +566,35 @@ def normalize_symbols(symbols: list[str], signature_prop: str) -> list[str]:
 def infer_locations(song: dict[str, Any], profile: dict[str, Any]) -> list[str]:
     text = normalized_song_text(song)
     locations: list[str] = []
+    inference_profile = match_inference_profile_song(song)
+    if inference_profile:
+        locations.extend(_apply_full_palette(loc) for loc in profile.get("locations", []))
+        for rule in inference_profile.get("extra_locations", []):
+            if _has_any(text, rule.get("keys", [])):
+                locations.append(_apply_full_palette(rule["location"]))
+        return list(dict.fromkeys(locations))[:5]
     for rule in _LOC_CONFIG.get("rules", []):
         if _rule_matches(rule, text):
-            loc = rule["location"]
+            loc = _apply_full_palette(rule["location"])
             if loc not in locations:
                 locations.append(loc)
-    locations.extend(profile.get("locations", []))
+    locations.extend(_apply_full_palette(loc) for loc in profile.get("locations", []))
     return list(dict.fromkeys(locations))[:5]
 
 
 def create_visual_world(song: dict[str, Any], emotion: dict[str, Any]) -> dict[str, Any]:
     profile = choose_genre_profile(song)
+    colored_prop = _apply_full_palette(profile["prop"])
     motif = infer_song_motif(song, profile)
     locations = infer_locations(song, profile)
     symbols = normalize_symbols(
-        [motif, *emotion.get("visual_symbolism", []), *song.get("visual_cues", []), profile["prop"]], profile["prop"]
-    )[:8]
+        [motif, *emotion.get("visual_symbolism", []), *song.get("visual_cues", []), colored_prop]
+    )
+    inference_profile = match_inference_profile_song(song)
+    blocked_symbols = {symbol.lower() for symbol in inference_profile.get("symbol_filter", [])}
+    if blocked_symbols:
+        symbols = [symbol for symbol in symbols if symbol.strip().lower() not in blocked_symbols]
+    symbols = symbols[:8]
     return {
         "song_slug": slugify(song["title"]),
         "visual_identity": f"{profile['name']} within {BRAND_PALETTE['visual_identity']}",
@@ -355,8 +610,8 @@ def create_visual_world(song: dict[str, Any], emotion: dict[str, Any]) -> dict[s
         },
         "base_palette": BRAND_PALETTE["base"],
         "accent_color": BRAND_PALETTE["main_color"],
-        "secondary_accent_color": "icy cyan",
-        "highlight_color": "silver white",
+        "secondary_accent_color": BRAND_PALETTE.get("secondary_accent", "icy cyan"),
+        "highlight_color": BRAND_PALETTE.get("highlight_color_name", "silver white"),
         "environment_family": emotion.get("urban_rural_mood", "urban emotional atmosphere"),
         "core_locations": locations,
         "recurring_symbols": symbols,
@@ -372,19 +627,100 @@ def create_protagonist(song: dict[str, Any], world: dict[str, Any]) -> dict[str,
     main_color = BRAND_PALETTE.get("main_color", "neon magenta")
     mood_words = ", ".join(song.get("mood", ["melancholic"]))
     motif = world.get("song_motif", profile["prop"])
+    colored_prop = _apply_full_palette(profile["prop"])
+    unique = song_unique_traits(song, main_color)
+    subject = infer_subject_profile(song, main_color)
+
+    if subject["subject_type"] in ("environment_only", "object_symbol"):
+        subject_prop = subject.get("prop") or colored_prop
+        reference_views = subject.get("reference_views") or [
+            "main subject front reference",
+            "main subject side/detail reference",
+            "main subject in environment",
+            "lighting and motif close-up",
+        ]
+        return {
+            "role": "unique primary visual subject for this song",
+            "subject_type": subject["subject_type"],
+            "subject_label": subject["subject_label"],
+            "gender_presentation": subject["gender_presentation"],
+            "identity": subject.get("identity") or f"{subject['subject_label']} shaped by {world['genre_profile']}",
+            "age_style": "non-human or environment-led anime MV subject, stylized and non-photorealistic",
+            "hair": "",
+            "outfit": "",
+            "silhouette": subject.get("silhouette") or "clear non-human focal silhouette",
+            "emotional_state": mood_words,
+            "signature_prop": subject_prop,
+            "accent_detail": (
+                f"{BRAND_PALETTE['main_color']} remains dominant. The main visual focus is {subject['subject_label']}, "
+                f"not a reusable human protagonist. This subject system belongs only to '{song.get('title', 'this song')}'"
+            ),
+            "consistency_rules": [
+                f"Primary subject type: {subject['subject_type']} ({subject['subject_label']}).",
+                "Do not introduce a full-body recurring lead human unless the scene explicitly needs a partial silhouette.",
+                "Keep the same object/environment motif, palette, and spatial identity within this song only.",
+                "Do not reuse another song's character face, hairstyle, outfit, or body silhouette.",
+                "Use anime cinematic styling, never live-action realism.",
+                "First generate Step 00 as the subject reference sheet before creating any scene image.",
+                "Attach that same subject reference sheet when generating every scene image for this song.",
+            ],
+            "reference_workflow": [
+                "Generate a clean song-specific subject reference sheet before scene production.",
+                "Use the same subject reference sheet as an input/reference for every scene image prompt in this song.",
+                "After each scene image is approved, use that scene image as the primary image-to-video input for that scene.",
+            ],
+            "required_reference_views": reference_views,
+        }
+
+    unique_identity_parts = [
+        unique.get("archetype", ""),
+        f"{subject['gender_presentation']} {subject['subject_label']}",
+        subject.get("identity_prefix", ""),
+        profile["identity"],
+        f"face structure: {unique['face_shape']}" if unique.get("face_shape") else "",
+        f"song-specific face detail: {unique['face']}" if unique.get("face") else "",
+        f"signature gesture: {unique['gesture']}" if unique.get("gesture") else "",
+    ]
+    unique_hair = ", ".join(
+        part for part in [
+            _with_color(unique.get("hair_base", ""), main_color),
+            _with_color(unique.get("hair", ""), main_color),
+            f"single {main_color} identity accent only, placed exactly as described",
+        ] if part
+    )
+    unique_outfit = ", ".join(
+        part for part in [
+            _with_color(unique.get("outfit_base", ""), main_color),
+            _with_color(unique.get("outfit", ""), main_color),
+            _with_color(unique.get("accessory", ""), main_color),
+        ] if part
+    )
+    unique_silhouette = _with_color(unique.get("body", ""), main_color) or profile["silhouette"]
+    identity_lock = unique.get("identity_lock", "Treat this as a completely new lead character for this song.")
+    identity_lock_sentence = identity_lock.rstrip(".")
     return {
         "role": "unique protagonist for this song",
-        "identity": profile["identity"],
+        "subject_type": subject["subject_type"],
+        "subject_label": subject["subject_label"],
+        "gender_presentation": subject["gender_presentation"],
+        "identity": ", ".join(part for part in unique_identity_parts if part),
         "age_style": "anime character, stylized and non-photorealistic",
-        "hair": _apply_color(profile["hair"], main_color),
-        "outfit": _apply_color(profile["outfit"], main_color),
-        "silhouette": profile["silhouette"],
+        "hair": unique_hair,
+        "outfit": unique_outfit,
+        "silhouette": unique_silhouette,
         "emotional_state": mood_words,
-        "signature_prop": profile["prop"],
-        "accent_detail": f"{BRAND_PALETTE['main_color']} remains dominant, but the prop and gestures follow this song motif: {motif}",
+        "signature_prop": colored_prop,
+        "accent_detail": (
+            f"{BRAND_PALETTE['main_color']} remains dominant, but the prop and gestures follow this song motif: {motif}. "
+            f"This exact face structure, body silhouette, hair shape, outfit category, accessory, and gesture set belong only to '{song.get('title', 'this song')}'. "
+            f"{identity_lock_sentence}"
+        ),
         "consistency_rules": [
             "Keep the same face, hairstyle, outfit, body proportions, and signature prop within this song only.",
+            f"Primary subject type: {subject['subject_type']} ({subject['subject_label']}); gender presentation: {subject['gender_presentation']}.",
             "Do not reuse this character design for a different song unless the user explicitly requests a series identity.",
+            identity_lock,
+            "Do not average this character into a generic dark-haired anime protagonist; prioritize the face structure, body silhouette, hair base, and outfit base.",
             "Let pose, expression, setting, and action change per section according to lyrics, genre, intensity, and BPM.",
             "Use anime cinematic styling, never live-action realism.",
             "First generate Step 00 (character turnaround model sheet) before creating any scene image.",
@@ -404,7 +740,8 @@ def create_protagonist(song: dict[str, Any], world: dict[str, Any]) -> dict[str,
             "back full-body view",
             "three-quarter full-body view",
             "face close-up",
-            f"prop close-up of {profile['prop']}",
+            f"prop close-up of {colored_prop}",
+            f"gender/subject check: {subject['gender_presentation']} {subject['subject_label']}",
         ],
     }
 
@@ -472,6 +809,21 @@ def story_stage(index: int, total: int, section: str) -> str:
     return stages.get(section, "development")
 
 
+def story_beat_ko(scene: dict[str, Any], stage: str) -> str:
+    section = scene["music_section"]
+    action  = scene.get("scene_action", "감정 공간을 통과합니다")
+    symbol  = scene.get("symbolic_focus", "곡의 모티프")
+    if stage == "opening":
+        return f"{section}에서 주인공이 {symbol}을 소개합니다. 행동: {action}."
+    if stage == "development":
+        return f"{section}에서 가사의 감정이 행동으로 가시화됩니다: {action}."
+    if stage == "turning point":
+        return f"{section}에서 리듬과 머뭇거림이 바뀌며 {symbol}이(가) 주인공을 앞으로 이끕니다."
+    if stage == "climax":
+        return f"{section}에서 반복된 감정이 정점에 달하며 카메라가 행동을 따라갑니다: {action}."
+    return f"{section}에서 {symbol}이(가) 마지막 이미지로 자리잡으며 움직임이 해결로 마무리됩니다."
+
+
 def story_beat_en(scene: dict[str, Any], stage: str) -> str:
     section = scene["music_section"]
     action  = scene.get("scene_action", "moves through the emotional space")
@@ -491,9 +843,9 @@ def infer_lyric_idea(section: dict[str, Any]) -> str:
     lyrics = clean_excerpt(section.get("lyrics", ""), 220)
     description = section.get("description", "").strip()
     if lyrics and "encoding-damaged" not in lyrics:
-        return f"lyric cue: {lyrics}"
+        return _apply_full_palette(f"lyric cue: {lyrics}")
     if description:
-        return f"music cue: {description}"
+        return _apply_full_palette(f"music cue: {description}")
     return f"{section['name']} emotional cue"
 
 
@@ -501,6 +853,24 @@ def choose_location(section: dict[str, Any], world: dict[str, Any], index: int, 
     text = f"{section.get('lyrics', '')} {section.get('description', '')}".lower()
     section_name = section["name"]
     used = used_locations or []
+    core = world["core_locations"]
+
+    inference_profile = match_inference_profile_world(world)
+    if inference_profile:
+        for rule in inference_profile.get("extra_locations", []):
+            if _has_any(text, rule.get("keys", [])):
+                loc = _apply_full_palette(rule["location"])
+                if loc in core and loc not in used:
+                    return loc
+        preferences = inference_profile.get("section_location_preferences", {}).get(section_name, [])
+        preferred_locs = [loc for loc in core if _has_any(loc.lower(), preferences)]
+        for loc in preferred_locs:
+            if loc not in used:
+                return loc
+        unused_profile_locs = [loc for loc in core if loc not in used]
+        if unused_profile_locs:
+            return unused_profile_locs[0]
+        return core[(index - 1) % len(core)]
 
     # Resolution sections prefer dawn/skyline locations
     if _SECTIONS_CONFIG.get("story_stages", {}).get(section_name) == "resolution":
@@ -512,12 +882,11 @@ def choose_location(section: dict[str, Any], world: dict[str, Any], index: int, 
     # Keyword-driven match (word-boundary aware, skips already-used locations)
     for rule in _LOC_CONFIG.get("rules", []):
         if _rule_matches(rule, text):
-            loc = rule["location"]
+            loc = _apply_full_palette(rule["location"])
             if loc not in used:
                 return loc
 
     # Fallback: prefer unused core locations
-    core = world["core_locations"]
     unused = [loc for loc in core if loc not in used]
     if unused:
         return unused[0]
@@ -532,40 +901,79 @@ def choose_scene_action(section: dict[str, Any], lyric_idea: str, protagonist: d
     def fmt(template: str) -> str:
         return template.replace("{prop}", prop)
 
+    inference_profile = match_inference_profile_text(text)
+    if not inference_profile:
+        for profile in _INFERENCE_CONFIG.get("profiles", []):
+            if _has_any(prop.lower(), profile.get("action_context_prop_keys", [])):
+                inference_profile = profile
+                break
+    if inference_profile:
+        section_actions = inference_profile.get("section_actions", {})
+        if section_name in section_actions:
+            return _apply_full_palette(fmt(section_actions[section_name]))
+        for rule in inference_profile.get("action_rules", []):
+            if _has_any(text, rule.get("keys", [])):
+                return _apply_full_palette(fmt(rule["action"]))
+        if inference_profile.get("default_action"):
+            return _apply_full_palette(fmt(inference_profile["default_action"]))
+
+    if protagonist.get("subject_type") == "environment_only":
+        if section_name == "Intro":
+            return _apply_full_palette(f"the empty environment slowly reveals {prop} through light, weather, and camera drift")
+        if section_name == "Chorus":
+            return _apply_full_palette(f"the environment blooms around {prop}, making the space itself feel like the singer")
+        if section_name == "Outro":
+            return _apply_full_palette(f"{prop} fades into the final empty space as the environment settles")
+        return _apply_full_palette(f"light, shadow, and atmosphere move around {prop} without introducing a recurring human lead")
+
+    if protagonist.get("subject_type") == "object_symbol":
+        if section_name == "Intro":
+            return _apply_full_palette(f"{prop} appears as the first emotional anchor, held by light rather than a full human lead")
+        if section_name == "Chorus":
+            return _apply_full_palette(f"{prop} becomes the dominant subject, pulling reflections and memory fragments toward it")
+        if section_name == "Outro":
+            return _apply_full_palette(f"{prop} remains after all human presence has passed out of frame")
+        return _apply_full_palette(f"{prop} reacts to the lyric emotion through glow, reflection, and small environmental movement")
+
     # Section-specific overrides from config (checked before generic keyword scan)
     overrides = _SECTIONS_CONFIG.get("action_overrides", {})
     if section_name in overrides:
         ov = overrides[section_name]
         # Intro: music-cue shortcut
         if "music_cue_prefix" in ov and lyric_idea.startswith(ov["music_cue_prefix"]):
-            return fmt(ov["music_cue_action"])
+            return _apply_full_palette(fmt(ov["music_cue_action"]))
         # Bridge / Outro: conditional keyword check
         if "hide_keywords" in ov and any(k in text for k in ov["hide_keywords"]):
-            return fmt(ov["hide_action"])
+            return _apply_full_palette(fmt(ov["hide_action"]))
         if "cry_keywords" in ov and any(k in text for k in ov["cry_keywords"]):
-            return fmt(ov["cry_action"])
+            return _apply_full_palette(fmt(ov["cry_action"]))
         # Chorus: smile-specific check
         if "smile_keywords" in ov and any(k in text for k in ov["smile_keywords"]):
-            return fmt(ov["smile_action"])
+            return _apply_full_palette(fmt(ov["smile_action"]))
         # Section has a default override (Bridge, Outro, Chorus)
         if "default_action" in ov:
-            return fmt(ov["default_action"])
+            return _apply_full_palette(fmt(ov["default_action"]))
 
     # Generic keyword scan from config
     for rule in _ACTION_CONFIG.get("rules", []):
         if any(k in text for k in rule["keys"]):
-            return fmt(rule["action"])
+            return _apply_full_palette(fmt(rule["action"]))
 
-    return fmt(_ACTION_CONFIG.get("default", "shows the section emotion through posture, hand movement, and the recurring {prop}"))
+    return _apply_full_palette(fmt(_ACTION_CONFIG.get("default", "shows the section emotion through posture, hand movement, and the recurring {prop}")))
 
 
 def choose_symbolic_focus(section: dict[str, Any], world: dict[str, Any], protagonist: dict[str, Any]) -> str:
     text = f"{section.get('lyrics', '')} {section.get('description', '')}".lower()
+    inference_profile = match_inference_profile_world(world) or match_inference_profile_text(text)
+    if inference_profile:
+        for rule in inference_profile.get("focus_rules", []):
+            if _has_any(text, rule.get("keys", [])):
+                return _apply_full_palette(rule["focus"])
+        return world.get("song_motif") or protagonist["signature_prop"]
     for rule in _FOCUS_CONFIG.get("rules", []):
         if any(k in text for k in rule["keys"]):
-            return rule["focus"]
-    fallback = world.get("song_motif") or protagonist["signature_prop"]
-    return fallback.replace("paper crane", protagonist["signature_prop"])
+            return _apply_full_palette(rule["focus"])
+    return _apply_full_palette(world.get("song_motif") or protagonist["signature_prop"])
 
 
 def choose_shot(section: dict[str, Any], emotion: str, song: dict[str, Any]) -> str:
@@ -577,30 +985,30 @@ def choose_shot(section: dict[str, Any], emotion: str, song: dict[str, Any]) -> 
     # Fixed section overrides (Intro, Bridge, Outro)
     section_overrides = _SHOT_CONFIG.get("section_overrides", {})
     if name in section_overrides:
-        return section_overrides[name]
+        return _apply_full_palette(section_overrides[name])
 
     # Chorus: BPM-sensitive shot
     if name == "Chorus":
         if tempo == "fast":
-            return _SHOT_CONFIG.get("chorus_fast_shot", "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks")
-        return _SHOT_CONFIG.get("chorus_default_shot", "forward tracking shot with widening background parallax and brighter rim light")
+            return _apply_full_palette(_SHOT_CONFIG.get("chorus_fast_shot", "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks"))
+        return _apply_full_palette(_SHOT_CONFIG.get("chorus_default_shot", "forward tracking shot with widening background parallax and brighter rim light"))
 
     # Mirror/reflection keyword: content-driven close-up
     mirror_keys = _SHOT_CONFIG.get("mirror_keywords", ["거울", "mirror", "반사"])
     if any(k in text for k in mirror_keys):
-        return _SHOT_CONFIG.get("mirror_shot", "medium close-up reflected in a dark surface with neon fracture light framing the face")
+        return _apply_full_palette(_SHOT_CONFIG.get("mirror_shot", "medium close-up reflected in a dark surface with accent fracture light framing the face"))
 
     # Emotion-driven shot
     emotion_shots = _SHOT_CONFIG.get("emotion_shots", {})
     if emotion in emotion_shots:
-        return emotion_shots[emotion]
+        return _apply_full_palette(emotion_shots[emotion])
 
     # Keyword-driven fallback shots
     for rule in _SHOT_CONFIG.get("keyword_shots", []):
         if any(k in text for k in rule["keys"]):
-            return rule["shot"]
+            return _apply_full_palette(rule["shot"])
 
-    return _SHOT_CONFIG.get("default", "medium shot with lyric-specific hand action and soft parallax background")
+    return _apply_full_palette(_SHOT_CONFIG.get("default", "medium shot with lyric-specific hand action and soft parallax background"))
 
 
 def choose_movement(section: dict[str, Any], song: dict[str, Any]) -> str:
@@ -608,14 +1016,18 @@ def choose_movement(section: dict[str, Any], song: dict[str, Any]) -> str:
     tempo   = _bpm_tempo(song.get("bpm"))
     patterns = _SECTIONS_CONFIG.get("movement_patterns", {})
     section_patterns = patterns.get(name, {})
+    inference_profile = match_inference_profile_song(song)
+    if inference_profile.get("movement_patterns"):
+        profile_patterns = inference_profile["movement_patterns"]
+        return _apply_full_palette(profile_patterns.get(name, profile_patterns.get("default", "song-tempo-aware cinematic drift")))
 
     if "any" in section_patterns:
-        return section_patterns["any"]
+        return _apply_full_palette(section_patterns["any"])
     if tempo in section_patterns:
-        return section_patterns[tempo]
+        return _apply_full_palette(section_patterns[tempo])
     if "medium" in section_patterns:
-        return section_patterns["medium"]
-    return _SECTIONS_CONFIG.get("default_movement", "song-tempo-aware cinematic drift")
+        return _apply_full_palette(section_patterns["medium"])
+    return _apply_full_palette(_SECTIONS_CONFIG.get("default_movement", "song-tempo-aware cinematic drift"))
 
 
 def video_rhythm(song: dict[str, Any], section: dict[str, Any]) -> str:
@@ -652,12 +1064,12 @@ def generate_scenes(song: dict[str, Any], emotion: dict[str, Any], world: dict[s
             "emotion":              section_emotion.get("emotion", emotion.get("primary_emotion", "melancholic")),
             "intensity":            section.get("intensity", "medium"),
             "environment":          location,
-            "lighting":             section_emotion.get("lighting", world["lighting_language"]),
+            "lighting":             _apply_full_palette(section_emotion.get("lighting", world["lighting_language"])),
             "camera_direction":     shot,
             "movement":             movement,
             "video_rhythm":         video_rhythm(song, section),
             "cinematic_style":      world["visual_identity"],
-            "symbolism":            section_emotion.get("visual_symbols", world["recurring_symbols"]),
+            "symbolism":            [_apply_full_palette(s) for s in section_emotion.get("visual_symbols", world["recurring_symbols"])],
             "symbolic_focus":       symbolic_focus,
             "scene_action":         scene_action,
             "protagonist_continuity": protagonist["identity"],
@@ -675,7 +1087,7 @@ def apply_story_arc_to_scenes(scenes: list[dict[str, Any]]) -> list[dict[str, An
         enriched.append({
             **scene,
             "story_stage":             stage,
-            "story_beat_ko":           beat_en,
+            "story_beat_ko":           story_beat_ko(scene, stage),
             "story_beat_en":           beat_en,
             "continuity_from_previous_ko": "Continue emotional and visual continuity from the previous section.",
             "continuity_to_next_ko":   "Lead the motion and symbol into the next section.",
@@ -693,6 +1105,11 @@ def apply_story_arc_to_scenes(scenes: list[dict[str, Any]]) -> list[dict[str, An
 # ---------------------------------------------------------------------------
 
 def character_visual(protagonist: dict[str, Any]) -> str:
+    if protagonist.get("subject_type") in ("environment_only", "object_symbol"):
+        return (
+            f"{protagonist['identity']}, {protagonist['silhouette']}, "
+            f"primary recurring subject: {protagonist['signature_prop']}"
+        )
     return (
         f"{protagonist['identity']}, {protagonist['hair']}, {protagonist['outfit']}, "
         f"{protagonist['silhouette']}, holding {protagonist['signature_prop']}"
@@ -701,16 +1118,19 @@ def character_visual(protagonist: dict[str, Any]) -> str:
 
 def compact_lyric_idea(scene: dict[str, Any]) -> str:
     idea = scene.get("lyric_visual_idea", "")
-    return idea.replace("lyric cue: ", "").replace("music cue: ", "")[:220]
+    return _apply_full_palette(idea.replace("lyric cue: ", "").replace("music cue: ", ""))[:220]
 
 
 def image_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict[str, Any]) -> str:
-    color_balance = COLOR_BALANCE_BY_STAGE.get(scene.get("story_stage", "development"), COLOR_BALANCE_BY_STAGE.get("development", ""))
-    symbols = ", ".join(normalize_symbols(scene.get("symbolism", [])[:4], protagonist["signature_prop"]))
+    _cb_raw = COLOR_BALANCE_BY_STAGE.get(scene.get("story_stage", "development"), COLOR_BALANCE_BY_STAGE.get("development", ""))
+    color_balance = _cb_raw.format(main_color=BRAND_PALETTE.get("main_color", "accent color")) if _cb_raw else ""
+    symbols = ", ".join(normalize_symbols(scene.get("symbolism", [])[:4]))
     inst_hint = world.get("instrument_hint", "")
     lines = [
+        "Create a visibly song-unique primary subject, not a reused series character or reused visual identity.",
         f"{scene['camera_direction']} in {scene['environment']}.",
         f"{character_visual(protagonist)}.",
+        f"Identity lock: {protagonist['accent_detail']}.",
         f"Action: {scene['scene_action']}.",
         f"Lyric mood: {compact_lyric_idea(scene)}.",
         f"Visual symbol: {scene['symbolic_focus']}; supporting symbols: {symbols}.",
@@ -724,11 +1144,16 @@ def image_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict
 
 
 def video_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict[str, Any]) -> str:
-    color_balance = COLOR_BALANCE_BY_STAGE.get(scene.get("story_stage", "development"), COLOR_BALANCE_BY_STAGE.get("development", ""))
+    _cb_raw = COLOR_BALANCE_BY_STAGE.get(scene.get("story_stage", "development"), COLOR_BALANCE_BY_STAGE.get("development", ""))
+    color_balance = _cb_raw.format(main_color=BRAND_PALETTE.get("main_color", "accent color")) if _cb_raw else ""
     inst_hint = world.get("instrument_hint", "")
+    if protagonist.get("subject_type") in ("environment_only", "object_symbol"):
+        preserve = f"Preserve the primary visual subject: {protagonist['identity']}, {protagonist['silhouette']}, {protagonist['signature_prop']}."
+    else:
+        preserve = f"Preserve the character design: {protagonist['hair']}, {protagonist['outfit']}, {protagonist['signature_prop']}."
     lines = [
         "Image-to-video from the attached scene image.",
-        f"Preserve the character design: {protagonist['hair']}, {protagonist['outfit']}, {protagonist['signature_prop']}.",
+        preserve,
         f"Camera motion: {scene['movement']}; composition stays {scene['camera_direction']}.",
         f"Action over time: {scene['scene_action']}.",
         f"Musical timing: {scene['video_rhythm']}.",
@@ -747,10 +1172,20 @@ def video_prompt(scene: dict[str, Any], protagonist: dict[str, Any], world: dict
 
 def character_prompt(protagonist: dict[str, Any], world: dict[str, Any]) -> str:
     rules = "\n".join(f"- {rule}" for rule in protagonist["consistency_rules"])
+    if protagonist.get("subject_type") in ("environment_only", "object_symbol"):
+        subject_description = (
+            f"{protagonist['identity']}, {protagonist['age_style']}, {protagonist['silhouette']}. "
+            f"Primary recurring subject: {protagonist['signature_prop']}. "
+        )
+    else:
+        subject_description = (
+            f"{protagonist['identity']}, {protagonist['age_style']}, {protagonist['hair']}, "
+            f"{protagonist['outfit']}, {protagonist['silhouette']}. Signature prop: {protagonist['signature_prop']}. "
+        )
     return (
         "# Character Prompt\n\n"
-        f"{protagonist['identity']}, {protagonist['age_style']}, {protagonist['hair']}, "
-        f"{protagonist['outfit']}, {protagonist['silhouette']}. Signature prop: {protagonist['signature_prop']}. "
+        "Create a completely new primary visual subject for this song, not a reused design or costume variation.\n\n"
+        f"{subject_description}"
         f"Accent detail: {protagonist['accent_detail']}. Visual world: {world['visual_identity']}.\n\n"
         "Consistency rules:\n"
         f"{rules}\n"
@@ -761,18 +1196,39 @@ def character_reference_prompt(protagonist: dict[str, Any], world: dict[str, Any
     rules    = "\n".join(f"- {rule}" for rule in protagonist["consistency_rules"])
     workflow = "\n".join(f"- {step}" for step in protagonist.get("reference_workflow", []))
     views    = "\n".join(f"- {view}" for view in protagonist.get("required_reference_views", []))
-    return (
-        "# Character Turnaround Model Sheet Prompt\n\n"
-        "Create the master character turnaround model sheet for this song. This model sheet will be attached "
-        "as the identity reference for every later scene image, and optionally as a secondary reference for video generation.\n\n"
-        "Required views:\n"
-        f"{views}\n\n"
+    is_nonhuman = protagonist.get("subject_type") in ("environment_only", "object_symbol")
+    title = "Primary Visual Subject Reference Sheet Prompt" if is_nonhuman else "Character Turnaround Model Sheet Prompt"
+    purpose = (
+        "Create the master primary-subject reference sheet for this song. This sheet will be attached as the visual identity reference for every later scene image.\n\n"
+        if is_nonhuman else
+        "Create the master character turnaround model sheet for this song. This model sheet will be attached as the identity reference for every later scene image, and optionally as a secondary reference for video generation.\n\n"
+    )
+    design = (
+        f"Subject design: {protagonist['identity']}, {protagonist['age_style']}, {protagonist['silhouette']}. "
+        f"Primary recurring subject: {protagonist['signature_prop']}. "
+        if is_nonhuman else
         f"Character design: {protagonist['identity']}, {protagonist['age_style']}, {protagonist['hair']}, "
         f"{protagonist['outfit']}, {protagonist['silhouette']}. Signature prop: {protagonist['signature_prop']}. "
-        f"Accent detail: {protagonist['accent_detail']}. Visual world: {world['visual_identity']}.\n\n"
+    )
+    composition = (
+        "Composition: clean anime subject reference sheet, neutral simple background where useful, clear scale references, "
+        "wide environment/object views plus close-up details, no full-body human turnaround unless the subject type is human, "
+        "no readable text, clear recurring motif, no dramatic camera angle for the reference sheet. "
+        if is_nonhuman else
         "Composition: clean anime production model sheet, neutral simple background, aligned character views at the same scale, "
         "full body visible from head to toe in each turnaround pose, clear face close-up, clear hairstyle silhouette, "
-        f"clear outfit seams, clear signature prop, no dramatic camera angle, no cropped limbs, no environmental scene, no action pose. "
+        "clear outfit seams, clear signature prop, no dramatic camera angle, no cropped limbs, no environmental scene, no action pose. "
+    )
+    return (
+        f"# {title}\n\n"
+        f"{purpose}"
+        "Identity requirement: create a visibly new primary subject for this song, not a reused design, not a costume variation, "
+        "not the same face with different clothes. If the subject is not human, do not force a full-body human character; keep the object/environment as the main subject.\n\n"
+        "Required views:\n"
+        f"{views}\n\n"
+        f"{design}"
+        f"Accent detail: {protagonist['accent_detail']}. Visual world: {world['visual_identity']}.\n\n"
+        f"{composition}"
         f"{BRAND_PALETTE['palette_rule']}. Non-photorealistic, no live action, no text, no watermark.\n\n"
         "Consistency rules:\n"
         f"{rules}\n\n"
@@ -832,7 +1288,7 @@ def write_story_summary_markdown(story_arc: dict[str, Any], scenes: list[dict[st
         "1. Generate `character/character_reference_prompt.md` as the song-specific character model sheet.",
         "2. Attach that model sheet when generating every scene image for this song.",
         "3. Use each approved scene image as the first-frame/image-to-video input for that scene.",
-        "4. Keep the fixed neon magenta/cyber pink palette, but vary action, location, rhythm, and symbolism per song and section.",
+        f"4. Keep the fixed {BRAND_PALETTE.get('main_color', 'neon magenta')} palette, but vary action, location, rhythm, and symbolism per song and section.",
     ]
     return "\n".join(lines) + "\n"
 
@@ -895,8 +1351,11 @@ def _generate_and_write(song: dict, emotion: dict) -> None:
 
 def run(song_path: Path | None = None, emotion_path: Path | None = None, style_id: str | None = None) -> None:
     ensure_directories()
+    song = read_json(song_path or (PROJECT_ROOT / "input" / "song_master.json"))
+    if not style_id:
+        _matched_profile = choose_genre_profile(song)
+        style_id = _matched_profile.get("style_id", _STYLE_CONFIG.get("default_style", "dreamy_synth"))
     select_theme(style_id)
-    song    = read_json(song_path    or (PROJECT_ROOT / "input"    / "song_master.json"))
     _inject_song_color(pick_main_color(song))
     emotion = read_json(emotion_path or (PROJECT_ROOT / "analysis" / "emotion_analysis.json"))
     _generate_and_write(song, emotion)

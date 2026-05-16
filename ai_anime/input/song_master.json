@@ -1,410 +1,156 @@
 {
-  "title": "UPGRADE",
+  "title": "휴가 모드",
   "source_file": "raw_song.txt",
-  "genre": "Hardcore Punk, Garage Rock, 175 BPM",
-  "bpm": 175,
-  "energy": "high",
+  "genre": "K-Pop, Tropical House, 124 BPM",
+  "bpm": 124,
+  "energy": "medium",
   "mood": [
-    "melancholic",
+    "hopeful",
+    "excited",
     "cinematic",
-    "audio-informed"
+    "anxious-release"
   ],
   "instruments": [],
   "style_tags": [
-    "Hardcore Punk",
-    "Garage Rock",
-    "175 BPM",
-    "4",
-    "4 time",
-    "Visceral raw male vocals",
-    "gravelly raspy tone",
-    "aggressive shouting",
-    "frantic screams",
-    "primal vocal breaks",
-    "Vocal cracks",
-    "heavy breathing",
-    "panting",
-    "Anthemic shout-along gang vocals",
-    "High-gain distorted electric guitar",
-    "feedback",
-    "overdriven tube-amp",
-    "Aggressive distorted bass",
-    "fast driving drums",
-    "crashing cymbals",
-    "Lo-fi analog distortion",
-    "gritty garage acoustics",
-    "dark rebellious energy",
-    "chaotic",
-    "high velocity"
+    "K-Pop",
+    "Tropical House",
+    "124 BPM",
+    "Emotive airy male tenor",
+    "natural breaths",
+    "subtle vibrato",
+    "human-like delivery",
+    "Driving deep bass",
+    "shimmering wide synth pads",
+    "acoustic guitar arpeggios",
+    "prominent steel drums",
+    "crisp tropical percussion",
+    "High-fidelity",
+    "polished mix",
+    "warm separation",
+    "lush reverb"
   ],
   "negative_tags": [],
   "visual_cues": [
-    "empty street",
-    "rain",
-    "silhouette"
+    "sunlit shoreline",
+    "warm sea breeze",
+    "bright water",
+    "summer sky",
+    "coral sunset"
   ],
-  "atmosphere": "melancholic, cinematic",
-  "pacing": "energetic cuts with stronger motion accents",
+  "atmosphere": "hopeful, excited, cinematic, anxious-release",
+  "pacing": "fast cuts with energetic camera movement",
   "sections": [
     {
       "index": 1,
       "name": "Intro",
-      "lyrics": "",
+      "lyrics": "[Instrumental only]\n[Dreamy synth pads, distant acoustic guitar arpeggio, light tropical percussion building]",
       "description": "",
       "intensity": "low",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     },
     {
       "index": 2,
       "name": "Verse",
-      "lyrics": "어제의 껍질을 찢어 발겨\n차가운 핏줄에 다시 불을 질러\n두려움은 재가 되고\n흉터는 단단한 갑옷이 돼!\n녹슨 날개를 강철로 바꿔\n한계를 향해 이빨을 드러내\n세상이 내 발밑에 기게 해줄게\n이제 시작이야 나의 전쟁!",
+      "lyrics": "[Soft, breathy male tenor vocals, emotive delivery]\n새로운 월요일 아침, 눈부신 화면 속 [breath]\n답답한 이 기분, 끝없는 경쟁 속에 [sigh]\n쌓여가는 서류들, 시계는 느려만 가\n내 맘속 작은 속삭임, '이제 떠나자'",
       "description": "",
       "intensity": "medium",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     },
     {
       "index": 3,
-      "name": "Pre-Chorus",
-      "lyrics": "심장을 조여!\n한계를 넘어!\n모조리 바꿔!",
+      "name": "Verse",
+      "lyrics": "[Energy builds, rhythmic and soulful vocals]\n그래, 이젠 지쳤어, 더는 못 참겠어\n가방은 벌써 다 쌌지, 문을 향해 나아가 [gasp of excitement]\n설레는 맘 가득, 해 뜨길 간절히 기다려",
       "description": "",
       "intensity": "medium",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     },
     {
       "index": 4,
       "name": "Chorus",
-      "lyrics": "업그레이드! 심장을 갈아 끼워!\n어제의 나는 이미 죽었어!\n업그레이드! 독기를 들이켜!\n이 바닥 끝까지 다 뒤집어놔!\n더 날카로운 이빨을 세워\n안전한 감옥을 부숴버려!\n업그레이드! 멈추는 순간 죽어!\n이건 진화일 뿐 끝은 없어!",
+      "lyrics": "[Powerful, bright, joyful vocals, high energy]\n모든 걸 잊어버려, 난 지금 떠나 휴가\n이 순간 휴가 모드, 온몸으로 느껴봐! (Oh-oh-oh)\n쌓였던 스트레스와 압박, 모두 사라져\n저 바다 위 태양, 오늘을 밝혀줄 거야\n지금 이 순간, 그래, 온몸으로 느껴봐!",
       "description": "",
       "intensity": "medium-high",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     },
     {
       "index": 5,
       "name": "Verse",
-      "lyrics": "거울 속 괴물이 웃고 있어\n매일 난 스스로를 무너뜨려\n안정? 그딴 건\n나약한 놈들의 핑계일 뿐!\n패배의 악몽이 나의 연료\n상처를 삼켜 힘으로 바꿔\n두 주먹 쥐고 벽을 부수면\n막혔던 숨통이 터져 나와!",
+      "lyrics": "[Relaxed, airy tone, laid-back delivery]\n발끝엔 따뜻한 모래, 머리엔 시원한 바람\n파도 따라 걷다 보면, 걱정은 저 멀리 [soft laugh]\n알람 없이 깨어나, 마감은 잊고서\n나만의 리듬 속, 여기 내 세상",
       "description": "",
       "intensity": "medium",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     },
     {
       "index": 6,
       "name": "Bridge",
-      "lyrics": "살을 깎아내도 좋아... 뼈가 부서져도 좋아...\n내일의 내가 너를 비웃을 테니!\n멈추지 않을 거야! 무릎 꿇지 않을 거야!\n이 고통 속에서! 나는! 나를! 다시 써!",
+      "lyrics": "[Emotional swell, heartfelt soaring vocals, natural vibrato]\n잠시 멈춰 서서 깊게 숨을 쉬어봐 [deep breath]\n파란 하늘이 내게 속삭여 (다 괜찮아)\n더 이상 고민은 없어, 바로 지금 이 순간!",
       "description": "",
       "intensity": "emotional peak",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     },
     {
       "index": 7,
-      "name": "Chorus",
-      "lyrics": "업그레이드! 심장을 갈아 끼워!\n어제의 나는 재가 됐어!\n업그레이드! 독기를 들이켜!\n나를 막는 벽을 씹어 삼킬 거야!\n더 날카로운 발톱을 세워\n천장 따윈 뚫어버릴 거야!\n업그레이드! 영원히 굶주려!\n이건 끝이 아냐 새로운 사냥!",
-      "description": "",
-      "intensity": "medium-high",
-      "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
-      ]
-    },
-    {
-      "index": 8,
       "name": "Outro",
-      "lyrics": "더 지독한 나로 다시 태어나!\n매일매일 진화는 계속돼!\n멈추지 않아!",
+      "lyrics": "[Joyful ad-libs, fading out with summer sounds, subtle vocal harmonies]\n모든 걸 다 잊어버려, 그래, 걱정은 날려!\n휴가 모드 발동했어, 그냥 느껴봐! (Oh-oh-oh)\n모든 걸 잊고 떠나, 난 지금 휴가 모드\n그래, 이 자유로운 기분, 온몸으로 느껴봐!\n[Shimmering synth chord fades out with ocean waves and distant steel drums]",
       "description": "",
       "intensity": "falling",
       "visual_cues": [
-        "empty street",
-        "rain",
-        "silhouette"
+        "sunlit shoreline",
+        "warm sea breeze",
+        "bright water",
+        "summer sky",
+        "coral sunset"
       ]
     }
   ],
-  "timed_lyrics": [
-    {
-      "time": 23.34,
-      "text": "[Intro]"
-    },
-    {
-      "time": 23.69,
-      "text": "[Loud high-gain tube-amp feedback]"
-    },
-    {
-      "time": 23.69,
-      "text": "[Heavy visceral breathing, mic thumping]"
-    },
-    {
-      "time": 23.69,
-      "text": "[Drummer counts: One! Two! Three! Four!]"
-    },
-    {
-      "time": 23.69,
-      "text": "[Fast aggressive down-stroke riffing]"
-    },
-    {
-      "time": 23.69,
-      "text": "[Verse 1]"
-    },
-    {
-      "time": 23.69,
-      "text": "어제의 껍질을 찢어 발겨"
-    },
-    {
-      "time": 29.2,
-      "text": "차가운 핏줄에 다시 불을 질러"
-    },
-    {
-      "time": 34.62,
-      "text": "두려움은 재가 되고"
-    },
-    {
-      "time": 36.78,
-      "text": "흉터는 단단한 갑옷이 돼!"
-    },
-    {
-      "time": 40.05,
-      "text": "녹슨 날개를 강철로 바꿔"
-    },
-    {
-      "time": 42.2,
-      "text": "한계를 향해 이빨을 드러내"
-    },
-    {
-      "time": 46.75,
-      "text": "세상이 내 발밑에 기게 해줄게"
-    },
-    {
-      "time": 52.1,
-      "text": "이제 시작이야 나의 전쟁!"
-    },
-    {
-      "time": 55.97,
-      "text": "[Pre-Chorus]"
-    },
-    {
-      "time": 56.32,
-      "text": "심장을 조여!"
-    },
-    {
-      "time": 57.76,
-      "text": "한계를 넘어!"
-    },
-    {
-      "time": 59.2,
-      "text": "모조리 바꿔!"
-    },
-    {
-      "time": 64.27,
-      "text": "[Chorus]"
-    },
-    {
-      "time": 64.62,
-      "text": "업그레이드! 심장을 갈아 끼워!"
-    },
-    {
-      "time": 67.34,
-      "text": "어제의 나는 이미 죽었어!"
-    },
-    {
-      "time": 70.05,
-      "text": "업그레이드! 독기를 들이켜!"
-    },
-    {
-      "time": 72.44,
-      "text": "이 바닥 끝까지 다 뒤집어놔!"
-    },
-    {
-      "time": 75.87,
-      "text": "더 날카로운 이빨을 세워"
-    },
-    {
-      "time": 78.51,
-      "text": "안전한 감옥을 부숴버려!"
-    },
-    {
-      "time": 80.9,
-      "text": "업그레이드! 멈추는 순간 죽어!"
-    },
-    {
-      "time": 83.61,
-      "text": "이건 진화일 뿐 끝은 없어!"
-    },
-    {
-      "time": 86.37,
-      "text": "[Verse 2]"
-    },
-    {
-      "time": 86.72,
-      "text": "거울 속 괴물이 웃고 있어"
-    },
-    {
-      "time": 89.68,
-      "text": "매일 난 스스로를 무너뜨려"
-    },
-    {
-      "time": 97.34,
-      "text": "안정? 그딴 건"
-    },
-    {
-      "time": 99.57,
-      "text": "나약한 놈들의 핑계일 뿐!"
-    },
-    {
-      "time": 102.92,
-      "text": "패배의 악몽이 나의 연료"
-    },
-    {
-      "time": 105.15,
-      "text": "상처를 삼켜 힘으로 바꿔"
-    },
-    {
-      "time": 108.51,
-      "text": "두 주먹 쥐고 벽을 부수면"
-    },
-    {
-      "time": 113.93,
-      "text": "막혔던 숨통이 터져 나와!"
-    },
-    {
-      "time": 118.29,
-      "text": "[Bridge]"
-    },
-    {
-      "time": 118.64,
-      "text": "살을 깎아내도 좋아... 뼈가 부서져도 좋아..."
-    },
-    {
-      "time": 124.06,
-      "text": "내일의 내가 너를 비웃을 테니!"
-    },
-    {
-      "time": 129.89,
-      "text": "멈추지 않을 거야! 무릎 꿇지 않을 거야!"
-    },
-    {
-      "time": 135.0,
-      "text": "이 고통 속에서! 나는! 나를! 다시 써!"
-    },
-    {
-      "time": 192.01,
-      "text": "[Guitar Solo]"
-    },
-    {
-      "time": 192.36,
-      "text": "[Raw high-gain solo with feedback and noise]"
-    },
-    {
-      "time": 192.36,
-      "text": "[Chorus]"
-    },
-    {
-      "time": 192.36,
-      "text": "업그레이드! 심장을 갈아 끼워!"
-    },
-    {
-      "time": 195.08,
-      "text": "어제의 나는 재가 됐어!"
-    },
-    {
-      "time": 197.07,
-      "text": "업그레이드! 독기를 들이켜!"
-    },
-    {
-      "time": 200.1,
-      "text": "나를 막는 벽을 씹어 삼킬 거야!"
-    },
-    {
-      "time": 203.53,
-      "text": "더 날카로운 발톱을 세워"
-    },
-    {
-      "time": 206.25,
-      "text": "천장 따윈 뚫어버릴 거야!"
-    },
-    {
-      "time": 209.36,
-      "text": "업그레이드! 영원히 굶주려!"
-    },
-    {
-      "time": 211.35,
-      "text": "이건 끝이 아냐 새로운 사냥!"
-    },
-    {
-      "time": 216.75,
-      "text": "[Outro]"
-    },
-    {
-      "time": 217.1,
-      "text": "더 지독한 나로 다시 태어나!"
-    },
-    {
-      "time": 222.52,
-      "text": "매일매일 진화는 계속돼!"
-    },
-    {
-      "time": 227.71,
-      "text": "멈추지 않아!"
-    }
-  ],
+  "timed_lyrics": [],
   "source_files": [
     "raw_song.txt",
-    "3fc29c89-f98a-4a6c-a34e-52684aa1f89c-lyrics-suno-가사-다운로더.lrc",
-    "3fc29c89-f98a-4a6c-a34e-52684aa1f89c-lyrics-suno-가사-다운로더.srt",
-    "UPGRADE.mp3"
+    "test_new_song.txt"
   ],
-  "audio_files": [
-    {
-      "file": "UPGRADE.mp3",
-      "extension": ".mp3",
-      "size_bytes": 5532329,
-      "duration_seconds": 242.92,
-      "codec": "mp3",
-      "sample_rate": 48000,
-      "channels": 2,
-      "bit_rate": 182194,
-      "mean_volume_db": -14.5,
-      "max_volume_db": 0.0,
-      "energy_hint": "high",
-      "pacing_hint": "energetic cuts with stronger motion accents"
-    }
-  ],
+  "audio_files": [],
   "audio_analysis": {
-    "available": true,
-    "applied_to_generation": true,
-    "primary_file": "UPGRADE.mp3",
-    "duration_seconds": 242.92,
-    "energy_hint": "high",
-    "pacing_hint": "energetic cuts with stronger motion accents",
-    "mean_volume_db": -14.5,
-    "max_volume_db": 0.0,
-    "note": "Audio analysis was applied to energy, pacing, and mood hints for generation."
+    "available": false,
+    "applied_to_generation": false,
+    "note": "No audio file was provided."
   },
-  "audio_analysis_applied": true,
+  "audio_analysis_applied": false,
   "timing_mode": "reference_only",
-  "timing_note": "Audio, LRC, and SRT timing data are stored as references only. Scene timing is not auto-assigned.",
-  "duration_seconds": 242.92,
-  "duration_source": "audio_file"
+  "timing_note": "Audio, LRC, and SRT timing data are stored as references only. Scene timing is not auto-assigned."
 }

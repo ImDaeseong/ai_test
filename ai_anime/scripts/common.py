@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -26,7 +27,10 @@ def load_config(name: str) -> Any:
     return read_json(path)
 
 
-_sections_config = load_config("song_sections")
+try:
+    _sections_config = load_config("song_sections")
+except Exception:
+    _sections_config = {}
 DEFAULT_SECTIONS: list[str] = _sections_config.get(
     "default_sections",
     ["Intro", "Verse", "Pre-Chorus", "Chorus", "Bridge", "Outro"],
@@ -71,9 +75,11 @@ def write_text(path: Path, content: str) -> Path:
 
 
 def slugify(value: str) -> str:
-    value = value.lower().strip()
-    value = re.sub(r"[^a-z0-9]+", "-", value)
-    return value.strip("-") or "song"
+    original = value.lower().strip()
+    slug = re.sub(r"[^a-z0-9]+", "-", original).strip("-")
+    if not slug:
+        slug = hashlib.md5(original.encode("utf-8")).hexdigest()[:8]
+    return slug
 
 
 def timestamp() -> str:
@@ -81,17 +87,32 @@ def timestamp() -> str:
 
 
 def versioned_run_dir(base: Path, song_slug: str) -> Path:
-    run_dir = base / f"{song_slug}-{timestamp()}"
-    counter = 2
-    while run_dir.exists():
-        run_dir = base / f"{song_slug}-{timestamp()}-{counter}"
-        counter += 1
-    run_dir.mkdir(parents=True, exist_ok=False)
-    return run_dir
+    ts = timestamp()
+    suffix = ""
+    counter = 1
+    while True:
+        run_dir = base / f"{song_slug}-{ts}{suffix}"
+        try:
+            run_dir.mkdir(parents=True, exist_ok=False)
+            return run_dir
+        except FileExistsError:
+            counter += 1
+            suffix = f"-{counter}"
 
 
 def split_csv(value: str) -> list[str]:
     return [item.strip() for item in re.split(r"[,;/]", value) if item.strip()]
+
+
+def clean_tags(tags_str: str) -> list[str]:
+    if not tags_str:
+        return []
+    cleaned: list[str] = []
+    for t in re.split(r"[,;]", tags_str.lower()):
+        t = re.sub(r"^(a|the|with|and|of)\s+", "", t.strip())
+        if t and len(t) > 1 and t not in cleaned:
+            cleaned.append(t)
+    return cleaned
 
 
 def normalize_section_name(name: str) -> str:

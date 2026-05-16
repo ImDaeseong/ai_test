@@ -1,25 +1,24 @@
 {
-  "style_name": "high-contrast rock anime noir within dark anime with crimson red dominance",
-  "genre_profile": "high-contrast rock anime noir",
-  "song_motif": "a forced smile reflected as a split neon expression",
+  "style_name": "tropical vacation anime pop within vivid idol anime with high-clarity accent palette",
+  "genre_profile": "tropical vacation anime pop",
+  "song_motif": "sunlit wave arcs and coral orange shell glints marking release from routine",
   "color_rules": {
-    "base": "graphite gray and near-black backgrounds",
-    "main_color": "crimson red",
-    "shadow_color": "deep plum and dark violet",
-    "secondary_light": "subtle icy cyan secondary reflections",
-    "highlight": "silver-white rim highlights",
-    "rule": "limited-color anime palette: crimson red dominant, dark shadows, near-black backgrounds, subtle secondary reflections, silver-white rim highlights"
+    "base": "dark navy and deep space backgrounds",
+    "main_color": "coral orange",
+    "shadow_color": "deep purple and dark navy shadow",
+    "secondary_light": "soft rose-gold secondary glow",
+    "highlight": "bright white and luminous highlights",
+    "rule": "limited-color anime palette: coral orange dominant, dark shadows, near-black backgrounds, soft rose-gold secondary glow, bright white and luminous highlights"
   },
   "camera_language": [
     "wide establishing anime frame with the protagonist small but clearly identifiable",
-    "close-up profile or low-angle tilt down, shallow depth isolating the face",
-    "close-up profile or low-angle tilt down, shallow depth isolating the face",
+    "forward tracking shot into open space, upward angle",
+    "forward tracking shot into open space, upward angle",
     "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
-    "medium close-up reflected in a dark surface with neon fracture light framing the face",
+    "forward tracking shot into open space, upward angle",
     "intimate close-up profile shifting to a three-quarter emotional reveal",
-    "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
     "slow pullback from the signature prop to the full silhouette"
   ],
-  "transition_language": "beat-matched impact cuts and fast reflection wipes through a forced smile reflected as a split neon expression, neon reflections, and distorted light streaks, harder contrast, impact flashes on drum accents",
+  "transition_language": "beat-matched impact cuts and fast reflection wipes through sunlit wave arcs and coral orange shell glints marking release from routine, rose gold reflections, and tropical percussion sparkle, warm bass pulse, sea-breeze motion, polished K-pop brightness",
   "negative_style_rules": []
 }

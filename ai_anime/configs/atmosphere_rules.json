@@ -2,34 +2,111 @@
   "season_rules": [
     {
       "keys": [
-        "summer"
+        "summer",
+        "여름",
+        "summer night",
+        "열대",
+        "humid",
+        "무더운",
+        "해변",
+        "beach summer",
+        "tropical summer"
       ],
       "season": "summer nostalgia"
     },
     {
       "keys": [
         "snow",
-        "winter"
+        "winter",
+        "겨울",
+        "눈보라",
+        "눈 내리는",
+        "눈꽃",
+        "frost",
+        "snowfall",
+        "icy",
+        "frozen",
+        "겨울밤",
+        "blizzard"
       ],
       "season": "winter stillness"
     },
     {
       "keys": [
-        "rain"
+        "rain",
+        "비",
+        "rainy",
+        "빗소리",
+        "drizzle",
+        "thunder rain",
+        "폭우",
+        "장마",
+        "rain on glass"
       ],
       "season": "rainy late spring night"
     },
     {
       "keys": [
-        "spring"
+        "spring",
+        "봄",
+        "벚꽃",
+        "cherry blossom",
+        "spring morning",
+        "봄비",
+        "spring breeze",
+        "새싹"
       ],
       "season": "spring awakening"
     },
     {
       "keys": [
-        "fall"
+        "fall",
+        "가을",
+        "autumn",
+        "단풍",
+        "fall leaves",
+        "harvest",
+        "낙엽",
+        "가을비"
       ],
       "season": "autumn melancholy"
+    },
+    {
+      "keys": [
+        "새벽",
+        "dawn",
+        "early morning",
+        "sunrise",
+        "새벽 3시",
+        "3am",
+        "blue hour",
+        "pre-dawn"
+      ],
+      "season": "pre-dawn blue hour"
+    },
+    {
+      "keys": [
+        "밤하늘",
+        "starry night",
+        "별빛",
+        "moonlight",
+        "달빛",
+        "야경",
+        "midnight sky"
+      ],
+      "season": "midnight starry stillness"
+    },
+    {
+      "keys": [
+        "황혼",
+        "dusk",
+        "sunset",
+        "노을",
+        "golden hour",
+        "저녁놀",
+        "twilight"
+      ],
+      "season": "twilight golden hour"
     }
   ],
   "season_default": "season-neutral cinematic night",
@@ -41,7 +118,48 @@
     "rooftop",
     "neon",
     "platform",
-    "bridge"
+    "bridge",
+    "도시",
+    "도시감성",
+    "야경",
+    "빌딩",
+    "지하철",
+    "역",
+    "버스",
+    "골목",
+    "한강",
+    "홍대",
+    "강남",
+    "신촌",
+    "편의점",
+    "카페",
+    "재즈바",
+    "클럽",
+    "거리",
+    "도심",
+    "빌딩숲",
+    "아파트",
+    "옥상",
+    "downtown",
+    "metropolitan",
+    "city lights",
+    "night city",
+    "urban landscape",
+    "apartment",
+    "high-rise",
+    "boulevard",
+    "alley",
+    "overpass",
+    "underpass",
+    "convenience store",
+    "coffee shop",
+    "bar",
+    "club",
+    "parking garage",
+    "han river",
+    "neon signs",
+    "traffic lights",
+    "crosswalk"
   ],
   "urban_mood": "urban emotional atmosphere",
   "rural_mood": "quiet rural or liminal atmosphere"

@@ -1,0 +1,754 @@
+{
+  "_meta": {
+    "updated": "2026-05-16",
+    "purpose": "Platform-specific prompt notes and technical specs for AI video/image generation in the anime MV pipeline.",
+    "usage": "video_prompt_generator.py appends the 'note' field to each scene's video_prompt. image_platforms are used by image_prompt_generator for image generation.",
+    "sources": [
+      "https://help.runwayml.com/hc/en-us/articles/30586818553107-Gen-3-Alpha-Prompting-Guide",
+      "https://help.runwayml.com/hc/en-us/articles/34926468947347-Creating-with-Camera-Control-on-Gen-3-Alpha-Turbo",
+      "https://www.ambienceai.com/tutorials/kling-prompting-guide",
+      "https://www.veed.io/learn/kling-ai-prompting-guide",
+      "https://pikalabs.org/camera-parameters/",
+      "https://lumalabs.ai/learning-hub/best-practices",
+      "https://developers.openai.com/cookbook/examples/sora/sora2_prompting_guide",
+      "https://blog.segmind.com/hailuo-minimax-ai-video-prompt-guide/",
+      "https://fal.ai/learn/devs/pixverse-v5-5-prompt-guide",
+      "https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-veo-3-1",
+      "https://www.remotion.dev/docs/ai/system-prompt",
+      "https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide",
+      "https://deepmind.google/models/veo/prompt-guide/"
+    ]
+  },
+
+  "platforms": [
+    {
+      "id": "runway",
+      "display_name": "Runway Gen-3 Alpha",
+      "type": "video",
+      "prompt_structure": "[camera_shot_type]: [establishing scene]. [subject and action]. [camera movement]. [lighting/atmosphere]. [cinematic style/mood].",
+      "prompt_structure_note": "Lead with camera type, then describe the scene. Reinforce key ideas in multiple sections. Use positive descriptions only — never 'the camera does not move'.",
+      "camera_keywords": [
+        "static shot", "tracking shot", "dolly in", "dolly out",
+        "slow push-in", "pan left", "pan right", "tilt up", "tilt down",
+        "crane shot", "aerial shot", "overhead shot", "handheld",
+        "steadicam", "FPV", "zoom in", "zoom out", "orbital",
+        "low angle", "high angle", "Dutch angle", "wide establishing shot",
+        "medium close-up", "extreme close-up", "slow tilt", "dynamic roll"
+      ],
+      "camera_control_params": {
+        "description": "Gen-3 Alpha Turbo has a slider-based camera control UI (separate from text prompts)",
+        "axes": ["horizontal (X)", "vertical (Y)", "pan", "tilt", "zoom", "roll"],
+        "range": "-10 to 10 (0 = static)"
+      },
+      "style_tips": [
+        "Lead with camera type before any other description",
+        "Use specific cinematic terms: 'diffused lighting', 'silhouette', 'backlighting', 'iridescent'",
+        "Reinforce key concepts in multiple sections of the prompt",
+        "Avoid incompatible aesthetic mixes (e.g., modern + medieval)",
+        "Use temporal language: 'slow motion', 'hyperspeed', 'timelapse' for pacing",
+        "For anime MV: specify 'anime cel-shading', 'neon-lit', 'vibrant color palette' early"
+      ],
+      "parameters": {
+        "duration": ["5s", "10s"],
+        "aspect_ratio": ["16:9", "9:16", "1:1", "4:3", "3:4", "21:9"],
+        "motion_strength": "Controlled via camera control sliders (-10 to 10) or text descriptors",
+        "generation_time": "~60s for 5s clips, ~90s for 10s clips"
+      },
+      "forbidden_terms": [
+        "Avoid negative phrasing ('the camera doesn't move', 'no motion')",
+        "Avoid combining contradictory aesthetic styles in one prompt"
+      ],
+      "max_length": "No official limit stated; keep under 200 words for best adherence",
+      "note": "Use image-to-video mode when a reference frame exists. Lead with '[camera type]:' before any other description. Reinforce key visual ideas in multiple sections. Keep motion subtle and cinematic for anime MV atmosphere."
+    },
+
+    {
+      "id": "kling",
+      "display_name": "Kling AI",
+      "type": "video",
+      "prompt_structure": "[shot_type] of [subject + description] [action/movement], [environment/setting], [camera movement], [lighting/mood], [style/aesthetic].",
+      "prompt_structure_note": "4-part core: Subject + Action + Context (3-5 elements) + Style. Use natural descriptive language, not keyword lists. Always end motion with a resolution state ('settles back into place') to prevent generation hangs.",
+      "model_variants": {
+        "kling_1.6_standard": "30-50 words. Single subject, one action, 2-3 context elements. Has Motion Brush for manual control.",
+        "kling_2.5_turbo_pro": "40-60 words. Max 3-4 environmental elements. Single straightforward camera move. Recommended default.",
+        "kling_2.6": "60-100 words. 5-7 environmental elements. Detailed lighting. Nuanced expressions.",
+        "kling_o1": "50-100+ words. Complex multi-step camera + editing operations. Explicit verbs: swap, replace, remove."
+      },
+      "camera_keywords": [
+        "tracking shot", "aerial shot", "push-in", "slow dolly", "dolly forward",
+        "dolly zoom (vertigo effect)", "static shot", "crane shot", "jib shot",
+        "wide shot", "medium shot", "close-up", "extreme close-up", "overhead shot",
+        "low-angle shot", "high-angle shot", "dutch angle", "POV shot",
+        "pan left", "pan right", "tilt up", "tilt down", "orbit 360",
+        "arc track", "handheld shake", "bokeh telephoto shot"
+      ],
+      "image_to_video_note": "For I2V: focus exclusively on motion (15-40 words). Never redescribe existing image content. Specify what moves vs. what stays static.",
+      "style_tips": [
+        "Specify speed of camera: 'slow dolly', 'rapid pan', 'gentle tilt'",
+        "Define motion start and end: 'pan from left to right across the city'",
+        "Always include a motion conclusion: 'settles back', 'comes to rest', 'returns to stillness'",
+        "Use spatial language: 'positioned near', 'making contact with', 'gripping', 'traveling toward'",
+        "For character consistency, anchor distinctive traits: 'red jacket with blue scarf'",
+        "Use verbs/adverbs for motion quality: 'aggressively accelerates' beats 'drives fast'",
+        "Lighting: sunlit, golden hour, neon glow, dramatic stage lighting, moonlit"
+      ],
+      "parameters": {
+        "duration": ["5s", "10s"],
+        "aspect_ratio": ["16:9", "9:16", "1:1"],
+        "resolution": "1080p at 30fps",
+        "motion_strength": "Controlled via descriptors ('gentle', 'rapid', 'dramatic') or Motion Brush (1.6)"
+      },
+      "negative_prompt_keywords": [
+        "blur", "distortion", "watermark", "text overlay", "low quality",
+        "compression artifacts", "flickering", "inconsistent lighting",
+        "morphing faces", "extra limbs", "unnatural physics"
+      ],
+      "max_length": "30-60 words optimal. 60-100 for Kling 2.6/O1. Over 100 risks processing failures.",
+      "note": "Prioritize consistent character identity, clear camera motion, and restrained atmospheric movement. Use the 4-part formula: [shot_type] of [subject+action], [environment], [camera move], [lighting+style]. Always end with a motion conclusion state. Keep to 40-60 words for Kling 2.5 Turbo Pro."
+    },
+
+    {
+      "id": "pika",
+      "display_name": "Pika 2.2",
+      "type": "video",
+      "prompt_structure": "[subject description] [action/motion] in [environment]. [lighting/mood]. [style].",
+      "prompt_structure_note": "Describe scene naturally; use -camera parameter for camera move. Parameters use dash-flag syntax appended after prompt text.",
+      "camera_keywords": [
+        "zoom in", "zoom out",
+        "pan up", "pan down", "pan left", "pan right",
+        "pan up left", "pan up right", "pan down left", "pan down right",
+        "rotate clockwise", "rotate counterclockwise",
+        "tracking shot", "dolly shot", "orbital movement",
+        "crane shot", "truck left", "truck right"
+      ],
+      "camera_syntax": {
+        "flag": "-camera",
+        "examples": [
+          "-camera zoom in",
+          "-camera pan right",
+          "-camera pan up left",
+          "-camera rotate clockwise",
+          "-camera_move zoom_in",
+          "-camera_move truck_left"
+        ],
+        "constraint": "Only one camera move type at a time (zoom, pan, rotate are mutually exclusive)"
+      },
+      "style_tips": [
+        "Use short clips (5-8s) for cleanest motion results",
+        "Combine -motion 2-3 for anime-style energetic movement",
+        "Use -neg to suppress: 'blurry, distorted faces, extra limbs, watermark, flickering'",
+        "For anime: include 'anime style, cel-shaded, vibrant colors, clean lines' in prompt",
+        "Keep description concise — Pika interprets camera directions from text too"
+      ],
+      "parameters": {
+        "duration": "5s to 10s",
+        "motion_strength": "-motion 0 to 4 (default 1; 3-4 for high energy)",
+        "fps": "-fps 8 to 24 (recommend 24 for smooth anime)",
+        "guidance_scale": "-gs 8 to 24 (default 12)",
+        "aspect_ratio": ["16:9", "9:16", "1:1", "4:5", "5:4", "3:2", "2:3"],
+        "resolution": ["720p", "1080p"],
+        "negative_prompt": "-neg [unwanted elements]",
+        "seed": "-seed [number]"
+      },
+      "negative_prompt_keywords": [
+        "blurry", "distorted faces", "extra limbs", "watermark",
+        "low quality", "jerky motion", "morphing", "flickering"
+      ],
+      "max_length": "No official limit; concise prompts (1-3 sentences) work best",
+      "note": "Use shorter clips (5-8s) with simple, direct motion instructions. Append -motion 2 for anime energy, -neg 'blurry, flickering, distorted' to clean artifacts. Specify camera moves with -camera [direction]. Keep end-state clean for smooth transitions between scenes."
+    },
+
+    {
+      "id": "luma",
+      "display_name": "Luma Dream Machine",
+      "type": "video",
+      "prompt_structure": "[scene/environment description]. [subject + action]. [camera movement]. [mood/atmosphere]. [visual style].",
+      "prompt_structure_note": "3-4 sentences for best results. Use conversational natural language. Camera is controlled purely through text — type 'camera' in prompt to trigger dropdown of 12 supported moves.",
+      "camera_keywords": [
+        "camera orbit left", "camera orbit right",
+        "camera pan left", "camera pan right",
+        "camera tilt up", "camera tilt down",
+        "camera zoom in", "camera zoom out",
+        "drone shot", "low angle", "cinematic push-in",
+        "tracking shot", "FPV flythrough", "static shot",
+        "aerial wide shot", "slight downward angle"
+      ],
+      "camera_api_note": "API: call Camera Motions endpoint to get array of supported camera motion strings. Use exact strings like 'camera orbit left' in prompt.",
+      "style_tips": [
+        "Use style preset tags: 'Anime', 'Cinematic' for consistent looks",
+        "Emphasize depth, parallax, and environmental atmosphere for cinematic feel",
+        "Include mood descriptors: 'minimalist', 'surreal', 'watercolor' — reuse across prompts for consistency",
+        "Combine: '4k, photorealistic, anamorphic lens, film grain, bokeh, depth of field'",
+        "Use '@character' after uploading reference image for character consistency",
+        "Use '@style' with image upload for style reference",
+        "For anime MV: 'anime, song-matched limited palette, expressive lighting, atmospheric depth'"
+      ],
+      "advanced_features": {
+        "character_reference": "@character [image upload]",
+        "style_reference": "@style [image upload]",
+        "extend": "Extend video with transitional targets",
+        "keyframes": "Set start/end frames for interpolation",
+        "loop": "Add 'loop' or 'looping video' to prompt"
+      },
+      "parameters": {
+        "aspect_ratio": "Flexible; set per composition",
+        "duration": "Configurable; use Extend feature for longer sequences",
+        "motion_strength": "Controlled via text descriptors and camera motion strings"
+      },
+      "max_length": "3-4 sentences recommended; no strict character limit",
+      "note": "Emphasize camera path, depth, parallax, and environmental atmosphere. Use 'camera orbit left/right', 'cinematic push-in', or 'drone shot' for expressive motion. Include style tag 'Anime' or 'Cinematic' for consistent visual language. Reference images via @character or @style for continuity across scenes."
+    },
+
+    {
+      "id": "sora",
+      "display_name": "Sora (OpenAI)",
+      "type": "video",
+      "prompt_structure": "[scene description: characters, costumes, setting, weather]. [cinematography: camera shot, framing, depth of field, lens/style, mood]. [actions: specific beats or gestures]. [dialogue if any]. [sound/audio cues].",
+      "prompt_structure_note": "5-section structure. Not every section is required — leaving elements open-ended gives Sora creative freedom. One clear camera move + one clear subject action per shot.",
+      "camera_keywords": [
+        "wide establishing shot", "eye level",
+        "tracking left to right", "slow dolly-in",
+        "aerial wide shot, slight downward angle",
+        "medium close-up, slight angle from behind",
+        "handheld camera movement", "slow tilt",
+        "low angle", "high angle", "two-shot",
+        "extreme close-up", "static wide shot"
+      ],
+      "style_tips": [
+        "Set aesthetic anchor early: '1970s film', 'IMAX-scale', '16mm black-and-white', 'anime cel-shaded'",
+        "Replace vague words: 'wet asphalt, zebra crosswalk, neon reflection' beats 'a beautiful street'",
+        "Describe dialogue in a labeled block below prose: 'Character A says: ...'",
+        "Keep motion simple: one camera move + one subject action per shot",
+        "Use beats for timing: 'Takes four steps, pauses, pulls curtain' (not 'walks across room')",
+        "For complex shots: specify lensing, filtration, lighting, grading, and motion in production terms",
+        "Shorter clips (4-8s) have better adherence; stitch multiple shots instead of one long clip",
+        "Use 'sora-2-pro' model for higher resolution options"
+      ],
+      "parameters": {
+        "model": ["sora-2", "sora-2-pro"],
+        "duration_seconds": ["4", "8", "12", "16", "20"],
+        "resolution": {
+          "sora-2": ["720x1280", "1280x720"],
+          "sora-2-pro": ["1024x1792", "1792x1024", "1080x1920", "1920x1080"]
+        },
+        "character_references": "Up to 2 uploaded character reference images"
+      },
+      "forbidden_terms": [
+        "Avoid vague aesthetic words: 'beautiful', 'cinematic look', 'amazing'",
+        "Replace with observable specifics: colors, materials, actions, measurements"
+      ],
+      "max_length": "No official limit; concise and specific beats long and vague",
+      "note": "Favor a concise cinematic prompt with clear subject, camera motion, lighting, and temporal continuity. Use the 5-section format: scene / cinematography / actions / dialogue / sound. Set aesthetic style early ('anime', '2D animation', 'neon-lit'). Keep to one camera move and one subject action per shot. Avoid adding extra characters or unrelated visual ideas."
+    },
+
+    {
+      "id": "hailuo",
+      "display_name": "Hailuo AI (MiniMax)",
+      "type": "video",
+      "prompt_structure": "[camera shot + motion] [character description] [action] [scene description] [lighting/mood] [style].",
+      "prompt_structure_note": "Narrative-driven: write as a director's script, not a keyword list. Use specific verbs and adverbs for motion quality. The LLM backbone responds to temporal narrative flow.",
+      "camera_keywords": [
+        "dolly", "dolly zoom", "zoom in", "zoom out", "close up",
+        "medium shot", "wide shot", "extreme close-up",
+        "crane shot", "tracking shot", "POV", "roll",
+        "pan left", "pan right", "tilt up", "tilt down",
+        "drone shot", "dutch angle", "rack focus", "match cut"
+      ],
+      "style_tips": [
+        "Write narrative prose, not comma-separated keywords",
+        "Good: 'A cyberpunk samurai sprints desperately through a rainy Neo-Tokyo market'",
+        "Bad: 'Cyberpunk city, rain, neon, 4k, running'",
+        "Define anchor features for character consistency: 'red jacket with blue scarf'",
+        "Use strong verbs/adverbs: 'aggressively accelerates, careening' beats 'drives fast'",
+        "Include weather, lighting, time of day, architectural details for environmental richness",
+        "Add basic camera moves (dolly, zoom) then advanced (crane, tracking) for sophistication",
+        "Multi-modal: combine text with reference images for character/style consistency"
+      ],
+      "parameters": {
+        "duration": ["6s (1080p)", "10s (768p)"],
+        "resolution": ["1080p (6s only)", "768p (6s or 10s)"],
+        "aspect_ratio": ["16:9", "9:16", "1:1"],
+        "motion_strength": "Controlled via descriptive verbs and adverbs"
+      },
+      "negative_prompt_note": "Use negative prompts to eliminate unwanted elements",
+      "max_length": "No strict limit; use enough detail to specify all scene elements; avoid over-complication",
+      "note": "Keep action simple and readable. Emphasize stable anime identity, controlled motion, and clean neon atmosphere. Write as narrative prose: '[camera move] [character] [action] in [scene], [lighting], [style]'. Use strong action verbs for motion quality. Include anchor traits for character consistency."
+    },
+
+    {
+      "id": "pixverse",
+      "display_name": "PixVerse",
+      "type": "video",
+      "prompt_structure": "[subject with defining characteristics] [specific action or motion] [environment/setting] with [visual style], [cinematography], and [mood/atmosphere].",
+      "prompt_structure_note": "5 core elements: subject, action/motion, environment, lighting/mood, style. Include negative prompt separately to suppress artifacts. Style presets are selectable in UI.",
+      "camera_keywords": [
+        "aerial drone shot slowly descending",
+        "camera slowly pushes in",
+        "tracking shot",
+        "dolly shot",
+        "overhead shot",
+        "close-up", "medium shot", "wide shot",
+        "pan left", "pan right",
+        "roll (z-axis rotation)",
+        "follow shot (subject tracking)"
+      ],
+      "style_presets": ["anime", "3d_animation", "clay", "comic", "cyberpunk"],
+      "style_tips": [
+        "Use style presets for consistent aesthetic: 'anime' for MV work",
+        "Name shot type, camera move, and pacing explicitly in prompt",
+        "Use motion verbs for video: 'slow pan', 'tracking shot', 'dynamic action'",
+        "Add reference images for visual guidance",
+        "Avoid generic/ambiguous language; be specific about subject characteristics",
+        "Lock seeds for refining successful generations",
+        "Use multi-clip generation for dynamic shot transitions",
+        "Include audio switch for auto BGM/SFX if available"
+      ],
+      "parameters": {
+        "aspect_ratio": ["16:9", "9:16", "4:3", "3:4", "1:1"],
+        "resolution": ["360p", "540p", "720p", "1080p"],
+        "duration": ["5s", "8s", "10s (720p and below only)"],
+        "style_preset": ["anime", "3d_animation", "clay", "comic", "cyberpunk"],
+        "thinking": ["enabled", "disabled", "auto"],
+        "generate_audio": "Boolean (BGM/SFX auto-generation)",
+        "multi_clip": "Boolean (enables dynamic shot transitions)",
+        "seed": "Integer (lock for consistency)"
+      },
+      "negative_prompt_keywords": [
+        "blurry", "distorted faces", "extra limbs", "watermark",
+        "low quality", "jerky motion", "morphing", "flickering"
+      ],
+      "max_length": "Balance length with clarity; overly long prompts confuse the model",
+      "note": "Use image-to-video when possible. Use 'anime' style preset for MV work. Keep camera movement direct — 'camera slowly pushes in', 'tracking shot follows subject'. Avoid overcomplicated effects. Preserve the established color palette. Use negative prompt: 'blurry, distorted faces, extra limbs, watermark, flickering'."
+    },
+
+    {
+      "id": "veo",
+      "display_name": "Veo 2/3 (Google DeepMind)",
+      "type": "video",
+      "prompt_structure": "[cinematography] + [subject] + [action] + [context/setting] + [style & ambiance].",
+      "prompt_structure_example": "Medium shot, a tired corporate worker, rubbing his temples in exhaustion, in front of a bulky 1980s computer in a cluttered office late at night. The scene is lit by harsh fluorescent overhead lights. Retro aesthetic, shot as if on 1980s color film, slightly grainy.",
+      "camera_keywords": [
+        "dolly shot", "tracking shot", "crane shot", "aerial view",
+        "slow pan", "POV shot", "wide shot", "close-up",
+        "extreme close-up", "low angle", "two-shot",
+        "shallow depth of field", "wide-angle lens", "soft focus",
+        "macro lens", "deep focus", "panning across the scene"
+      ],
+      "style_tips": [
+        "Lead with cinematography: shot type and camera movement first",
+        "Specify visual medium explicitly: 'cartoon', 'claymation', 'film noir on 35mm', 'anime 2D'",
+        "Use sensory/evocative language for immersive world-building",
+        "For action sequences: provide play-by-play directions with timing cues",
+        "Use timestamp prompting for multi-segment clips: '[00:00-00:02] subject walks in'",
+        "Dialogue: use quotation marks: 'A woman says, \"We have to leave now.\"'",
+        "SFX: 'SFX: thunder cracks in the distance'",
+        "Ambient: 'Ambient noise: quiet hum of a starship bridge'",
+        "Negative prompts: describe exclusions: 'no buildings or roads'",
+        "Keep prompts concise for basic shots; detailed for complex cinematography",
+        "All Veo output is watermarked with SynthID"
+      ],
+      "advanced_features": {
+        "image_to_video": "Animate source images with prompt adherence",
+        "ingredients_to_video": "Provide reference images for consistent characters/styles",
+        "first_last_frame": "Generate transitions between start and end images",
+        "add_remove_object": "Insert/delete objects from existing videos (Veo 2, no audio)",
+        "gemini_enhancement": "Use Gemini 2.5 Flash to enrich simple prompts before sending to Veo"
+      },
+      "parameters": {
+        "resolution": ["720p", "1080p", "4K (Veo 2 max)"],
+        "aspect_ratio": ["16:9", "9:16"],
+        "duration": ["4s", "6s", "8s"],
+        "watermark": "SynthID watermark applied to all outputs"
+      },
+      "max_length": "Keep concise for basic shots; detailed prompts are supported for complex cinematic work",
+      "note": "Use the highest quality cinematic mode available. Lead with cinematography: '[shot type], [subject], [action], [context]. [Style].' Keep the shot coherent, physically plausible, and faithful to the reference image. Use 'anime 2D', 'cel-shaded', and the song-matched limited palette for MV style. Leverage image-to-video and first/last frame features for seamless scene transitions."
+    },
+
+    {
+      "id": "flow",
+      "display_name": "Google Flow (Veo Workflow)",
+      "type": "video",
+      "prompt_structure": "Same as Veo: [cinematography] + [subject] + [action] + [context] + [style & ambiance].",
+      "prompt_structure_note": "Flow is a scene-building workflow tool built on Veo. Emphasis on multi-scene consistency, character continuity, and shot sequencing within a project.",
+      "style_tips": [
+        "Preserve shot intent and character continuity across generated clips",
+        "Maintain the fixed channel color palette across all scenes",
+        "Use consistent character descriptors in every scene prompt",
+        "Leverage Flow's scene management for storyboard sequencing",
+        "Combine with Veo image-to-video and Ingredients-to-Video for reference consistency"
+      ],
+      "note": "Treat as a scene-building prompt for Google Flow/Veo workflows. Preserve shot intent, character continuity, and the fixed channel palette across generated clips. Follow the same prompt structure as Veo. Emphasize scene-to-scene consistency within the MV arc."
+    },
+
+    {
+      "id": "wan",
+      "display_name": "Wan 2.1 (Alibaba / WanX)",
+      "type": "video",
+      "prompt_structure": "[shot_size], [camera_angle], [composition]. [Subject description] in [scene description]. [Subject motion with speed]. [Camera movement]. [Lighting type], [time_of_day], [color_tone]. [Art style/visual effect].",
+      "prompt_structure_note": "80-120 words optimal for T2V. I2V(Image-to-Video) 모드: 캐릭터 설명 생략하고 모션/카메라만 기술. 주체 모션과 카메라 모션을 분리해서 명시.",
+      "camera_keywords": [
+        "camera pushes in for a close-up", "camera pulls back",
+        "camera pans to the right", "camera pans to the left",
+        "camera tilts up", "camera tilts down",
+        "dolly in", "dolly out", "static shot", "fixed shot",
+        "tracking shot", "arc shot", "orbit shot",
+        "handheld camera", "drone shot", "fly-through",
+        "slow pan", "quick pan", "whip zoom"
+      ],
+      "shot_sizes": [
+        "extreme close-up shot", "close-up shot", "medium close-up shot",
+        "medium shot", "medium wide shot", "wide shot", "extreme wide shot"
+      ],
+      "camera_angles": [
+        "eye-level shot", "high angle shot", "low angle shot",
+        "dutch angle shot", "aerial shot", "over-the-shoulder shot"
+      ],
+      "style_tips": [
+        "Use '2D anime style' or 'Chinese animation style' explicitly in the style slot",
+        "Describe subject motion and camera motion separately",
+        "Add speed modifiers: 'slowly', 'gently', 'smoothly', 'quickly', 'gradually'",
+        "For I2V: focus prompt on motion only — omit appearance details already in the image",
+        "Keep one main scene and one main action per clip for best coherence",
+        "Time of day and lighting type significantly affect mood — always specify",
+        "Guidance scale: 7.0–7.5 for fast motion; steps: 20–30",
+        "Use 720p for quality, 480p for fast iteration"
+      ],
+      "lighting_keywords": [
+        "edge lighting", "warm colors", "soft lighting", "side lighting",
+        "weak moonlight", "silhouette", "soft shadows",
+        "high contrast", "night time", "underlighting",
+        "warm glow", "backlighting", "rim light",
+        "dusk time", "sunset time", "firelight",
+        "overcast", "soft lighting", "low contrast", "cool colors"
+      ],
+      "motion_keywords": [
+        "walking", "running", "flying", "dancing", "rotating",
+        "swaying", "shattering", "floating", "leaping", "spinning",
+        "subtle movements", "breathing", "blinking", "nodding", "static"
+      ],
+      "parameters": {
+        "mode": ["T2V (text-to-video)", "I2V (image-to-video)"],
+        "resolution": ["480p (speed)", "720p (quality)"],
+        "guidance_scale": "5–7 (recommended 7.0–7.5 for fast motion)",
+        "steps": "20–30",
+        "negative_prompt": "지원 (unlike FLUX)"
+      },
+      "negative_prompt_keywords": [
+        "low quality", "worst quality", "blurry", "distorted", "watermark",
+        "text", "logo", "subtitles", "extra limbs", "bad anatomy",
+        "deformed", "overexposed", "underexposed", "background clutter"
+      ],
+      "max_length": "80-120 words for T2V; shorter for I2V (motion description only)",
+      "note": "Use T2V for full scene generation; switch to I2V when character appearance must match a reference image. Structure: '[shot size], [camera angle]. [character + scene]. [subject motion]. [camera movement]. [lighting]. [2D anime style]'. Specify motion and camera separately. Always include negative prompt to suppress artifacts."
+    },
+
+    {
+      "id": "remotion",
+      "display_name": "Remotion",
+      "type": "programmatic_video",
+      "prompt_structure": "Composition: `[ComponentName]`\nPurpose: [scene goal]\nScene Data: [key fields]\nLayer Plan: [background, subject, motif, foreground, mask]\nAnimation Plan: [frame mapping, easing, keyframes]\nImplementation Notes: [React/Remotion constraints]",
+      "prompt_structure_note": "Remotion prompts are not video generation prompts — they are implementation briefs for React/Remotion composition code. Structure as a developer spec, not a creative description.",
+      "key_apis": {
+        "useCurrentFrame": "Returns current frame number starting at 0",
+        "useVideoConfig": "Access fps, durationInFrames, height, width",
+        "interpolate": "interpolate(frame, [inputMin, inputMax], [outputMin, outputMax], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})",
+        "spring": "spring({fps, frame, damping}) — spring-based motion 0 to 1",
+        "Sequence": "<Sequence from={frameNumber} durationInFrames={length}>",
+        "Series": "<Series> with <Series.Sequence> for sequential elements",
+        "TransitionSeries": "Applies transition effects between sequences",
+        "AbsoluteFill": "Stacks layers absolutely",
+        "random": "random('seed') — deterministic random (NOT Math.random())",
+        "staticFile": "staticFile('asset.png') for asset references"
+      },
+      "composition_defaults": {
+        "fps": 30,
+        "width": 1920,
+        "height": 1080,
+        "id": "MyComp"
+      },
+      "animation_patterns": {
+        "opacity_fade": "interpolate(frame, [0, 20], [0, 1], {extrapolateRight: 'clamp'})",
+        "scale_spring": "spring({fps, frame: frame - startFrame, damping: 12})",
+        "parallax": "translateX with interpolate at different rates per layer",
+        "beat_pulse": "Short accent pulses mapped to beat timestamps",
+        "camera_push": "scale + translateX/Y via interpolate for dolly/push effect"
+      },
+      "layer_convention": [
+        "1. Background environment (gradients, textures, parallax)",
+        "2. Primary subject / reference image (stable, minimal transform)",
+        "3. Motif layer (particles, reflections, waveform lights, memory fragments)",
+        "4. Foreground light/streak layer (depth, beat accents)",
+        "5. Optional mask layer (wipes, reflection reveals, object-led transitions)"
+      ],
+      "style_tips": [
+        "Map first third to establishing motion, middle to main action, final third to transition prep",
+        "Animate transforms, light, and atmosphere MORE than facial/body redesign",
+        "Use easing for slow sections; short accent pulses for beat peaks",
+        "Build with React, absolute-positioned layers, CSS transforms, Img, SVG/CSS masks",
+        "Avoid readable text inside frame unless manually required",
+        "Use random('seed') NOT Math.random() for deterministic render",
+        "Use Sequence and Series for timeline beats; TransitionSeries for cross-fades"
+      ],
+      "note": "Convert the scene into a Remotion-friendly composition plan with timeline beats, layers, keyframe animation, camera transforms, and reusable props. Structure as: Composition name / Scene Data / Layer Plan / Animation Plan / Implementation Notes. Use useCurrentFrame() + interpolate() for all motion. Keep colors, subject, and camera intent faithful to the matching image prompt. Build with React, Remotion, CSS transforms, masks, gradients, and image layers."
+    }
+  ],
+
+  "image_platforms": [
+    {
+      "id": "gpt_image",
+      "display_name": "GPT Image (gpt-image-2 / OpenAI)",
+      "type": "image",
+      "model_status": "gpt-image-2 is current default. DALL-E 3 deprecated May 2026. Use gpt-image-2 or gpt-image-1.5.",
+      "prompt_structure": "[background/scene] + [subject] + [key details: materials, textures, lighting] + [constraints: exclusions, preserved elements] + [intended use / output mode].",
+      "prompt_structure_note": "Be concrete about materials, shapes, textures. Include visual medium (photo, watercolor, 3D render, anime cel). Add targeted quality levers only when necessary.",
+      "style_tips": [
+        "Specify framing and viewpoint: 'close-up', 'wide', 'top-down', 'eye-level'",
+        "Define perspective and lighting: 'soft diffuse', 'golden hour', 'high-contrast neon'",
+        "For people: describe scale, body framing, gaze direction, action interactions",
+        "For text in images: place literal text in QUOTES or ALL CAPS; spell out tricky words letter-by-letter",
+        "State exclusions: 'no watermark', 'no extra text', 'no logos/trademarks'",
+        "Use 'preserve' language: 'keep everything else the same'",
+        "For anime: 'anime cel-shaded illustration, vibrant saturated colors, clean linework, detailed background'",
+        "For photorealism: 'photorealistic', 'real photograph', 'iPhone photo'; emphasize texture/imperfection",
+        "Iterate with small single-change follow-ups; re-specify critical details if drift occurs"
+      ],
+      "parameters": {
+        "quality": ["low", "medium", "high"],
+        "size_gpt_image_2": {
+          "max_edge": "3840px",
+          "constraints": "multiples of 16, max ratio 3:1, max 8.3MP",
+          "popular_sizes": ["1024x1536 (portrait)", "1536x1024 (landscape)", "1024x1024 (square)", "2560x1440 (2K)"]
+        },
+        "n": "Integer — number of variations per call",
+        "input_fidelity": "gpt-image-1.5/1 only (not available on gpt-image-2)"
+      },
+      "forbidden_terms": [
+        "No watermarks",
+        "No unintended logos or trademarks",
+        "No copyrighted characters",
+        "No extra text beyond specified copy",
+        "No generic stock-photo treatment for professional work"
+      ],
+      "max_length": "No official limit; 1-3 detailed paragraphs work well",
+      "note": "Use for scene reference frames and character model sheets. Use gpt-image-2 at quality='high' for detailed anime scenes. Specify 'anime cel-shaded illustration, vibrant saturated colors, clean linework' for style consistency. Include 'no watermark, no logos, no extra text' in every prompt. Use 1536x1024 for landscape MV frames, 1024x1536 for portrait/vertical."
+    },
+
+    {
+      "id": "gemini_image",
+      "display_name": "Google Gemini (나노바나 프로 / Imagen 3)",
+      "type": "image",
+      "platform_note": "사용자가 '나노바나 프로'로 부르는 Google Gemini 이미지 생성 플랫폼. Imagen 3 모델 기반.",
+      "prompt_structure": "자연어 설명. 특수 문법 없음. 대화형 멀티턴 편집 지원.",
+      "prompt_structure_note": "복잡한 프롬프트 엔지니어링 불필요. 원하는 것을 자연스럽게 설명. 한국어, 영어, 일본어 모두 지원. 이전 대화 맥락 유지.",
+      "style_tips": [
+        "자연스럽게 작성: '저녁노을 아래 설산에 캐릭터를 배치하고 극적인 구름을 추가해줘'",
+        "한국어 프롬프트 네이티브 지원",
+        "캐릭터 일관성 우수 — 한 번 설명하면 여러 장면에서 유지",
+        "텍스트 렌더링: 이미지 내 텍스트는 따옴표 사용",
+        "대화형 편집: '더 극적으로', '비 추가', '밤 하늘로 변경' 등 자연어 수정 가능",
+        "사진-애니 변환: '애니 셀 쉐이딩 스타일, 비비드 컬러로 변환해줘'",
+        "배경 교체, 낮↔밤 변환, 스타일 이전 모두 지원",
+        "For anime MV: '일본 애니메이션 셀 쉐이딩, 선명한 색감, 깔끔한 선화, 시네마틱 배경'",
+        "씬 이미지 생성 후 '캐릭터 동일하게 유지하면서 배경만 바꿔줘' 식으로 연속 편집 가능"
+      ],
+      "parameters": {
+        "aspect_ratio": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "5:4", "4:5", "21:9"],
+        "resolution": "최대 4K (Imagen 3 기준)",
+        "upload_formats": ["JPG", "PNG", "WEBP"],
+        "language_support": ["한국어", "English", "日本語", "中文"]
+      },
+      "forbidden_terms": [
+        "저작권 있는 캐릭터 직접 지정 금지",
+        "SynthID 워터마크 자동 적용됨"
+      ],
+      "max_length": "제한 없음. 자연스러운 문장으로 충분히 설명.",
+      "note": "Google Gemini (Imagen 3) 이미지 생성. 한국어 프롬프트 직접 사용 가능. 자연어로 작성하며 특수 문법 불필요. 캐릭터 일관성과 대화형 반복 편집이 강점. MV 파이프라인에서 씬 레퍼런스 이미지, 캐릭터 시트, 환경 컨셉아트 생성에 활용. 비율은 16:9 (가로형 MV 프레임), 9:16 (세로형/숏폼) 권장."
+    },
+
+    {
+      "id": "midjourney",
+      "display_name": "Midjourney v7",
+      "type": "image",
+      "prompt_structure": "[Subject] [Action/Pose] [Environment/Details] [Style/Mood] [Lighting] --v 7 --ar X:Y --s N [other params]",
+      "prompt_structure_note": "파라미터는 항상 프롬프트 텍스트 뒤에. 파라미터 사이 쉼표 없음. V7 기본값: 더 사실적인 텍스처, 해부학적 오류 40% 감소. 단, 그루지/다크 스타일은 V6.1이 더 적합.",
+      "style_tips": [
+        "Parameters always AFTER text — no punctuation between parameters",
+        "Use --s 250-400 for artistic/painterly anime feel; --s 100 for balanced",
+        "Multi-prompt weights: `concept A::3 concept B::1` (double colon + weight)",
+        "Anime style on V7: use --niji 7 (see Nijijourney entry) for best anime results",
+        "Character consistency: --oref [URL] (Omni Reference) + --ow 100-500",
+        "Style reference: --sref [URL] + --sw 100-500",
+        "Get seed for reproducibility: react with envelope emoji to any generation",
+        "Text in images: wrap in 'quotes' — still unreliable for complex text",
+        "For cinematic anime on V7: 'cinematic anime style, detailed background, dramatic lighting, film grain, 35mm' --v 7"
+      ],
+      "parameters": {
+        "--v 7": "Current default model. Better anatomy, materials, prompt understanding.",
+        "--ar": "Aspect ratio. Common: 16:9, 9:16, 4:5, 3:2, 1:1",
+        "--s": "Stylize 0–1000 (default 100). 0–50 photorealistic, 100–300 balanced, 300+ artistic",
+        "--chaos": "Output variety 0–100 (default 0). Low for consistency.",
+        "--seed": "0–4294967295. Fixed seed for reproducibility.",
+        "--q": "Quality 0.25/0.5/1/2 (V7 only)",
+        "--no": "Negative prompt: --no watermark, text, logo, blur",
+        "--oref": "Omni Reference — subject/character transfer from URL",
+        "--ow": "Omni weight 0–1000 (default 100)",
+        "--sref": "Style reference image URL",
+        "--sw": "Style weight 0–1000 (default 100)",
+        "--raw": "Minimal aesthetic interpretation / photorealism mode",
+        "--weird": "Unconventional aesthetics 0–3000",
+        "--exp": "Enhanced detail 10–25 recommended",
+        "--mode draft": "10x faster, half GPU cost"
+      },
+      "forbidden_terms": [
+        "Don't mix parameters with commas between them",
+        "Avoid copyrighted character names",
+        "Avoid 'no X' in text — use --no X parameter instead"
+      ],
+      "composition_keywords": [
+        "close-up shot", "wide angle", "aerial view", "low angle",
+        "over-the-shoulder", "cinematic framing", "rule of thirds",
+        "depth of field", "shallow DOF", "35mm", "85mm lens", "anamorphic"
+      ],
+      "max_length": "No strict limit; concise prompts work well. Long prompts supported with multi-prompt weights.",
+      "note": "For anime MV frames, prefer Nijijourney (--niji 7) entry below. For cinematic/mixed styles on V7: include 'cinematic anime style, dramatic lighting' + --v 7 --ar 16:9 --s 300 --no watermark, text, logo. Use --oref for character consistency. Draft mode for fast iteration."
+    },
+
+    {
+      "id": "nijijourney",
+      "display_name": "Nijijourney (--niji 7 / anime-focused)",
+      "type": "image",
+      "prompt_structure": "[character description] [clothing/accessories] [pose/action] [background/setting] [lighting/atmosphere] [art style keyword] --niji 7 --ar X:Y --s N",
+      "prompt_structure_note": "Niji 7 (2026-01-09 출시): 프롬프트를 문자 그대로 해석. 배경을 명시하지 않으면 최소/단순 배경 생성. --cref 미지원 (캐릭터 레퍼런스 시스템 재구축 중). 탐색보다 정밀 실행에 최적.",
+      "style_tips": [
+        "Niji 7 is STRICT — describe EVERYTHING explicitly, it won't add context",
+        "Background: must describe in detail, or will be blank/minimal",
+        "Best for: character key visuals, scene stills, consistent anime style",
+        "Style anchors: 'anime screenshot', 'anime key visual', 'anime cel shading', 'cinematic anime', 'anime film still'",
+        "Keep --chaos low (0–6) for consistency; Niji 7 default is already low variation",
+        "Use --s 100–300 for anime balance; higher for artistic freedom",
+        "--sref + URL works better in Niji 7 for style consistency",
+        "For this anime MV pipeline: 'anime key visual, cinematic composition, song-matched limited palette, detailed background'",
+        "Niji 6 legacy style params (still valid for --niji 6): --style cute / scenic / expressive / original"
+      ],
+      "art_style_keywords": [
+        "anime screenshot", "anime key visual", "anime cel shading",
+        "manga style", "shounen anime style", "shoujo anime style",
+        "cinematic anime", "anime film still", "Studio Ghibli aesthetic",
+        "2D illustration", "Japanese ink", "dark fantasy anime",
+        "watercolour anime", "pastel anime drawing"
+      ],
+      "parameters": {
+        "--niji 7": "Current anime model (recommended)",
+        "--niji 6": "Legacy anime model (--style cute/scenic/expressive/original still work)",
+        "--ar": "Aspect ratio. 16:9 (landscape MV frame), 9:16 (portrait/vertical)",
+        "--s": "Stylize 0–1000 (100–300 recommended for anime balance)",
+        "--chaos": "0–6 for consistency; higher causes incoherence in anime",
+        "--seed": "Fixed seed for reproducible character",
+        "--no": "Exclude: --no watermark, text, logo, signature",
+        "--sref": "Style reference URL — works well in Niji 7"
+      },
+      "forbidden_terms": [
+        "--cref not supported in Niji 7 (character reference system rebuilt)",
+        "Don't assume background — describe explicitly",
+        "Old Niji 6 style prompting (vague, short) will produce minimal results in Niji 7"
+      ],
+      "max_length": "Detailed prompts work well in Niji 7. Fully describe character traits, clothing, background.",
+      "note": "이 파이프라인의 기본 이미지 플랫폼으로 권장. 씬 이미지 프롬프트에 '--niji 7 --ar 16:9 --s 250 --no watermark, text, logo' 추가. 배경 반드시 상세 기술. 캐릭터 일관성은 --seed + 상세 외형 설명으로 유지. anime key visual / anime film still 스타일 앵커 사용."
+    },
+
+    {
+      "id": "flux1",
+      "display_name": "FLUX.1 (Black Forest Labs)",
+      "type": "image",
+      "prompt_structure": "[Subject] + [Action/Pose] + [Environment/Setting] + [Lighting] + [Style/Modifiers]",
+      "prompt_structure_note": "자연어 문장으로 작성. 키워드 나열 금지. 가중치 문법 (concept:1.5) 무효. 부정 프롬프트 미지원 (dev/schnell). 40-75 단어 최적.",
+      "model_variants": {
+        "FLUX.1 [schnell]": "1-4 steps. Apache 2.0 license. 40-50 words max. Local deployment.",
+        "FLUX.1 [dev]": "24-32 steps. Non-commercial. ComfyUI compatible. 40-75 words.",
+        "FLUX.1 [pro]": "Commercial API. Best quality.",
+        "FLUX.1 Kontext": "Image editing / in-context generation.",
+        "FLUX.2": "Latest. Mistral Small 3.1 통합."
+      },
+      "style_tips": [
+        "WRONG: '(anime girl:1.5), masterpiece, best quality' → RIGHT: 'An anime girl with long blue hair standing in a rain-soaked city street'",
+        "NO negative prompts (dev/schnell) — describe what you WANT, not what to avoid",
+        "NO prompt weights — use 'with emphasis on X' or 'prominently featuring X' instead",
+        "Text in images: wrap in double quotes: a sign reading \"OPEN NOW\"",
+        "Color precision: use hex codes #FF5733 for exact colors",
+        "Layered description: foreground → middle ground → background order helps coherence",
+        "ComfyUI dual input: clip_l (short keywords) + t5xxl (detailed sentence)",
+        "Anime keywords: 'anime style, cel-shading, 2D anime illustration, cinematic anime, key visual'",
+        "Artist references work: 'in the style of Makoto Shinkai'",
+        "Do NOT use 'white background' in dev — causes blurriness"
+      ],
+      "comfyui_params": {
+        "dev_steps": "24–32",
+        "dev_guidance": "3.0–3.8",
+        "schnell_steps": "2–4",
+        "schnell_guidance": "~3.0",
+        "resolution": "Width/height must be multiples of 32, range 256–1440px",
+        "recommended": "~1024×1024 for dev, 768×1024 for schnell"
+      },
+      "anime_style_keywords": [
+        "anime style", "cel-shading", "hand-drawn", "2D anime illustration",
+        "Studio Ghibli aesthetic", "cinematic anime", "key visual",
+        "dramatic rim light", "moody color grading", "teal-and-orange grade",
+        "volumetric light", "anamorphic bokeh", "shallow DOF", "film grain", "35mm lens"
+      ],
+      "forbidden_terms": [
+        "No (concept:1.5) weight syntax — does nothing",
+        "No negative prompts in dev/schnell",
+        "No white background in dev — causes blurriness",
+        "No keyword lists — write natural sentences only"
+      ],
+      "max_length": "40-75 words for dev/pro; 40-50 words max for schnell",
+      "note": "자연어 문장으로 작성. 키워드 나열 없이 묘사형 문장 사용. 'anime style, cel-shading, 2D anime illustration, cinematic key visual' 스타일 앵커 포함. 가중치 문법/부정 프롬프트 사용 금지. ComfyUI 사용 시 clip_l에 짧은 키워드, t5xxl에 상세 문장 입력."
+    },
+
+    {
+      "id": "leonardo",
+      "display_name": "Leonardo.Ai Phoenix 2.0",
+      "type": "image",
+      "prompt_structure": "[character description] [scene/environment] [lighting/mood] [art style] [technical details]",
+      "prompt_structure_note": "Plain natural language. Phoenix는 긴 복합 문장을 잘 처리. 짧은 키워드 나열보다 상세 문장 권장. Alchemy 파이프라인으로 해상도/조명 품질 대폭 향상.",
+      "model_variants": {
+        "Phoenix 1.0": "프롬프트 준수율 높음, 텍스트 렌더링, 고충실도",
+        "Phoenix 2.0": "최신 (2026). Consistent Character Engine, LoRA 통합, 2048×2048 네이티브"
+      },
+      "style_tips": [
+        "Use Alchemy pipeline for final outputs (higher resolution, better lighting/contrast)",
+        "Style presets via API: 'CINEMATIC', 'DYNAMIC' — avoid generic 'Anime' preset (known distortion issues)",
+        "Character consistency: Character Reference (ID: 397) + Fixed Seed combination",
+        "Phoenix 2.0: LoRA (style) + Consistent Character Engine (identity) — unique advantage",
+        "Image Guidance types: Style Reference (166), Character Reference (397), Content Reference (364), Pose to Image, Edge to Image, Depth to Image",
+        "guidance_scale 7 for strict prompt adherence; 3-5 for creative latitude",
+        "Anime style: 'cel-shading, vibrant colors, large expressive eyes, clean linework, dynamic poses'",
+        "Avoid generic 'Anime' style preset — it produces distorted results",
+        "Train custom LoRA in under 15 min with 10+ reference images for specific anime aesthetic"
+      ],
+      "parameters": {
+        "contrast": "3 (low), 3.5 (medium), 4 (high) — required field",
+        "guidance_scale": "1–5 creative, 7–10 strict prompt adherence",
+        "alchemy": "on/off — premium pipeline, significantly better quality",
+        "ultra": "on/off — ultra generation mode",
+        "seed": "Fixed seed for character consistency",
+        "enhancePrompt": "on/off — auto prompt improvement"
+      },
+      "image_guidance_types": {
+        "Style Reference (166)": "Aesthetic/style from reference image",
+        "Character Reference (397)": "Subject likeness; humanoids only; one image only",
+        "Content Reference (364)": "Shapes/composition reference",
+        "Pose to Image": "Replicate human poses from reference",
+        "Edge to Image": "Composition control via line art",
+        "Depth to Image": "3D depth perception from reference"
+      },
+      "anime_style_keywords": [
+        "cel-shading", "vibrant colors", "large expressive eyes",
+        "clean linework", "dynamic poses", "chibi style", "cinematic anime",
+        "2D anime illustration", "anime key visual", "dramatic lighting"
+      ],
+      "max_length": "No strict limit; Phoenix handles long complex prompts well",
+      "note": "캐릭터 일관성이 강점. Phoenix 2.0 + Consistent Character Engine + LoRA 조합으로 MV 전체 씬의 캐릭터 통일성 유지 가능. Alchemy 파이프라인 활성화 권장. Style preset: 'CINEMATIC' 또는 'DYNAMIC'. Generic 'Anime' preset 사용 금지. 캐릭터 시트 → Character Reference(397) 업로드 → Fixed Seed로 씬 전체 일관성 확보."
+    }
+  ]
+}

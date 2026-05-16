@@ -22,6 +22,7 @@ from common import (
 
 _BPM_CONFIG = load_config("bpm_thresholds")
 _SECTIONS_CONFIG = load_config("song_sections")
+_INFERENCE_CONFIG = load_config("song_inference")
 
 
 KEY_ALIASES = {
@@ -197,6 +198,18 @@ def find_style_seed_line(text: str) -> str:
     return ""
 
 
+def infer_title_from_text(text: str, source_name: str) -> str:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    for index, line in enumerate(lines):
+        if line.lower() == "cover of" and index + 1 < len(lines):
+            return lines[index + 1]
+    for line in lines:
+        match = re.match(r"^(.*?)\s+artwork$", line, re.I)
+        if match and match.group(1).strip():
+            return match.group(1).strip()
+    return Path(source_name).stem.replace("_", " ").replace("-", " ").title()
+
+
 def parse_sections(text: str) -> list[dict[str, Any]]:
     sections: list[dict[str, Any]] = []
     current: dict[str, Any] | None = None
@@ -230,9 +243,10 @@ def parse_sections(text: str) -> list[dict[str, Any]]:
         for line in text.splitlines()
         if line.strip() and ":" not in line and not line.startswith("[")
     ]
-    chunk_size = max(1, len(lyric_lines) // 4)
+    n_sections = max(1, min(len(DEFAULT_SECTIONS), len(lyric_lines)))
+    chunk_size = max(1, len(lyric_lines) // n_sections)
     inferred = []
-    for index, section_name in enumerate(DEFAULT_SECTIONS[: max(1, min(4, len(lyric_lines)))]):
+    for index, section_name in enumerate(DEFAULT_SECTIONS[:n_sections]):
         chunk = lyric_lines[index * chunk_size : (index + 1) * chunk_size]
         if chunk:
             inferred.append({"section": section_name, "lyrics": "\n".join(chunk), "description": "inferred"})
@@ -255,6 +269,11 @@ def sections_from_timed_lyrics(timed_lyrics: list[dict[str, Any]]) -> list[dict[
                 "lyrics": [],
                 "description": description or "",
             }
+            continue
+        if current and is_bracketed_direction(text):
+            cue = text.strip()[1:-1].strip()
+            if cue:
+                current["description"] = " ".join(part for part in [current.get("description", ""), cue] if part).strip()
             continue
         if current and text and not is_bracketed_direction(text):
             current["lyrics"].append(text)
@@ -455,6 +474,62 @@ def apply_audio_analysis_to_song(song: dict[str, Any], audio_analysis: dict[str,
     audio_analysis["note"] = "Audio analysis was applied to energy, pacing, and mood hints for generation."
 
 
+_INFERENCE_DEFAULT = _INFERENCE_CONFIG.get("default", {})
+DEFAULT_MOOD = _INFERENCE_DEFAULT.get("legacy_mood", ["melancholic", "cinematic"])
+DEFAULT_VISUAL_CUES = _INFERENCE_DEFAULT.get("legacy_visual_cues", ["empty street", "rain", "silhouette"])
+NEUTRAL_VISUAL_CUES = _INFERENCE_DEFAULT.get("neutral_visual_cues", ["song-specific setting", "signature prop", "expressive lighting"])
+
+
+def compact_song_text(text: str, sections: list[dict[str, Any]], metadata: dict[str, Any]) -> str:
+    fields = [
+        text,
+        metadata.get("genre", ""),
+        " ".join(metadata.get("style_tags", [])),
+        " ".join(metadata.get("instruments", [])),
+        metadata.get("atmosphere", ""),
+    ]
+    for section in sections:
+        fields.extend([section.get("description", ""), section.get("lyrics", "")])
+    return " ".join(fields).lower()
+
+
+def has_any_term(text: str, terms: list[str]) -> bool:
+    return any(term.lower() in text for term in terms)
+
+
+def is_default_list(value: list[str], default: list[str]) -> bool:
+    return [item.lower() for item in value] == [item.lower() for item in default]
+
+
+def match_inference_profile(text: str) -> dict[str, Any]:
+    for profile in _INFERENCE_CONFIG.get("profiles", []):
+        if has_any_term(text, profile.get("keys", [])):
+            return profile
+    return {}
+
+
+def infer_mood_from_song(text: str, explicit_mood: list[str]) -> list[str]:
+    if explicit_mood and not is_default_list(explicit_mood, DEFAULT_MOOD):
+        return explicit_mood
+    profile = match_inference_profile(text)
+    if profile:
+        moods = list(profile.get("mood", []))
+        stress_mood = profile.get("stress_mood")
+        if stress_mood and has_any_term(text, profile.get("stress_keys", [])):
+            moods.append(stress_mood)
+        return moods
+    return explicit_mood or _INFERENCE_DEFAULT.get("neutral_mood", ["cinematic"])
+
+
+def infer_visual_cues_from_song(text: str, explicit_visual_cues: list[str]) -> list[str]:
+    if explicit_visual_cues and not is_default_list(explicit_visual_cues, DEFAULT_VISUAL_CUES):
+        return explicit_visual_cues
+    profile = match_inference_profile(text)
+    if profile:
+        return profile.get("visual_cues", NEUTRAL_VISUAL_CUES)
+    return explicit_visual_cues or NEUTRAL_VISUAL_CUES
+
+
 def choose_primary_text_file(files: dict[str, list[Path]]) -> Path | None:
     text_files = files.get(".txt", [])
     if not text_files:
@@ -519,7 +594,7 @@ def infer_intensity(section: str, index: int, total: int, energy: str) -> str:
 
 
 def structure_sections(sections: list[dict[str, Any]], song: dict[str, Any]) -> list[dict[str, Any]]:
-    visual_cues = song.get("visual_cues") or ["empty street", "rain", "silhouette"]
+    visual_cues = song.get("visual_cues") or NEUTRAL_VISUAL_CUES
     structured_sections = []
     for index, section in enumerate(sections, start=1):
         structured_sections.append(
@@ -539,9 +614,10 @@ def build_song_master(text: str, source_name: str) -> dict[str, Any]:
     metadata = extract_metadata(text)
     sections = parse_sections(text)
     lrc_lines = parse_lrc(text)
-    title = metadata.get("title") or Path(source_name).stem.replace("_", " ").replace("-", " ").title()
-    mood = metadata.get("mood") or ["melancholic", "cinematic"]
-    visual_cues = metadata.get("visual_cues") or ["empty street", "rain", "silhouette"]
+    title = metadata.get("title") or infer_title_from_text(text, source_name)
+    inference_text = compact_song_text(text, sections, metadata)
+    mood = infer_mood_from_song(inference_text, metadata.get("mood", []))
+    visual_cues = infer_visual_cues_from_song(inference_text, metadata.get("visual_cues", []))
 
     song = {
         "title": title,

@@ -1,136 +1,124 @@
 {
-  "primary_emotion": "sad",
+  "primary_emotion": "hopeful",
   "secondary_emotions": [
+    "excited",
     "cinematic",
-    "audio-informed"
+    "anxious-release"
   ],
   "emotional_progression": [
     {
       "section": "Intro",
       "intensity": "low",
-      "emotion": "sad",
+      "emotion": "hopeful",
       "visual_symbols": [
-        "rain on glass",
-        "empty bench",
-        "flickering streetlamp"
+        "sunlit wave edge",
+        "open hand in sea breeze",
+        "coral shell charm"
       ],
-      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
-      "environment": "night street or train window",
-      "camera_emotion": "close-up profile, slow tilt down"
+      "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+      "environment": "sunlit shoreline and open summer sky",
+      "camera_emotion": "forward tracking shot from workday pressure into open beach air"
     },
     {
       "section": "Verse",
       "intensity": "medium",
-      "emotion": "sad",
+      "emotion": "hopeful",
       "visual_symbols": [
-        "rain on glass",
-        "empty bench",
-        "flickering streetlamp"
+        "sunlit wave edge",
+        "open hand in sea breeze",
+        "coral shell charm"
       ],
-      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
-      "environment": "night street or train window",
-      "camera_emotion": "close-up profile, slow tilt down"
+      "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+      "environment": "sunlit shoreline and open summer sky",
+      "camera_emotion": "forward tracking shot from workday pressure into open beach air"
     },
     {
-      "section": "Pre-Chorus",
+      "section": "Verse",
       "intensity": "medium",
-      "emotion": "sad",
+      "emotion": "hopeful",
       "visual_symbols": [
-        "rain on glass",
-        "empty bench",
-        "flickering streetlamp"
+        "sunlit wave edge",
+        "open hand in sea breeze",
+        "coral shell charm"
       ],
-      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
-      "environment": "night street or train window",
-      "camera_emotion": "close-up profile, slow tilt down"
+      "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+      "environment": "sunlit shoreline and open summer sky",
+      "camera_emotion": "forward tracking shot from workday pressure into open beach air"
     },
     {
       "section": "Chorus",
       "intensity": "medium-high",
       "emotion": "hopeful",
       "visual_symbols": [
-        "thin line of dawn",
-        "opening hand",
-        "city lights turning off"
+        "sunlit wave edge",
+        "open hand in sea breeze",
+        "coral shell charm"
       ],
-      "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
-      "environment": "city morning after rain",
-      "camera_emotion": "forward tracking shot into open space"
+      "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+      "environment": "sunlit shoreline and open summer sky",
+      "camera_emotion": "forward tracking shot from workday pressure into open beach air"
     },
     {
       "section": "Verse",
       "intensity": "medium",
-      "emotion": "sad",
+      "emotion": "hopeful",
       "visual_symbols": [
-        "rain on glass",
-        "empty bench",
-        "flickering streetlamp"
+        "sunlit wave edge",
+        "open hand in sea breeze",
+        "coral shell charm"
       ],
-      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
-      "environment": "night street or train window",
-      "camera_emotion": "close-up profile, slow tilt down"
+      "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+      "environment": "sunlit shoreline and open summer sky",
+      "camera_emotion": "forward tracking shot from workday pressure into open beach air"
     },
     {
       "section": "Bridge",
       "intensity": "emotional peak",
-      "emotion": "sad",
-      "visual_symbols": [
-        "rain on glass",
-        "empty bench",
-        "flickering streetlamp"
-      ],
-      "lighting": "high contrast near-black and deep violet shadows with sharper neon magenta fracture light",
-      "environment": "night street or train window",
-      "camera_emotion": "close-up profile, slow tilt down"
-    },
-    {
-      "section": "Chorus",
-      "intensity": "medium-high",
       "emotion": "hopeful",
       "visual_symbols": [
-        "thin line of dawn",
-        "opening hand",
-        "city lights turning off"
+        "sunlit wave edge",
+        "open hand in sea breeze",
+        "coral shell charm"
       ],
-      "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
-      "environment": "city morning after rain",
-      "camera_emotion": "forward tracking shot into open space"
+      "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+      "environment": "sunlit shoreline and open summer sky",
+      "camera_emotion": "forward tracking shot from workday pressure into open beach air"
     },
     {
       "section": "Outro",
       "intensity": "falling",
       "emotion": "hope",
       "visual_symbols": [
-        "sunrise edge",
-        "opening sky",
-        "upward drifting signature prop"
+        "coral sunrise over water",
+        "lifted vacation bag",
+        "wind-open shirt hem"
       ],
-      "lighting": "silver-white bloom through graphite haze with softened cyber pink glow and faint icy cyan edge light",
-      "environment": "rooftop at dawn",
-      "camera_emotion": "upward angle, slow crane rise"
+      "lighting": "golden daylight bloom over blue water with soft coral rim light",
+      "environment": "coastal sunrise horizon",
+      "camera_emotion": "slow crane rise toward open sky and sparkling water"
     }
   ],
   "visual_symbolism": [
-    "rain on glass",
-    "empty bench",
-    "flickering streetlamp"
+    "sunlit wave edge",
+    "open hand in sea breeze",
+    "coral shell charm"
   ],
   "emotional_climax": {
     "section": "Chorus",
     "intensity": "medium-high",
     "emotion": "hopeful",
     "visual_symbols": [
-      "thin line of dawn",
-      "opening hand",
-      "city lights turning off"
+      "sunlit wave edge",
+      "open hand in sea breeze",
+      "coral shell charm"
     ],
-    "lighting": "soft silver-white glow with gentle cyber pink lift and subtle icy cyan reflections",
-    "environment": "city morning after rain",
-    "camera_emotion": "forward tracking shot into open space"
+    "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+    "environment": "sunlit shoreline and open summer sky",
+    "camera_emotion": "forward tracking shot from workday pressure into open beach air"
   },
-  "seasonal_atmosphere": "rainy late spring night",
-  "urban_rural_mood": "urban emotional atmosphere",
-  "cinematic_pacing": "energetic cuts with stronger motion accents",
+  "seasonal_atmosphere": "sunlit tropical summer day",
+  "urban_rural_mood": "open coastal vacation atmosphere",
+  "cinematic_pacing": "fast cuts with energetic camera movement",
   "tension_curve": [
     "low",
     "medium",
@@ -138,7 +126,6 @@
     "medium-high",
     "medium",
     "emotional peak",
-    "medium-high",
     "falling"
   ]
 }

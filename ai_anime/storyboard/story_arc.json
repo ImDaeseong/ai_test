@@ -1,8 +1,8 @@
 {
-  "title": "UPGRADE",
-  "theme_ko": "Hardcore Punk, Garage Rock, 175 BPM, 175 BPM, sad mood에 맞춘 곡별 애니메이션 뮤직비디오",
-  "logline_ko": "'UPGRADE'는 defiant anime performer carrying unresolved emotion like stage feedback가 a forced smile reflected as a split neon expression를 따라가며 window-lit room above a quiet street, abandoned live house exterior, quiet city street after rain를 통과하는 high-contrast rock anime noir MV입니다.",
-  "story_summary_ko": "이 뮤직비디오는 고정된 색상톤은 유지하되, 장면과 캐릭터는 'Hardcore Punk, Garage Rock, 175 BPM'의 리듬, 175 BPM의 속도감, 섹션별 가사와 감정 변화에 맞춰 전개됩니다. 반복 상징은 a forced smile reflected as a split neon expression이며, 각 장면은 같은 주인공을 유지하면서도 장소, 행동, 카메라, 영상 움직임을 다르게 설계합니다.",
+  "title": "휴가 모드",
+  "theme_ko": "K-Pop, Tropical House, 124 BPM, 124 BPM, hopeful mood에 맞춘 곡별 애니메이션 뮤직비디오",
+  "logline_ko": "'휴가 모드'는 petite soft-faced protagonist with a compact frame and gentle rounded features, male-presenting one human lead character, bright vacation anime lead carrying release and summer warmth through the hook, face structure: long oval face, high cheekbones, narrow eyes, straight nose, song-specific face detail: faint under-eye shadows and a sharp lower-lash line, signature gesture: keeps one hand near the collar when holding back words가 sunlit wave arcs and coral orange shell glints marking release from routine를 따라가며 sunlit shoreline road with warm sea breeze, open beach deck near bright water, small seaside bus stop in golden afternoon를 통과하는 tropical vacation anime pop MV입니다.",
+  "story_summary_ko": "이 뮤직비디오는 고정된 색상톤은 유지하되, 장면과 캐릭터는 'K-Pop, Tropical House, 124 BPM'의 리듬, 124 BPM의 속도감, 섹션별 가사와 감정 변화에 맞춰 전개됩니다. 반복 상징은 sunlit wave arcs and coral orange shell glints marking release from routine이며, 각 장면은 같은 주인공을 유지하면서도 장소, 행동, 카메라, 영상 움직임을 다르게 설계합니다.",
   "acts": [
     {
       "name": "opening",
@@ -24,7 +24,7 @@
   "continuity_rules": [
     "한 곡 안에서는 같은 주인공, 같은 의상, 같은 대표 소품을 유지합니다.",
     "곡이 바뀌면 장르, BPM, 가사, 분위기에 맞춰 새 주인공과 새 소품을 생성합니다.",
-    "색상톤은 유지합니다: limited-color anime palette: crimson red dominant, dark shadows, near-black backgrounds, subtle secondary reflections, silver-white rim highlights.",
+    "색상톤은 유지합니다: limited-color anime palette: coral orange dominant, dark shadows, near-black backgrounds, soft rose-gold secondary glow, bright white and luminous highlights.",
     "각 섹션은 가사, 섹션 설명, 강도, BPM에 따라 다른 장소, 행동, 카메라 움직임을 가져야 합니다."
   ]
 }

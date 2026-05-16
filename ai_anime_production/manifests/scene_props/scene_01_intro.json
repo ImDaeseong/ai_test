@@ -1,0 +1,38 @@
+{
+  "scene": {
+    "scene_number": 1,
+    "section": "intro",
+    "slug": "scene_01_intro",
+    "start": 0,
+    "end": 30,
+    "duration": 30,
+    "start_frame": 0,
+    "duration_frames": 900,
+    "image": "assets/images/scene_01_intro.png",
+    "image_exists": true,
+    "video": "assets/videos/scene_01_intro.mp4",
+    "video_exists": false,
+    "image_prompt": "prompts/image_prompts/scene_01_intro.md",
+    "video_prompt": "prompts/video_prompts/scene_01_intro.md",
+    "selected_video_prompt_platform": "Remotion",
+    "selected_video_prompt": "Composition: `Scene01Intro`\nPurpose: Build this as a Remotion scene component for Scene 01 - Intro.\n\nScene Data:\n- Primary subject: tall sharp-featured protagonist with long limbs and a composed angular presence, male-presenting one human lead character, bright vacation anime lead carrying release and summer warmth through the hook, face structure: long oval face, high cheekbones, narrow eyes, straight nose, song-specific face detail: small beauty mark under the left eye, signature gesture: holds the prop close to the chest during quiet lines\n- Environment: window-lit room above a quiet street\n- Emotion/intensity: sad / low\n- Lyric cue: Intro emotional cue\n- Action: shows the section emotion through posture, hand movement, and the recurring small sunlit shell charm catching coral-orange light\n- Symbolic focus: a forced smile reflected as a split accent-light expression\n- Camera: wide establishing anime frame with the protagonist small but clearly identifiable\n- Motion: slow push-in that reveals the song-specific prop and silhouette\n- Rhythm: 124 BPM: quick but readable anime motion, cuts or light accents on strong beats, intensity low\n- Lighting/style: high contrast near-black and deep violet shadows with sharper coral orange fracture light\n\nLayer Plan:\n- Background environment layer with palette-matched gradients, texture, and parallax.\n- Primary subject/reference image layer. Use the approved scene image or subject sheet as source.\n- Motif layer for symbolic particles, reflections, scent trails, waveform lights, or memory fragments.\n- Foreground light/streak layer for depth and beat accents.\n- Optional mask layer for wipes, reflection reveals, or object-led transitions.\n\nAnimation Plan:\n- Use `useCurrentFrame()` and `interpolate()` for camera push/pull, opacity, blur, scale, and parallax.\n- Map the first third to establishing motion, the middle third to the main action, and the final third to transition preparation.\n- Keep subject identity stable. Animate transforms, light, and atmosphere more than facial or body redesign.\n- Use easing for slow sections; use short accent pulses for beat peaks.\n\nImplementation Notes:\n- Build with React components, absolute-positioned layers, CSS transforms, `Img`, and optional SVG/CSS masks.\n- Avoid generating readable text inside the frame unless manually required.\n- Keep colors, subject, and camera intent faithful to the matching image prompt.\n- Convert the scene into a Remotion-friendly composition plan with timeline beats, layers, keyframe animation, camera transforms, and reusable props. Structure as: Composition name / Scene Data / Layer Plan / Animation Plan / Implementation Notes. Use useCurrentFrame() + interpolate() for all motion. Keep colors, subject, and camera intent faithful to the matching image prompt. Build with React, Remotion, CSS transforms, masks, gradients, and image layers.",
+    "video_gen_images": [
+      {
+        "path": "assets/images/character_reference.png",
+        "exists": true,
+        "role": "character"
+      },
+      {
+        "path": "assets/images/scene_01_intro.png",
+        "exists": true,
+        "role": "scene"
+      }
+    ],
+    "camera_direction": "slow push-in that reveals the song-specific prop and silhouette",
+    "movement": "",
+    "intensity": "low",
+    "emotion": ""
+  },
+  "fps": 30,
+  "bpm": 124
+}

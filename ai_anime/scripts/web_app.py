@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import argparse
 import html
+import io
 import json
 import re
 import shutil
+import threading
 import urllib.parse
 import urllib.request
-from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -18,7 +19,7 @@ import image_prompt_generator
 import song_parser
 import scene_generator
 import video_prompt_generator
-from common import PROJECT_ROOT, ensure_directories, load_config, read_json, timestamp, write_text
+from common import PROJECT_ROOT, clean_tags, ensure_directories, load_config, read_json, timestamp, write_text
 
 
 MAX_TEXT_UPLOAD_SIZE = 8 * 1024 * 1024
@@ -26,6 +27,85 @@ MAX_AUDIO_UPLOAD_SIZE = 200 * 1024 * 1024
 LYRIC_UPLOAD_EXTENSIONS = {".lrc", ".srt"}
 AUDIO_UPLOAD_EXTENSIONS = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"}
 ALLOWED_UPLOAD_EXTENSIONS = LYRIC_UPLOAD_EXTENSIONS | AUDIO_UPLOAD_EXTENSIONS
+
+# [A] Serialize pipeline runs — shared files + module-level globals in scene_generator
+_generate_lock = threading.Lock()
+
+
+# ─── Multipart form parser (replaces deprecated cgi.FieldStorage) ────────────
+
+class _Field:
+    __slots__ = ("name", "filename", "file", "_data")
+
+    def __init__(self, name: str, data: bytes, filename: str | None = None) -> None:
+        self.name = name
+        self.filename = filename
+        self._data = data
+        self.file = io.BytesIO(data)
+
+    def getvalue(self) -> str:
+        return self._data.decode("utf-8", errors="replace")
+
+
+class _Form:
+    def __init__(self, fields: dict[str, list[_Field]]) -> None:
+        self._fields = fields
+
+    def getfirst(self, name: str, default: str | None = None) -> str | None:
+        bucket = self._fields.get(name)
+        return bucket[0].getvalue() if bucket else default
+
+    def __contains__(self, name: str) -> bool:
+        return name in self._fields
+
+    def __getitem__(self, name: str) -> "_Field | list[_Field]":
+        bucket = self._fields[name]
+        return bucket[0] if len(bucket) == 1 else bucket
+
+
+def _parse_form(fp: Any, headers: Any) -> _Form:
+    content_type: str = headers.get("Content-Type", "")
+    content_length = int(headers.get("Content-Length", "0") or "0")
+    max_body = MAX_TEXT_UPLOAD_SIZE + MAX_AUDIO_UPLOAD_SIZE + 65536
+    body = fp.read(min(content_length, max_body))
+
+    boundary: bytes | None = None
+    for token in content_type.split(";"):
+        token = token.strip()
+        if token.lower().startswith("boundary="):
+            boundary = token[9:].strip('"').encode("latin-1")
+            break
+
+    if not boundary:
+        parsed = urllib.parse.parse_qs(body.decode("utf-8", errors="replace"), keep_blank_values=True)
+        return _Form({k: [_Field(k, v.encode("utf-8")) for v in vals] for k, vals in parsed.items()})
+
+    fields: dict[str, list[_Field]] = {}
+    delimiter = b"--" + boundary
+    for part in body.split(delimiter)[1:]:
+        if part[:2] == b"--":
+            break
+        if part[:2] in (b"\r\n", b"\n\r", b"\n "):
+            part = part[2:] if part[:2] == b"\r\n" else part[1:]
+        sep = b"\r\n\r\n" if b"\r\n\r\n" in part else b"\n\n"
+        header_bytes, _, content = part.partition(sep)
+        content = content.rstrip(b"\r\n")
+
+        name: str | None = None
+        filename: str | None = None
+        for line in header_bytes.decode("utf-8", errors="replace").splitlines():
+            if "content-disposition" in line.lower():
+                for seg in line.split(";"):
+                    seg = seg.strip()
+                    if seg.lower().startswith("name="):
+                        name = seg[5:].strip('"')
+                    elif seg.lower().startswith("filename="):
+                        filename = seg[9:].strip('"')
+        if name is None:
+            continue
+        fields.setdefault(name, []).append(_Field(name, content, filename or None))
+
+    return _Form(fields)
 
 
 def page_shell(content: str, status: str = "") -> bytes:
@@ -524,7 +604,9 @@ def render_results() -> str:
     world = scene_list.get("visual_world", {})
     source_files = song.get("source_files") or [song.get("source_file", "")]
     audio_files = song.get("audio_files", [])
-    audio_analysis_checked = " checked" if load_ui_state().get("apply_audio_analysis") else ""
+    ui_state = load_ui_state()
+    audio_analysis_checked = " checked" if ui_state.get("apply_audio_analysis") else ""
+    theme_options = render_theme_options(ui_state.get("style_id", ""))
     scene_cards = "\n".join(render_scene(scene) for scene in scenes)
 
     return f"""
@@ -553,6 +635,11 @@ def render_results() -> str:
         <input id="apply_audio_analysis" name="apply_audio_analysis" type="checkbox" value="1"{audio_analysis_checked}>
         오디오 분석 결과를 생성에 반영
       </label>
+
+      <label for="style_id">비주얼 스타일</label>
+      <select id="style_id" name="style_id">
+        {theme_options}
+      </select>
 
       <div class="actions">
         <button type="submit" style="background: var(--accent-strong); font-size: 16px;">Generate Storyboard</button>
@@ -628,9 +715,10 @@ def render_character_model_sheet(character_model_sheet: dict[str, Any]) -> str:
 def render_theme_options(selected_id: str | None = None) -> str:
     config = load_config("visual_styles")
     styles = config.get("styles", {})
-    default_id = config.get("default_style", "cyber_noir")
-    selected_id = selected_id or default_id
-    options = []
+    selected_id = selected_id or ""
+    options = [
+        '<option value="" selected>Auto - match song</option>' if not selected_id else '<option value="">Auto - match song</option>'
+    ]
     for sid, data in styles.items():
         is_selected = " selected" if sid == selected_id else ""
         name = data.get("name", sid)
@@ -639,19 +727,6 @@ def render_theme_options(selected_id: str | None = None) -> str:
 
 
 
-
-def clean_tags(tags_str: str) -> list[str]:
-    if not tags_str: return []
-    # Normalize: lower case, remove special characters, split by comma or semicolon
-    raw = re.split(r'[,;]', tags_str.lower())
-    cleaned = []
-    for t in raw:
-        t = t.strip()
-        # Remove common filler words or redundant phrases
-        t = re.sub(r'^(a|the|with|and|of)\s+', '', t)
-        if t and len(t) > 1 and t not in cleaned:
-            cleaned.append(t)
-    return cleaned
 
 
 _BPM_RE          = re.compile(r"(\d{2,3})\s*bpm", re.I)
@@ -999,7 +1074,7 @@ def safe_filename(value: str, fallback: str) -> str:
     return name or fallback
 
 
-def write_upload(field: FieldStorage, target_dir: Path, fallback_name: str, max_size: int = MAX_TEXT_UPLOAD_SIZE) -> Path | None:
+def write_upload(field: _Field, target_dir: Path, fallback_name: str, max_size: int = MAX_TEXT_UPLOAD_SIZE) -> Path | None:
     if not getattr(field, "filename", ""):
         return None
     filename = safe_filename(field.filename, fallback_name)
@@ -1011,14 +1086,19 @@ def write_upload(field: FieldStorage, target_dir: Path, fallback_name: str, max_
     return target
 
 
-def generate_from_form(form: FieldStorage) -> Path:
+def generate_from_form(form: _Form) -> Path:
+    with _generate_lock:
+        return _generate_from_form_locked(form)
+
+
+def _generate_from_form_locked(form: _Form) -> Path:
     ensure_directories()
     run_input_dir = PROJECT_ROOT / "output" / "web_inputs" / timestamp()
     run_input_dir.mkdir(parents=True, exist_ok=False)
 
     lyrics_raw = form.getfirst("lyrics", "").replace("\r\n", "\n").replace("\r", "\n").strip()
     title = form.getfirst("title", "").strip()
-    style_id = form.getfirst("style_id", "cyber_noir").strip()
+    style_id = form.getfirst("style_id", "").strip()
     apply_audio_analysis = bool(form.getfirst("apply_audio_analysis"))
     if not lyrics_raw:
         raise ValueError("가사 또는 메타 정보를 입력해 주세요.")
@@ -1055,7 +1135,7 @@ def generate_from_form(form: FieldStorage) -> Path:
         apply_audio_analysis=apply_audio_analysis,
     )
     emotion_engine.run()
-    scene_generator.run(style_id=style_id)
+    scene_generator.run(style_id=style_id or None)
     image_prompt_generator.run()
     video_prompt_generator.run()
 
@@ -1102,15 +1182,7 @@ class WebHandler(BaseHTTPRequestHandler):
             self.send_error(404)
             return
         try:
-            form = FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={
-                    "REQUEST_METHOD": "POST",
-                    "CONTENT_TYPE": self.headers.get("Content-Type", ""),
-                    "CONTENT_LENGTH": self.headers.get("Content-Length", "0"),
-                },
-            )
+            form = _parse_form(self.rfile, self.headers)
             snapshot_dir = generate_from_form(form)
             content = render_results()
             self.send_html(page_shell(content, f"생성이 완료되었습니다. 스냅샷: {snapshot_dir}"))

@@ -41,6 +41,16 @@ def snapshot_outputs(song_slug: str) -> Path:
     return run_dir
 
 
+def _run_step(name: str, fn, *args, **kwargs) -> None:
+    print(f"[{name}] 시작...")
+    try:
+        fn(*args, **kwargs)
+        print(f"[{name}] 완료")
+    except Exception as exc:
+        print(f"[{name}] 실패: {exc}")
+        raise SystemExit(1) from exc
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the full AI anime MV generation pipeline.")
     parser.add_argument("--input", default=str(PROJECT_ROOT / "input"), help="Input file or folder containing .txt/.lrc/.srt/audio files.")
@@ -49,15 +59,14 @@ def main() -> None:
     args = parser.parse_args()
 
     ensure_directories()
-    song_parser.run(
-        input_path=Path(args.input),
-        output_path=PROJECT_ROOT / "input" / "song_master.json",
-        apply_audio_analysis=args.apply_audio_analysis,
-    )
-    emotion_engine.run()
-    scene_generator.run()
-    image_prompt_generator.run()
-    video_prompt_generator.run()
+    _run_step("1/5 파싱", song_parser.run,
+              input_path=Path(args.input),
+              output_path=PROJECT_ROOT / "input" / "song_master.json",
+              apply_audio_analysis=args.apply_audio_analysis)
+    _run_step("2/5 감정 분석", emotion_engine.run)
+    _run_step("3/5 씬 생성", scene_generator.run)
+    _run_step("4/5 이미지 프롬프트", image_prompt_generator.run)
+    _run_step("5/5 비디오 프롬프트", video_prompt_generator.run)
 
     if args.snapshot:
         song = read_json(PROJECT_ROOT / "input" / "song_master.json")

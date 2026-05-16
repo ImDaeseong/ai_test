@@ -298,6 +298,17 @@ def compute_atmosphere_updates(
 # Apply updates + backup
 # ---------------------------------------------------------------------------
 
+_MAX_BACKUPS = 10
+
+
+def _prune_old_backups() -> None:
+    if not BACKUP_DIR.exists():
+        return
+    dirs = sorted((d for d in BACKUP_DIR.iterdir() if d.is_dir()), key=lambda p: p.name)
+    for old in dirs[:-_MAX_BACKUPS]:
+        shutil.rmtree(old, ignore_errors=True)
+
+
 def backup_configs() -> str:
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
     backup_path = BACKUP_DIR / ts
@@ -305,6 +316,7 @@ def backup_configs() -> str:
     for src in [GENRES_FILE, ATMOS_FILE]:
         if src.exists():
             shutil.copy2(src, backup_path / src.name)
+    _prune_old_backups()
     return str(backup_path)
 
 
