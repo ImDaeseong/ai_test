@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "Suno Lyric Downloader" },
+  "extension_description": { "message": "Baixe letras sincronizadas do Suno.com como arquivos LRC ou SRT." },
+  "download_lyric": { "message": "Baixar letras" },
+  "popup_status_loading": { "message": "Verificando aba atual..." },
+  "popup_status_not_suno": { "message": "Abra o Suno e escolha uma página de música." },
+  "popup_status_suno_non_song": { "message": "Abra uma página de detalhes de música com URL /song/" },
+  "popup_status_suno_song": { "message": "Página de música detectada. Os botões aparecerão na capa." },
+  "popup_step_1": { "message": "Entre no Suno (suno.com)" },
+  "popup_step_2": { "message": "Abra a página de detalhes da música (/song/...)" },
+  "popup_step_3": { "message": "Clique no botão LRC ou SRT na capa" },
+  "popup_button_open_suno": { "message": "Abrir Suno" },
+  "popup_button_find_buttons": { "message": "Encontrar botões" },
+  "popup_tip": { "message": "Os botões LRC · SRT aparecem automaticamente na capa da música" },
+  "popup_troubleshooting_title": { "message": "Solução de problemas" },
+  "popup_troubleshooting_no_timing": { "message": "Algumas músicas não têm dados de sincronização." },
+  "popup_troubleshooting_wait_cover": { "message": "Aguarde o carregamento da capa e atualize a página." },
+  "popup_troubleshooting_login": { "message": "Certifique-se de estar logado no Suno." },
+  "popup_troubleshooting_song_page": { "message": "Use páginas de detalhes de música, não a página inicial/criar." }
+}

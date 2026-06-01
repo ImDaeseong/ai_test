@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# Downloads output
+**/downloads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Local Hermes context pointers
+/AGENTS.md
+/CLAUDE.md
+/.claude/

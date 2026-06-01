@@ -1,0 +1,7 @@
+name: Local AI
+
+models:
+  - name: QwenCoder
+    provider: ollama
+    model: qwen2.5-coder:3b
+    apiBase: http://localhost:11434

@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "Suno Lyric Downloader" },
+  "extension_description": { "message": "Suno.com से सिंक्रोनाइज़ गाने के बोल LRC या SRT फ़ाइल के रूप में डाउनलोड करें।" },
+  "download_lyric": { "message": "बोल डाउनलोड करें" },
+  "popup_status_loading": { "message": "वर्तमान टैब जाँच रहे हैं..." },
+  "popup_status_not_suno": { "message": "Suno खोलें और एक गाने का पेज चुनें।" },
+  "popup_status_suno_non_song": { "message": "/song/ से शुरू होने वाले URL वाला गाने का पेज खोलें।" },
+  "popup_status_suno_song": { "message": "गाने का पेज मिला। कवर पर डाउनलोड बटन दिखाई देंगे।" },
+  "popup_step_1": { "message": "Suno में लॉग इन करें (suno.com)" },
+  "popup_step_2": { "message": "गाने का विवरण पेज खोलें (/song/...)" },
+  "popup_step_3": { "message": "कवर पर LRC या SRT बटन पर क्लिक करें" },
+  "popup_button_open_suno": { "message": "Suno खोलें" },
+  "popup_button_find_buttons": { "message": "बटन खोजें" },
+  "popup_tip": { "message": "गाने के कवर पर LRC · SRT बटन स्वचालित रूप से दिखाई देते हैं" },
+  "popup_troubleshooting_title": { "message": "समस्या निवारण" },
+  "popup_troubleshooting_no_timing": { "message": "कुछ गानों में सिंक्रोनाइज़ेशन डेटा नहीं होता।" },
+  "popup_troubleshooting_wait_cover": { "message": "कवर लोड होने की प्रतीक्षा करें, फिर रीफ्रेश करें।" },
+  "popup_troubleshooting_login": { "message": "सुनिश्चित करें कि आप Suno में लॉग इन हैं।" },
+  "popup_troubleshooting_song_page": { "message": "होम/क्रिएट पेज नहीं, गाने का विवरण पेज उपयोग करें।" }
+}

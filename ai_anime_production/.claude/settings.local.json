@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/import_input.mjs)",
+      "Bash(npm run *)",
+      "Bash(node scripts/check_assets.mjs --allow-placeholders)"
+    ]
+  }
+}

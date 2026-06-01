@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Music Producer — Suno Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">♪</span>
+      <span class="logo-text">AI <span class="logo-accent">Music</span> Producer</span>
+    </div>
+    <div class="header-sub">Suno AI Prompt · Audio · Sheet Music · Visual</div>
+  </div>
+</header>
+
+<!-- ── Main Layout ─────────────────────────────────────────────────────────── -->
+<main class="layout">
+
+  <!-- ══ Input Panel ════════════════════════════════════════════════════════ -->
+  <aside class="panel-input">
+    <form id="analyzeForm" novalidate>
+
+      <!-- Prompt -->
+      <div class="field-group">
+        <div class="field-label">
+          <span>Suno AI 프롬프트</span>
+          <button type="button" class="btn-ghost" id="loadSampleBtn">샘플 불러오기</button>
+        </div>
+        <textarea
+          id="promptInput"
+          class="prompt-area"
+          placeholder="[Genre: K-Pop, R&B]&#10;[BPM: 128]&#10;[Key: Am]&#10;[Mood: Emotional, Dark]&#10;[Instruments: 808 Bass, Piano]&#10;&#10;[Verse 1]&#10;가사를 입력하세요..."
+          spellcheck="false"
+        ></textarea>
+        <div class="field-hint" id="promptHint"></div>
+      </div>
+
+      <!-- Audio Upload -->
+      <div class="field-group">
+        <div class="field-label">
+          <span>오디오 파일 <span class="badge-opt">선택</span></span>
+          <span class="field-hint-sm">MP3 · WAV · FLAC · OGG · M4A (최대 50MB)</span>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-content" id="uploadContent">
+            <div class="upload-icon">&#9835;</div>
+            <div class="upload-text">파일을 드래그하거나 클릭하여 선택</div>
+            <div class="upload-sub">오디오가 있으면 BPM · 키 · 에너지를 정확하게 측정합니다</div>
+          </div>
+          <input type="file" id="audioInput" accept=".mp3,.wav,.flac,.ogg,.m4a" hidden>
+        </div>
+        <div class="file-badge hidden" id="fileBadge">
+          <span class="file-badge-icon">&#9835;</span>
+          <span id="fileNameText"></span>
+          <button type="button" class="file-remove" id="removeFile" title="제거">&#x2715;</button>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn-analyze" id="analyzeBtn">
+        <span class="btn-icon">&#9654;</span>
+        <span class="btn-label">분석 시작</span>
+      </button>
+
+    </form>
+  </aside>
+
+  <!-- ══ Output Panel ═══════════════════════════════════════════════════════ -->
+  <section class="panel-output" id="outputPanel">
+
+    <!-- Empty State -->
+    <div class="state-empty" id="stateEmpty">
+      <div class="empty-glyph">&#9836;</div>
+      <p class="empty-title">분석을 시작하세요</p>
+      <p class="empty-body">Suno AI 프롬프트를 입력하면<br>악보 · 분석 리포트 · 비주얼 프롬프트를 생성합니다</p>
+      <div class="feature-chips">
+        <span class="chip">&#9834; LilyPond 악보</span>
+        <span class="chip">&#128202; 음악 분석</span>
+        <span class="chip">&#128161; 개선 제안</span>
+        <span class="chip">&#127912; 앨범아트 프롬프트</span>
+        <span class="chip">&#127916; 영상 씬 프롬프트</span>
+      </div>
+    </div>
+
+    <!-- Progress State -->
+    <div class="state-progress hidden" id="stateProgress">
+      <div class="progress-header">
+        <div class="progress-spinner"></div>
+        <div id="progressLabel" class="progress-label">분석 준비 중...</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div class="progress-pct" id="progressPct">0%</div>
+      <div class="step-list">
+        <div class="step-item" id="si-parse">
+          <div class="step-dot"></div><span>프롬프트 파싱</span>
+        </div>
+        <div class="step-item" id="si-report">
+          <div class="step-dot"></div><span>분석 리포트</span>
+        </div>
+        <div class="step-item" id="si-sheet">
+          <div class="step-dot"></div><span>악보 생성</span>
+        </div>
+        <div class="step-item" id="si-visual">
+          <div class="step-dot"></div><span>비주얼 프롬프트</span>
+        </div>
+      </div>
+      <div class="parsed-preview hidden" id="parsedPreview">
+        <span id="ppTitle"></span>
+        <span class="pp-sep">|</span>
+        <span id="ppGenre"></span>
+        <span class="pp-sep">|</span>
+        <span id="ppBpm"></span> BPM
+        <span class="pp-sep">|</span>
+        Key: <span id="ppKey"></span>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="state-error hidden" id="stateError">
+      <div class="error-icon">&#9888;</div>
+      <p class="error-title">분석 중 오류가 발생했습니다</p>
+      <p class="error-msg" id="errorMsg"></p>
+      <button class="btn-retry" id="retryBtn">다시 시도</button>
+    </div>
+
+    <!-- Result State -->
+    <div class="state-result hidden" id="stateResult">
+
+      <!-- Track Hero -->
+      <div class="track-hero" id="trackHero"></div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab active" data-tab="overview" role="tab">개요</button>
+        <button class="tab" data-tab="report" role="tab">분석 리포트</button>
+        <button class="tab" data-tab="sheet" role="tab">악보 코드</button>
+        <button class="tab" data-tab="visual" role="tab">비주얼 프롬프트</button>
+      </div>
+
+      <!-- Tab Panels -->
+      <div class="tab-panels">
+
+        <div class="tab-panel active" id="tab-overview">
+          <div id="overviewContent"></div>
+        </div>
+
+        <div class="tab-panel hidden" id="tab-report">
+          <div class="report-body" id="reportContent"></div>
+        </div>
+
+        <div class="tab-panel hidden" id="tab-sheet">
+          <div id="sheetContent"></div>
+        </div>
+
+        <div class="tab-panel hidden" id="tab-visual">
+          <div id="visualContent"></div>
+        </div>
+
+      </div>
+
+      <!-- Downloads -->
+      <div class="download-bar" id="downloadBar"></div>
+
+    </div>
+
+  </section>
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

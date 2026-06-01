@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suno DAW Local Audio Processor</title>
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      background: #101114;
+      color: #e5e7eb;
+      font-family: Segoe UI, Arial, sans-serif;
+    }
+    h1 { margin: 0 0 4px; font-size: 1.6rem; color: #f4f4f5; }
+    h2 { margin: 0 0 14px; font-size: 1rem; color: #d4d4d8; }
+    .subtitle { margin: 0 0 24px; color: #9ca3af; font-size: .9rem; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .wide { grid-column: 1 / -1; }
+    .card { background: #181a1f; border: 1px solid #2b2f38; border-radius: 8px; padding: 18px; }
+    .drop-zone {
+      position: relative;
+      display: grid;
+      gap: 6px;
+      place-items: center;
+      min-height: 94px;
+      margin-bottom: 12px;
+      padding: 14px;
+      border: 2px dashed #3f4654;
+      border-radius: 8px;
+      color: #9ca3af;
+      text-align: center;
+      cursor: pointer;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: #60a5fa; background: #121b2a; }
+    .drop-zone input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .file-name { max-width: 100%; color: #93c5fd; font-size: .82rem; overflow-wrap: anywhere; }
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+    button {
+      min-height: 34px;
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      font-size: .88rem;
+      cursor: pointer;
+    }
+    button.secondary { background: #374151; }
+    button:disabled { background: #3f3f46; color: #a1a1aa; cursor: not-allowed; }
+    input[type="number"], select {
+      min-height: 34px;
+      border: 1px solid #3f4654;
+      border-radius: 6px;
+      background: #0f1117;
+      color: #e5e7eb;
+      padding: 6px 10px;
+    }
+    #waveform { min-height: 88px; margin-bottom: 10px; border-radius: 8px; background: #0f1117; overflow: hidden; }
+    .status { display: none; margin: 10px 0; padding: 9px 11px; border-radius: 6px; font-size: .84rem; }
+    .status.queued, .status.running { display: block; background: #172033; color: #bfdbfe; }
+    .status.done { display: block; background: #13251a; color: #bbf7d0; }
+    .status.error { display: block; background: #2a1518; color: #fecaca; }
+    .result {
+      min-height: 96px;
+      max-height: 300px;
+      overflow: auto;
+      padding: 12px;
+      border: 1px solid #2b2f38;
+      border-radius: 8px;
+      background: #0f1117;
+      color: #d1d5db;
+      font: .78rem Consolas, monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .stats { display: grid; gap: 8px; margin-bottom: 10px; font-size: .84rem; }
+    .stat-row { display: grid; grid-template-columns: 150px 1fr 74px; gap: 8px; align-items: center; }
+    .bar-track { height: 7px; background: #2b2f38; border-radius: 999px; overflow: hidden; }
+    .bar { height: 100%; background: #22c55e; }
+    .jobs { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+    .jobs li { display: grid; grid-template-columns: 70px 1fr 78px; gap: 8px; align-items: center; font-size: .82rem; }
+    .badge { padding: 3px 7px; border-radius: 999px; text-align: center; background: #374151; color: #e5e7eb; }
+    .badge.done { background: #14532d; color: #bbf7d0; }
+    .badge.running { background: #1d4ed8; color: #dbeafe; }
+    .badge.error { background: #7f1d1d; color: #fecaca; }
+    @media (max-width: 900px) { body { padding: 16px; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Suno DAW</h1>
+  <p class="subtitle">Local audio analysis, mastering, and stem separation</p>
+
+  <main class="grid">
+    <section class="card wide">
+      <h2>Waveform Viewer</h2>
+      <div class="drop-zone" id="waveDrop">
+        <input type="file" accept="audio/*" id="waveInput" />
+        <strong>Choose or drop an audio file</strong>
+        <span class="file-name" id="waveFileName">No file selected</span>
+      </div>
+      <div id="waveform"></div>
+      <div class="toolbar">
+        <button type="button" onclick="wave && wave.playPause()">Play/Pause</button>
+        <button type="button" class="secondary" onclick="wave && wave.stop()">Stop</button>
+        <span id="timeDisplay" class="subtitle"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Analyze</h2>
+      <div class="drop-zone" data-panel="analyze">
+        <input type="file" accept="audio/*" />
+        <strong>Select audio for analysis</strong>
+        <span class="file-name" id="analyzeFileName">No file selected</span>
+      </div>
+      <button id="analyzeBtn" type="button" onclick="runAnalyze()" disabled>Analyze</button>
+      <div class="status" id="analyzeStatus"></div>
+      <div class="stats" id="analyzeStats"></div>
+      <pre class="result" id="analyzeResult">Select a file to analyze.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Master</h2>
+      <div class="drop-zone" data-panel="master">
+        <input type="file" accept="audio/*" />
+        <strong>Select audio for mastering</strong>
+        <span class="file-name" id="masterFileName">No file selected</span>
+      </div>
+      <div class="toolbar">
+        <label for="masterLufs">Target LUFS</label>
+        <input id="masterLufs" type="number" value="-14" step="0.5" min="-30" max="0" />
+        <button id="masterBtn" type="button" onclick="runMaster()" disabled>Master</button>
+      </div>
+      <div class="status" id="masterStatus"></div>
+      <pre class="result" id="masterResult">Select a file to master.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Stem Separation</h2>
+      <div class="drop-zone" data-panel="stem">
+        <input type="file" accept="audio/*" />
+        <strong>Select audio for stems</strong>
+        <span class="file-name" id="stemFileName">No file selected</span>
+      </div>
+      <div class="toolbar">
+        <select id="stemModel">
+          <option value="htdemucs">htdemucs</option>
+          <option value="htdemucs_ft">htdemucs_ft</option>
+          <option value="mdx">mdx</option>
+        </select>
+        <button id="stemBtn" type="button" onclick="runSeparate()" disabled>Separate</button>
+      </div>
+      <div class="status" id="stemStatus"></div>
+      <pre class="result" id="stemResult">Select a file to separate.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Jobs</h2>
+      <div class="toolbar">
+        <button type="button" onclick="loadJobs()">Refresh</button>
+        <button type="button" class="secondary" onclick="toggleAutoRefresh()">Auto Refresh</button>
+      </div>
+      <ul class="jobs" id="jobsList"><li><span class="subtitle">Loading...</span></li></ul>
+    </section>
+
+    <section class="card wide">
+      <h2>System Check</h2>
+      <button type="button" onclick="runCheck()">Check Dependencies</button>
+      <pre class="result" id="checkResult">Click the button to check dependencies.</pre>
+    </section>
+  </main>
+
+  <script>
+    let wave = null;
+    let autoRefreshTimer = null;
+    const serverPaths = { analyze: null, master: null, stem: null };
+    const pollTimers = { analyze: null, master: null, stem: null };
+
+    const buttonLabels = { analyze: 'Analyze', master: 'Master', stem: 'Separate' };
+
+    function formatTime(seconds) {
+      seconds = seconds || 0;
+      return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+    }
+
+    function setStatus(panel, state, message) {
+      const el = document.getElementById(`${panel}Status`);
+      el.className = `status ${state}`;
+      el.textContent = message;
+    }
+
+    async function uploadFile(panel, file) {
+      const form = new FormData();
+      form.append('file', file);
+      const response = await fetch('/api/upload', { method: 'POST', body: form, credentials: 'same-origin' });
+      const text = await response.text();
+      if (!response.ok) throw new Error(text);
+      return JSON.parse(text);
+    }
+
+    function chooseFile(panel, file) {
+      if (!file) return;
+      const sizeMb = (file.size / 1024 / 1024).toFixed(1);
+      const nameEl = document.getElementById(`${panel}FileName`);
+      const btn = document.getElementById(`${panel}Btn`);
+      nameEl.textContent = `${file.name} (${sizeMb} MB)`;
+      btn.disabled = true;
+      btn.textContent = 'Uploading...';
+      setStatus(panel, 'queued', 'Uploading file...');
+
+      uploadFile(panel, file)
+        .then(data => {
+          serverPaths[panel] = data.path;
+          btn.disabled = false;
+          btn.textContent = buttonLabels[panel];
+          setStatus(panel, 'done', `Uploaded ${data.filename}`);
+        })
+        .catch(error => {
+          btn.textContent = buttonLabels[panel];
+          setStatus(panel, 'error', `Upload failed: ${error.message}`);
+        });
+    }
+
+    function attachDropZone(zone) {
+      const panel = zone.dataset.panel;
+      const input = zone.querySelector('input[type="file"]');
+      input.addEventListener('change', () => chooseFile(panel, input.files[0]));
+      zone.addEventListener('dragover', event => {
+        event.preventDefault();
+        zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+      zone.addEventListener('drop', event => {
+        event.preventDefault();
+        zone.classList.remove('drag-over');
+        chooseFile(panel, event.dataTransfer.files[0]);
+      });
+    }
+
+    function loadWaveFile(file) {
+      if (!file) return;
+      document.getElementById('waveFileName').textContent = file.name;
+      const url = URL.createObjectURL(file);
+      if (wave) wave.destroy();
+      wave = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: '#60a5fa',
+        progressColor: '#22c55e',
+        height: 88,
+        normalize: true
+      });
+      wave.on('timeupdate', t => {
+        document.getElementById('timeDisplay').textContent = `${formatTime(t)} / ${formatTime(wave.getDuration())}`;
+      });
+      wave.load(url);
+    }
+
+    async function runAnalyze() {
+      const file = serverPaths.analyze;
+      if (!file) return;
+      const btn = document.getElementById('analyzeBtn');
+      btn.disabled = true;
+      setStatus('analyze', 'running', 'Analyzing...');
+      document.getElementById('analyzeStats').innerHTML = '';
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.job_id) throw new Error(data.error || 'Analyze request failed');
+        startPolling('analyze', data.job_id, result => {
+          btn.disabled = false;
+          renderAnalyzeResult(result);
+          setStatus('analyze', 'done', `Done: BPM ${result.bpm}, key ${result.key}, LUFS ${result.lufs_integrated}`);
+        });
+      } catch (error) {
+        btn.disabled = false;
+        setStatus('analyze', 'error', error.message);
+        document.getElementById('analyzeResult').textContent = error.message;
+      }
+    }
+
+    function renderAnalyzeResult(data) {
+      document.getElementById('analyzeResult').textContent = JSON.stringify(data, null, 2);
+      const bands = data.frequency_bands || {};
+      const maxBand = Math.max(...Object.values(bands), 0.0001);
+      const rows = [
+        ['BPM', '', data.bpm],
+        ['Key', '', data.key],
+        ['LUFS', '', data.lufs_integrated],
+        ['Duration', '', `${(data.duration_sec || 0).toFixed(1)}s`],
+        ...Object.entries(bands).map(([key, value]) => [
+          key.replace(/_/g, ' '),
+          `<span class="bar-track"><span class="bar" style="display:block;width:${Math.round(value / maxBand * 100)}%"></span></span>`,
+          Number(value).toFixed(4)
+        ])
+      ];
+      document.getElementById('analyzeStats').innerHTML = rows.map(([label, bar, value]) =>
+        `<div class="stat-row"><span>${escapeHTML(label)}</span>${bar || '<span></span>'}<strong>${escapeHTML(value)}</strong></div>`
+      ).join('');
+    }
+
+    function startPolling(panel, jobId, onDone) {
+      clearInterval(pollTimers[panel]);
+      pollTimers[panel] = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/job/${encodeURIComponent(jobId)}`, { credentials: 'same-origin' });
+          if (!response.ok) return;
+          const job = await response.json();
+          if (job.state === 'running' || job.state === 'queued') {
+            const elapsed = Math.round((Date.now() - new Date(job.started_at)) / 1000);
+            setStatus(panel, 'running', `Processing job ${jobId} for ${elapsed}s`);
+          } else if (job.state === 'done') {
+            clearInterval(pollTimers[panel]);
+            onDone(job.result);
+          } else if (job.state === 'error') {
+            clearInterval(pollTimers[panel]);
+            document.getElementById(`${panel}Btn`).disabled = false;
+            setStatus(panel, 'error', job.error || 'Job failed');
+            document.getElementById(`${panel}Result`).textContent = job.error || 'Job failed';
+          }
+        } catch (_) {}
+      }, 1500);
+    }
+
+    async function runMaster() {
+      const file = serverPaths.master;
+      if (!file) return;
+      const btn = document.getElementById('masterBtn');
+      btn.disabled = true;
+      setStatus('master', 'queued', 'Queueing mastering job...');
+      try {
+        const rawLufs = Number(document.getElementById('masterLufs').value);
+        const lufs = isNaN(rawLufs) ? -14 : Math.max(-30, Math.min(0, rawLufs));
+        const response = await fetch('/api/master', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file, lufs })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.job_id) throw new Error(data.error || 'Mastering request failed');
+        startPolling('master', data.job_id, result => {
+          btn.disabled = false;
+          document.getElementById('masterResult').textContent = JSON.stringify(result, null, 2);
+          setStatus('master', 'done', 'Mastering complete');
+        });
+      } catch (error) {
+        btn.disabled = false;
+        setStatus('master', 'error', error.message);
+      }
+    }
+
+    async function runSeparate() {
+      const file = serverPaths.stem;
+      if (!file) return;
+      const btn = document.getElementById('stemBtn');
+      btn.disabled = true;
+      setStatus('stem', 'queued', 'Queueing stem separation job...');
+      try {
+        const model = document.getElementById('stemModel').value;
+        const response = await fetch('/api/separate', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file, model })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.job_id) throw new Error(data.error || 'Separation request failed');
+        startPolling('stem', data.job_id, result => {
+          btn.disabled = false;
+          document.getElementById('stemResult').textContent = JSON.stringify(result, null, 2);
+          setStatus('stem', 'done', 'Stem separation complete');
+        });
+      } catch (error) {
+        btn.disabled = false;
+        setStatus('stem', 'error', error.message);
+      }
+    }
+
+    async function loadJobs() {
+      const list = document.getElementById('jobsList');
+      try {
+        const data = await fetch('/api/jobs', { credentials: 'same-origin' }).then(r => r.json());
+        const jobs = [...(data.jobs || [])].sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
+        if (jobs.length === 0) {
+          list.innerHTML = '<li><span class="subtitle">No jobs yet.</span></li>';
+          return;
+        }
+        list.innerHTML = jobs.map(job => {
+          const name = String(job.file || '').split(/[\\/]/).pop();
+          return `<li><span class="badge ${escapeHTML(job.state)}">${escapeHTML(job.state)}</span><span title="${escapeHTML(job.file)}">${escapeHTML(name)}</span><span>${escapeHTML(job.operation)}</span></li>`;
+        }).join('');
+      } catch (error) {
+        list.innerHTML = `<li><span class="subtitle">${escapeHTML(error.message)}</span></li>`;
+      }
+    }
+
+    function toggleAutoRefresh() {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      } else {
+        autoRefreshTimer = setInterval(loadJobs, 2000);
+        loadJobs();
+      }
+    }
+
+    async function runCheck() {
+      const box = document.getElementById('checkResult');
+      box.textContent = 'Checking...';
+      try {
+        const data = await fetch('/api/check', { credentials: 'same-origin' }).then(r => r.json());
+        box.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        box.textContent = error.message;
+      }
+    }
+
+    document.querySelectorAll('.drop-zone[data-panel]').forEach(attachDropZone);
+    document.getElementById('waveInput').addEventListener('change', event => loadWaveFile(event.target.files[0]));
+    document.getElementById('waveDrop').addEventListener('dragover', event => {
+      event.preventDefault();
+      event.currentTarget.classList.add('drag-over');
+    });
+    document.getElementById('waveDrop').addEventListener('dragleave', event => event.currentTarget.classList.remove('drag-over'));
+    document.getElementById('waveDrop').addEventListener('drop', event => {
+      event.preventDefault();
+      event.currentTarget.classList.remove('drag-over');
+      loadWaveFile(event.dataTransfer.files[0]);
+    });
+    loadJobs();
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "محمّل كلمات Suno" },
+  "extension_description": { "message": "حمّل كلمات الأغاني المتزامنة من Suno.com بصيغة LRC أو SRT." },
+  "download_lyric": { "message": "تحميل الكلمات" },
+  "popup_status_loading": { "message": "جارٍ التحقق من التبويب الحالي..." },
+  "popup_status_not_suno": { "message": "افتح Suno واختر صفحة أغنية." },
+  "popup_status_suno_non_song": { "message": "افتح صفحة تفاصيل الأغنية التي يبدأ عنوانها بـ /song/" },
+  "popup_status_suno_song": { "message": "تم اكتشاف صفحة الأغنية. ستظهر أزرار التحميل على الغلاف." },
+  "popup_step_1": { "message": "سجّل الدخول إلى Suno (suno.com)" },
+  "popup_step_2": { "message": "افتح صفحة تفاصيل الأغنية (/song/...)" },
+  "popup_step_3": { "message": "انقر على زر LRC أو SRT على الغلاف" },
+  "popup_button_open_suno": { "message": "فتح Suno" },
+  "popup_button_find_buttons": { "message": "البحث عن الأزرار" },
+  "popup_tip": { "message": "تظهر أزرار LRC · SRT تلقائياً على غلاف الأغنية" },
+  "popup_troubleshooting_title": { "message": "استكشاف الأخطاء" },
+  "popup_troubleshooting_no_timing": { "message": "بعض الأغاني لا تحتوي على بيانات توقيت متزامن." },
+  "popup_troubleshooting_wait_cover": { "message": "انتظر تحميل الغلاف ثم أعد تحميل الصفحة." },
+  "popup_troubleshooting_login": { "message": "تأكد من تسجيل دخولك إلى Suno." },
+  "popup_troubleshooting_song_page": { "message": "استخدم صفحات تفاصيل الأغنية، وليس الصفحة الرئيسية." }
+}

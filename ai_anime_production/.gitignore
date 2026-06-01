@@ -1,0 +1,12 @@
+node_modules/
+output/
+public/assets/audio/*
+public/assets/images/*
+public/assets/videos/*
+public/assets/subtitles/*
+!public/assets/audio/.gitkeep
+!public/assets/images/.gitkeep
+!public/assets/videos/.gitkeep
+!public/assets/subtitles/.gitkeep
+manifests/source/
+manifests/render_manifest.json

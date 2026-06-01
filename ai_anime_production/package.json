@@ -1,0 +1,35 @@
+{
+  "name": "ai_anime_production",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Production and rendering workspace for AI anime music videos generated from ai_anime storyboard packages.",
+  "scripts": {
+    "import:input": "node scripts/import_input.mjs",
+    "import": "node scripts/import_package.mjs",
+    "manifest": "node scripts/create_manifest.mjs",
+    "check": "node scripts/check_assets.mjs",
+    "check:placeholders": "node scripts/check_assets.mjs --allow-placeholders",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run manifest && npm run typecheck && npm run check",
+    "studio": "remotion studio src/index.ts",
+    "render:scenes": "node scripts/render_scenes.mjs",
+    "render": "remotion render src/index.ts MusicVideo output/final/final_mv.mp4 --props=manifests/render_manifest.json",
+    "postprocess": "node scripts/postprocess.mjs",
+    "build": "npm run import:input && npm run typecheck && npm run render:scenes"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.461",
+    "@remotion/captions": "4.0.461",
+    "@remotion/media-utils": "4.0.461",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "remotion": "4.0.461"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.3"
+  }
+}

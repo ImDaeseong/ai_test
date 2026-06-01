@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables (API keys)
+.env
+.env.local
+.env.*.local
+.flask_secret
+
+# Generated outputs (do not commit)
+outputs/
+uploads/
+
+# LilyPond build artifacts
+*.pdf
+*.ps
+*.midi
+*.mid
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

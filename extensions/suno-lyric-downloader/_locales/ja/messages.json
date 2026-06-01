@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "Suno 歌詞ダウンローダー" },
+  "extension_description": { "message": "Suno.comの楽曲から同期歌詞をLRCまたはSRTファイルとしてダウンロードします。" },
+  "download_lyric": { "message": "歌詞をダウンロード" },
+  "popup_status_loading": { "message": "現在のタブを確認中..." },
+  "popup_status_not_suno": { "message": "Sunoを開いて曲のページを選択してください。" },
+  "popup_status_suno_non_song": { "message": "/song/で始まるURLの曲詳細ページを開いてください。" },
+  "popup_status_suno_song": { "message": "曲ページを検出。カバーにダウンロードボタンが表示されます。" },
+  "popup_step_1": { "message": "Sunoにサインイン (suno.com)" },
+  "popup_step_2": { "message": "曲詳細ページを開く (/song/...)" },
+  "popup_step_3": { "message": "カバー上のLRCまたはSRTボタンをクリック" },
+  "popup_button_open_suno": { "message": "Sunoを開く" },
+  "popup_button_find_buttons": { "message": "ボタンを探す" },
+  "popup_tip": { "message": "曲のカバー画像の上にLRC・SRTボタンが自動表示されます" },
+  "popup_troubleshooting_title": { "message": "トラブルシューティング" },
+  "popup_troubleshooting_no_timing": { "message": "一部の曲には同期タイミングデータがありません。" },
+  "popup_troubleshooting_wait_cover": { "message": "カバーの読み込み後にページを更新してください。" },
+  "popup_troubleshooting_login": { "message": "Sunoにログインしていることを確認してください。" },
+  "popup_troubleshooting_song_page": { "message": "ホーム/作成ページではなく曲詳細ページを使用してください。" }
+}

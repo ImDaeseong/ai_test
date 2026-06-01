@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "Suno Lyric Downloader" },
+  "extension_description": { "message": "Загружайте синхронизированные тексты песен с Suno.com в форматах LRC или SRT." },
+  "download_lyric": { "message": "Скачать текст" },
+  "popup_status_loading": { "message": "Проверяем текущую вкладку..." },
+  "popup_status_not_suno": { "message": "Откройте Suno и выберите страницу песни." },
+  "popup_status_suno_non_song": { "message": "Откройте страницу песни с URL /song/" },
+  "popup_status_suno_song": { "message": "Страница песни обнаружена. Кнопки появятся на обложке." },
+  "popup_step_1": { "message": "Войдите в Suno (suno.com)" },
+  "popup_step_2": { "message": "Откройте страницу песни (/song/...)" },
+  "popup_step_3": { "message": "Нажмите кнопку LRC или SRT на обложке" },
+  "popup_button_open_suno": { "message": "Открыть Suno" },
+  "popup_button_find_buttons": { "message": "Найти кнопки" },
+  "popup_tip": { "message": "Кнопки LRC · SRT автоматически появляются на обложке песни" },
+  "popup_troubleshooting_title": { "message": "Устранение неполадок" },
+  "popup_troubleshooting_no_timing": { "message": "Некоторые песни не имеют синхронизированных данных." },
+  "popup_troubleshooting_wait_cover": { "message": "Дождитесь загрузки обложки и обновите страницу." },
+  "popup_troubleshooting_login": { "message": "Убедитесь, что вы вошли в Suno." },
+  "popup_troubleshooting_song_page": { "message": "Используйте страницы песен, а не главную/создание." }
+}

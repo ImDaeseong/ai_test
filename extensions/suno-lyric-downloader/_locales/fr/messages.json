@@ -1,0 +1,20 @@
+{
+  "extension_name": { "message": "Suno Lyric Downloader" },
+  "extension_description": { "message": "Téléchargez des paroles synchronisées depuis Suno.com en fichiers LRC ou SRT." },
+  "download_lyric": { "message": "Télécharger les paroles" },
+  "popup_status_loading": { "message": "Vérification de l'onglet en cours..." },
+  "popup_status_not_suno": { "message": "Ouvrez Suno et choisissez une page de chanson." },
+  "popup_status_suno_non_song": { "message": "Ouvrez une page de détail de chanson avec /song/ dans l'URL." },
+  "popup_status_suno_song": { "message": "Page de chanson détectée. Les boutons apparaîtront sur la pochette." },
+  "popup_step_1": { "message": "Connectez-vous à Suno (suno.com)" },
+  "popup_step_2": { "message": "Ouvrez la page de détail de chanson (/song/...)" },
+  "popup_step_3": { "message": "Cliquez sur le bouton LRC ou SRT sur la pochette" },
+  "popup_button_open_suno": { "message": "Ouvrir Suno" },
+  "popup_button_find_buttons": { "message": "Trouver les boutons" },
+  "popup_tip": { "message": "Les boutons LRC · SRT apparaissent automatiquement sur la pochette" },
+  "popup_troubleshooting_title": { "message": "Dépannage" },
+  "popup_troubleshooting_no_timing": { "message": "Certaines chansons n'ont pas de données de synchronisation." },
+  "popup_troubleshooting_wait_cover": { "message": "Attendez que la pochette se charge, puis actualisez." },
+  "popup_troubleshooting_login": { "message": "Assurez-vous d'être connecté à Suno." },
+  "popup_troubleshooting_song_page": { "message": "Utilisez les pages de détail de chanson, pas l'accueil/création." }
+}
