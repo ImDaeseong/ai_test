@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "types": ["vite/client", "@motion-canvas/core/project"],
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@motion-canvas/2d/lib",
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["src/motion/**/*.ts", "src/motion/**/*.tsx"],
+  "exclude": ["src/motion/renderLyricsScene.ts", "src/motion/vite.config.ts"]
+}

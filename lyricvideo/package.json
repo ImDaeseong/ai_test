@@ -1,0 +1,30 @@
+{
+  "name": "remotion-lyric-video",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/write-media-manifest.mjs",
+    "dev": "remotion studio src/index.ts",
+    "prebuild": "node scripts/write-media-manifest.mjs",
+    "build": "remotion render src/index.ts lyric-video out/lyric-video.mp4 --codec h264 --crf 18 --pixel-format yuv420p",
+    "build:vertical": "remotion render src/index.ts lyric-video-vertical out/lyric-video-vertical.mp4 --codec h264 --crf 18 --pixel-format yuv420p",
+    "pretypecheck": "node scripts/write-media-manifest.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.458",
+    "@remotion/media-utils": "4.0.458",
+    "@remotion/renderer": "4.0.458",
+    "vite": "^7.1.12",
+    "typescript": "^5.9.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "remotion": "4.0.458"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0"
+  }
+}

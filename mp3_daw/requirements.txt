@@ -1,0 +1,20 @@
+# 오디오 분석
+librosa>=0.10.1
+numpy>=1.24.0
+scipy>=1.11.0
+
+# 라우드니스 정규화
+pyloudnorm>=0.1.1
+
+# 오디오 처리 / 마스터링
+pedalboard>=0.8.1
+
+# Stem 분리 (Demucs)
+demucs>=4.0.0
+
+# 오디오 파일 I/O
+soundfile>=0.12.1
+audioread>=3.0.1
+
+# 유틸리티
+tqdm>=4.65.0

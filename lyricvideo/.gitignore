@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+
+# Generated files (auto-created by write-media-manifest.mjs)
+src/mediaManifest.ts
+
+# Logs
+*.log
+
+# Media assets (large files, copyright-sensitive)
+public/media/
+
+# OS
+.DS_Store
+Thumbs.db

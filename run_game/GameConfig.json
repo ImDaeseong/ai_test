@@ -1,0 +1,43 @@
+{  
+  "games": [
+    {
+      "id": "kingsroad",
+      "enabled": true,
+      "gameName": "Game of Thrones: Kingsroad",
+      "exeName": "GameOfThrones-Kingsroad.exe",
+      "steam": {
+        "appId": "3183280",
+        "commonDirs": [
+          "Game of Thrones_Kingsroad",
+          "Game of Thrones Kingsroad"
+        ]
+      },
+      "epic": {
+        "manifestKeyword": "KingsroadGoT"
+      },
+      "netmarble": {
+        "regSubKey": "SOFTWARE\\Netmarble Corp\\gotasiaA",
+        "folder": "KingsroadGoT"
+      }     
+    },
+    {
+      "id": "lostark",
+      "enabled": false,
+      "gameName": "Lost Ark",
+      "exeName": "Binaries\\Win64\\LOSTARK.exe",
+      "steam": {
+        "appId": "1599340",
+        "commonDirs": [
+          "LostArk"
+        ]
+      },
+      "epic": {
+        "manifestKeyword": ""
+      },
+      "netmarble": {
+        "regSubKey": "",
+        "folder": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "lyric-video-generation-pipeline",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "plan": "node src/planner/generateProductionPlan.js",
+    "lyric-video:plan": "node src/planner/generateProductionPlan.js",
+    "subtitles": "node src/subtitles/generateAssSubtitles.js",
+    "motion:generate": "tsx src/motion/renderLyricsScene.ts --generate-only",
+    "motion:dev": "npm run motion:generate && vite --config src/motion/vite.config.ts",
+    "motion:build": "npm run motion:generate && vite build --config src/motion/vite.config.ts",
+    "motion:render": "tsx src/motion/renderLyricsScene.ts --render",
+    "motion": "npm run motion:render",
+    "render:typography": "node src/render/renderTypographyVideo.js",
+    "compose": "node src/ffmpeg/composeFinalVideo.js",
+    "validate:media": "node src/validate/validateMediaOutput.js",
+    "lyric-video": "node src/pipeline/runLyricVideoPipeline.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@motion-canvas/2d": "^3.17.2",
+    "@motion-canvas/core": "^3.17.2",
+    "@motion-canvas/ffmpeg": "^3.17.2",
+    "@motion-canvas/ui": "^3.17.2",
+    "@motion-canvas/vite-plugin": "^3.17.2",
+    "typescript": "^6.0.3",
+    "vite": "^5.4.21"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}
