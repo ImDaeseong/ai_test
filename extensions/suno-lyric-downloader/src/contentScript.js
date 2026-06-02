@@ -520,7 +520,10 @@
         delete el.dataset.sunoLyricDlInjected;
         el.parentElement?.querySelector('.suno-lyric-dl-overlay')?.remove();
       });
-      setTimeout(scanAndInject, 600);
+      // SPA 전환 직후 DOM이 아직 이전 URL의 커버 이미지를 가리킬 수 있다.
+      // songId는 scanAndInject → injectButtons 시점에 URL에서 재추출하므로
+      // 충분한 대기 후 실행해 잘못된 songId로 버튼이 주입되는 경쟁 조건을 줄인다.
+      setTimeout(scanAndInject, 800);
     } else if (msg.action === 'FIND_BUTTONS') {
       scanAndInject();
     }

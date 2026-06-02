@@ -143,14 +143,24 @@ class SearchWorker(threading.Thread):
     def _find_in_file(self, file_path: Path):
         keyword = self.keyword if self.case_sensitive else self.keyword.lower()
 
-        try:
-            with file_path.open("r", encoding="utf-8", errors="ignore") as file:
-                for index, line in enumerate(file, start=1):
-                    haystack = line if self.case_sensitive else line.lower()
-                    if keyword in haystack:
-                        yield Match(file_path, index, line.strip())
-        except (OSError, UnicodeError):
+        lines = None
+        for enc in ("utf-8", "cp949", "latin-1"):
+            try:
+                with file_path.open("r", encoding=enc, errors="strict") as fh:
+                    lines = fh.readlines()
+                break
+            except UnicodeDecodeError:
+                continue
+            except OSError:
+                return
+
+        if lines is None:
             return
+
+        for index, line in enumerate(lines, start=1):
+            haystack = line if self.case_sensitive else line.lower()
+            if keyword in haystack:
+                yield Match(file_path, index, line.strip())
 
 
 class FindStringApp(tk.Tk):
@@ -173,9 +183,10 @@ class FindStringApp(tk.Tk):
         self.stop_event = threading.Event()
         self.workers: list[SearchWorker] = []
         self.progress_by_root: dict[Path, tuple[int, int]] = {}
-        self.matches: list[Match] = []
+        self._polling = True
 
         self._build_ui()
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
         self.after(100, self._drain_outbox)
 
     def _build_ui(self) -> None:
@@ -331,6 +342,12 @@ class FindStringApp(tk.Tk):
                 extensions.add(ext.lower())
 
         self._clear_results()
+        # 이전 검색의 잔여 메시지를 제거해 새 검색 결과와 혼재되지 않도록 한다.
+        try:
+            while True:
+                self.outbox.get_nowait()
+        except queue.Empty:
+            pass
         self.stop_event.clear()
         self.workers.clear()
         self.progress_by_root.clear()
@@ -355,6 +372,11 @@ class FindStringApp(tk.Tk):
             if preset_name == name:
                 self.extensions_var.set(exts)
                 break
+
+    def _on_close(self) -> None:
+        self._polling = False
+        self.stop_event.set()
+        self.destroy()
 
     def _stop_search(self) -> None:
         if self._search_running():
@@ -381,7 +403,6 @@ class FindStringApp(tk.Tk):
         return [root_path]
 
     def _clear_results(self) -> None:
-        self.matches.clear()
         for item in self.tree.get_children():
             self.tree.delete(item)
 
@@ -410,7 +431,8 @@ class FindStringApp(tk.Tk):
                 self.status_var.set("An error occurred.")
                 messagebox.showerror("Error", f"{message[1]}\n{message[2]}")
 
-        self.after(100, self._drain_outbox)
+        if self._polling:
+            self.after(100, self._drain_outbox)
 
     def _update_status(self, label: str) -> None:
         checked = sum(value[0] for value in self.progress_by_root.values())
@@ -421,7 +443,6 @@ class FindStringApp(tk.Tk):
         )
 
     def _add_match(self, match: Match) -> None:
-        self.matches.append(match)
         preview = match.preview.replace("\t", " ")
         if len(preview) > 240:
             preview = preview[:237] + "..."

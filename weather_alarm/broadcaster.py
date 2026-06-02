@@ -116,7 +116,11 @@ class BroadcastDispatcher:
 
     @staticmethod
     def _is_permanent_failure(exc: Exception) -> bool:
-        return isinstance(exc, (Forbidden, BadRequest, discord.Forbidden, discord.NotFound))
+        if isinstance(exc, (Forbidden, BadRequest, discord.Forbidden, discord.NotFound)):
+            return True
+        if isinstance(exc, discord.HTTPException) and 400 <= exc.status < 500 and exc.status != 429:
+            return True
+        return False
 
 
 def build_telegram_sender(bot) -> SendFunc:

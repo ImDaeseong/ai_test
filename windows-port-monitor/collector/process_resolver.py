@@ -130,9 +130,11 @@ class ProcessResolver:
             if line.startswith("SERVICE_NAME:"):
                 current_name = line.split(":", 1)[1].strip()
             elif line.startswith("PID") and current_name:
-                _, value = line.split(":", 1)
+                parts = line.split(":", 1)
+                if len(parts) < 2:
+                    continue
                 try:
-                    service_pid = int(value.strip())
+                    service_pid = int(parts[1].strip())
                 except ValueError:
                     continue
                 if service_pid > 0:

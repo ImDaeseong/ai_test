@@ -1,6 +1,7 @@
 import asyncio
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+import os
 import time
 from typing import Any, Optional
 
@@ -10,7 +11,10 @@ from loguru import logger
 _KST = timezone(timedelta(hours=9))
 
 WEATHER_API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst"
-NX, NY = 58, 125  # 서울 가산동 격자 좌표
+# 격자 좌표와 지역명은 환경변수로 재정의 가능합니다 (기본: 서울 가산동 NX=58, NY=125).
+NX = int(os.getenv("WEATHER_NX", "58"))
+NY = int(os.getenv("WEATHER_NY", "125"))
+WEATHER_LOCATION_NAME = os.getenv("WEATHER_LOCATION_NAME", "서울 가산동")
 DEFAULT_CACHE_TTL_SECONDS = 300
 
 PTY_MAP = {
@@ -49,7 +53,7 @@ class WeatherData:
         date_str = f"{self.base_date[:4]}-{self.base_date[4:6]}-{self.base_date[6:]}"
         time_str = f"{self.base_time[:2]}:{self.base_time[2:]}"
         return (
-            f"{self.precipitation_type_emoji} 서울 가산동 현재 날씨\n"
+            f"{self.precipitation_type_emoji} {WEATHER_LOCATION_NAME} 현재 날씨\n"
             f"📅 {date_str} {time_str} 기준\n\n"
             f"🌡️ 기온: {self.temperature}\n"
             f"💧 습도: {self.humidity}\n"

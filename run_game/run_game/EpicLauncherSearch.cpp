@@ -43,35 +43,44 @@ BOOL CEpicLauncherSearch::Search(CGameInstallInfo& info)
     HANDLE hFind = FindFirstFile(strFind, &findData);
     if (hFind != INVALID_HANDLE_VALUE)
     {
-        do
+        // TRY/CATCH로 감싸 ReadTextFile 등에서 예외 발생 시에도 FindClose가 반드시 호출되도록 한다.
+        TRY
         {
-            if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+            do
             {
-                CString strManifestPath = CGameInstallSearchCommon::JoinPath(strManifestDir, findData.cFileName);
-                CString strText = CGameInstallSearchCommon::ReadTextFile(strManifestPath);
-                CString strLaunchExe = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("LaunchExecutable"));
-                CString strFoundInstall = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("InstallLocation"));
-
-                if (strLaunchExe.CompareNoCase(m_GameInfo.m_strExeName) == 0 || (!m_GameInfo.m_strEpicManifestKeyword.IsEmpty() && strText.Find(m_GameInfo.m_strEpicManifestKeyword) >= 0))
+                if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
                 {
-                    if (!strFoundInstall.IsEmpty())
-                        strInstallPath = strFoundInstall;
+                    CString strManifestPath = CGameInstallSearchCommon::JoinPath(strManifestDir, findData.cFileName);
+                    CString strText = CGameInstallSearchCommon::ReadTextFile(strManifestPath);
+                    CString strLaunchExe = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("LaunchExecutable"));
+                    CString strFoundInstall = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("InstallLocation"));
 
-                    strVersion = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("AppVersionString"));
-                    strAppId = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("CatalogItemId"));
-
-                    CString strNs = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("CatalogNamespace"));
-                    CString strAppName = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("AppName"));
-
-                    if (!strNs.IsEmpty() && !strAppId.IsEmpty() && !strAppName.IsEmpty())
+                    if (strLaunchExe.CompareNoCase(m_GameInfo.m_strExeName) == 0 || (!m_GameInfo.m_strEpicManifestKeyword.IsEmpty() && strText.Find(m_GameInfo.m_strEpicManifestKeyword) >= 0))
                     {
-                        strLaunchCommand.Format(_T("com.epicgames.launcher://apps/%s%%3A%s%%3A%s?action=launch&silent=true"), (LPCTSTR)strNs, (LPCTSTR)strAppId, (LPCTSTR)strAppName);
+                        if (!strFoundInstall.IsEmpty())
+                            strInstallPath = strFoundInstall;
+
+                        strVersion = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("AppVersionString"));
+                        strAppId = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("CatalogItemId"));
+
+                        CString strNs = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("CatalogNamespace"));
+                        CString strAppName = CGameInstallSearchCommon::ExtractJsonStringValue(strText, _T("AppName"));
+
+                        if (!strNs.IsEmpty() && !strAppId.IsEmpty() && !strAppName.IsEmpty())
+                        {
+                            strLaunchCommand.Format(_T("com.epicgames.launcher://apps/%s%%3A%s%%3A%s?action=launch&silent=true"), (LPCTSTR)strNs, (LPCTSTR)strAppId, (LPCTSTR)strAppName);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
+            while (FindNextFile(hFind, &findData));
         }
-        while (FindNextFile(hFind, &findData));
+        CATCH_ALL(e)
+        {
+            e->Delete();
+        }
+        END_CATCH_ALL
 
         FindClose(hFind);
     }

@@ -40,6 +40,9 @@ const loadLyrics = async (): Promise<{readonly lrc?: string; readonly srt?: stri
   }
 
   const text = await fetchOptionalText(mediaManifest.lyricSrc);
+  if (text === undefined) {
+    return {};
+  }
   if (mediaManifest.lyricKind === 'lrc') {
     return {lrc: text};
   }

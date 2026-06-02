@@ -18,7 +18,17 @@ export function ensureDir(dir) {
 }
 
 export function readJson(file) {
-  return JSON.parse(fs.readFileSync(file, 'utf8'));
+  let content;
+  try {
+    content = fs.readFileSync(file, 'utf8');
+  } catch (err) {
+    throw new Error(`Cannot read file ${file}: ${err.message}`);
+  }
+  try {
+    return JSON.parse(content);
+  } catch (err) {
+    throw new Error(`Invalid JSON in ${file}: ${err.message}`);
+  }
 }
 
 export function writeJson(file, data) {

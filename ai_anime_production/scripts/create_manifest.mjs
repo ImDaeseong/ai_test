@@ -135,7 +135,9 @@ function parseSelectedPrompt(promptPath, preferredPlatform) {
 }
 
 const starts = findSceneStarts();
-if (starts.length > 0 && starts[0] > 1) {
+// 첫 씬이 1초 이전에 시작하면 0으로 정규화한다.
+// 단, 1초 이상 차이가 나면 lyrics 타임라인이 의도적으로 늦게 시작하는 것이므로 그대로 유지한다.
+if (starts.length > 0 && starts[0] > 0 && starts[0] <= 1) {
   starts[0] = 0;
 }
 

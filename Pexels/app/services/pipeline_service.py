@@ -60,5 +60,10 @@ class VideoPipeline:
             self.project_store.save(ProjectStatusResponse(**response.model_dump()))
             return response
         except Exception as exc:
+            output = Path(request.output_path) if request.output_path else settings.output_dir / f"final_{project_id}.mp4"
+            try:
+                self.ffmpeg.cleanup_processed_for_output(output)
+            except Exception:
+                pass
             self.project_store.save(ProjectStatusResponse(status="failed", project_id=project_id, error=str(exc)))
             raise

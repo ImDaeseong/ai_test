@@ -4,12 +4,12 @@ import {
   Html5Audio,
   Img,
   interpolate,
-  OffthreadVideo,
   Sequence,
   spring,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
+  Video,
 } from 'remotion';
 import {useAudioData, visualizeAudio} from '@remotion/media-utils';
 import type {LyricLine} from './parsers';
@@ -165,8 +165,10 @@ const AnimatedBackground: React.FC<{
   if (backgroundKind === 'video' && backgroundSrc !== null) {
     return (
       <>
-        <OffthreadVideo
+        {/* OffthreadVideo는 loop 미지원 — 배경 전용이므로 frame 정확도 불필요, Video로 교체 */}
+        <Video
           src={staticFile(backgroundSrc)}
+          loop
           muted
           volume={0}
           style={{

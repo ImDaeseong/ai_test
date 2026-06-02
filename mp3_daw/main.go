@@ -13,11 +13,13 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -70,11 +72,13 @@ var (
 
 const (
 	maxUploadBytes = 200 << 20 // 200 MiB
-	pythonTimeout  = 6 * time.Hour
 	jobTTL         = 24 * time.Hour
 	uploadTTL      = 24 * time.Hour
 	clientCookie   = "mp3_daw_client_id"
 )
+
+// pythonTimeout은 PYTHON_TIMEOUT_MINUTES 환경변수로 조정 가능합니다 (기본: 90분).
+var pythonTimeout = time.Duration(getEnvIntOrDefault("PYTHON_TIMEOUT_MINUTES", 90)) * time.Minute
 
 func nextJobID() string {
 	return fmt.Sprintf("%d", atomic.AddInt64(&jobCounter, 1))
@@ -376,6 +380,15 @@ func runPythonEngine(args ...string) (json.RawMessage, error) {
 		if ctx.Err() == context.DeadlineExceeded {
 			return nil, fmt.Errorf("Python process timed out after %s", pythonTimeout)
 		}
+		// Python이 오류 JSON을 stdout에 출력한 경우 메시지를 추출해 전파한다.
+		if raw := extractLastJSON(stdoutBuf.Bytes()); raw != nil {
+			var pyErr struct {
+				Message string `json:"message"`
+			}
+			if json.Unmarshal(raw, &pyErr) == nil && pyErr.Message != "" {
+				return nil, fmt.Errorf("Python 오류: %s", pyErr.Message)
+			}
+		}
 		return nil, fmt.Errorf("Python 프로세스 오류: %w", err)
 	}
 
@@ -407,15 +420,6 @@ func extractLastJSON(data []byte) json.RawMessage {
 		return json.RawMessage(trimmed)
 	}
 	return nil
-}
-
-// ──────────────────────────────────────────────
-// 비동기 Job 실행 헬퍼
-// ──────────────────────────────────────────────
-
-// runJobAsync: job을 고루틴에서 실행하고 상태를 업데이트한다.
-func runJobAsync(job *JobStatus, pythonArgs ...string) {
-	enqueuePythonJob(job, pythonArgs...)
 }
 
 // ──────────────────────────────────────────────
@@ -501,6 +505,9 @@ func watchFolder() {
 	var reMu sync.Mutex
 	const cooldown = 3 * time.Second
 
+	cleanupTicker := time.NewTicker(5 * time.Minute)
+	defer cleanupTicker.Stop()
+
 	for {
 		select {
 		case event, ok := <-watcher.Events:
@@ -528,6 +535,16 @@ func watchFolder() {
 			default:
 				log.Printf("⚠️  큐 가득 참: %s", filepath.Base(path))
 			}
+
+		case <-cleanupTicker.C:
+			// cooldown 만료된 항목을 주기적으로 제거해 맵이 무한 증가하지 않도록 한다.
+			reMu.Lock()
+			for p, t := range recentEvents {
+				if time.Since(t) > cooldown*2 {
+					delete(recentEvents, p)
+				}
+			}
+			reMu.Unlock()
 
 		case err, ok := <-watcher.Errors:
 			if !ok {
@@ -754,10 +771,25 @@ func startServer() {
 		c.Data(http.StatusOK, "application/json; charset=utf-8", result)
 	})
 
+	srv := &http.Server{Addr: ":8080", Handler: r}
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-quit
+		log.Println("🛑 종료 신호 수신 — graceful shutdown 시작 (최대 30초)")
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Printf("⚠️  강제 종료: %v", err)
+		}
+	}()
+
 	log.Printf("🌐 웹 서버 시작: http://localhost:8080")
-	if err := r.Run(":8080"); err != nil {
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("❌ 서버 시작 실패: %v", err)
 	}
+	log.Println("✅ 서버 종료 완료")
 }
 
 // ──────────────────────────────────────────────

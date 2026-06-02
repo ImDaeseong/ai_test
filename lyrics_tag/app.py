@@ -19,7 +19,7 @@ def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
     except AttributeError:
-        base_path = os.path.abspath(".")
+        base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)
 
 
@@ -78,7 +78,10 @@ def download_lrc():
             return jsonify({"error": f"segment {idx} text is too long"}), 400
 
         start = max(0.0, start)
-        tag = f"[{int(start // 60):02d}:{start % 60:06.3f}]"
+        # 정수 센티초 단위로 변환해 float 반올림 오버플로우(59.995→60.00)를 방지한다.
+        total_cs = round(start * 100)
+        minutes, rem_cs = divmod(total_cs, 6000)
+        tag = f"[{minutes:02d}:{rem_cs // 100:02d}.{rem_cs % 100:02d}]"
         lines.append(f"{tag}{text}")
 
     body = "\n".join(lines)
