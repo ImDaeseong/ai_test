@@ -1234,10 +1234,9 @@ class FilePermissionChecker(BaseCheck):
         results: List[Tuple[str, str]] = []
         # Match "PRINCIPAL:(optional_inherit_flags)(PERM_FLAG)" anywhere on a line
         ace_re = re.compile(
-            r"([A-Za-z0-9\\\s_\-]+?)"    # principal
-            r":\([A-Z,IO]+\)"             # optional inheritance flags (OI)(CI) etc.
-            r"*"
-            r"\(([A-Z,]+)\)",             # actual permission flag(s)
+            r"([A-Za-z0-9\\\s_\-]+?)"      # principal
+            r":(?:\([A-Z,IO]+\))*"          # colon + 0개 이상의 상속 플래그 (OI)(CI) 등
+            r"\(([A-Z,]+)\)",               # 실제 권한 플래그
             re.I,
         )
 

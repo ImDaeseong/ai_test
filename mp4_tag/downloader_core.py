@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 import shutil
 import subprocess
@@ -30,6 +31,10 @@ MEDIA_CONTENT_TYPES = (
     "audio/",
 )
 ALLOWED_FFMPEG_HEADERS = {"user-agent", "referer", "cookie", "origin"}
+
+# yt-dlp client×format 조합 시도 최대 횟수. 환경변수로 조정 가능.
+# 기본 8클라이언트×6포맷=48 조합을 이 값으로 제한해 최악 대기 시간을 줄인다.
+MAX_YTDLP_ATTEMPTS: int = int(os.environ.get("MAX_YTDLP_ATTEMPTS", "12"))
 
 
 ProgressCallback = Callable[[Optional[float], str], None]
@@ -86,8 +91,17 @@ def prepare_env() -> None:
 
 
 def is_valid_http_url(url: str) -> bool:
+    import ipaddress
     parsed = urlparse(url.strip())
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return False
+    try:
+        ip = ipaddress.ip_address(parsed.hostname or "")
+        if ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            return False
+    except ValueError:
+        pass  # 도메인명이면 통과
+    return True
 
 
 def safe_stem(text: str, fallback: str = "video") -> str:
@@ -359,6 +373,10 @@ def download_ffmpeg(
             progress(1.0, "done")
         return DownloadResult(True, output_path.name, output_path, "ffmpeg")
 
+    try:
+        output_path.unlink(missing_ok=True)
+    except OSError:
+        pass
     tail = "\n".join(logs[-20:]) or f"ffmpeg exited with code {proc.returncode}."
     return DownloadResult(False, tail, output_path, "ffmpeg")
 
@@ -437,17 +455,23 @@ def download_ytdlp(
 
     failures: list[str] = []
     attempted_opts: list[tuple[dict, str]] = []
+    attempt_count = 0
     for client_label, extractor_args in client_attempts:
         for format_selector, format_label in format_attempts:
+            if attempt_count >= MAX_YTDLP_ATTEMPTS:
+                break
             label = f"{client_label} / {format_label}"
             opts = {**base_opts, "format": format_selector}
             if extractor_args:
                 opts["extractor_args"] = extractor_args
             attempted_opts.append((opts, label))
             result = _run(opts, label)
+            attempt_count += 1
             if result.ok:
                 return result
             failures.append(f"{label}: {result.message}")
+        if attempt_count >= MAX_YTDLP_ATTEMPTS:
+            break
 
     direct_result = _download_ytdlp_formats_with_ffmpeg(
         page_url,

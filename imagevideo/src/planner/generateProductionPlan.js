@@ -27,7 +27,14 @@ const DEFAULTS = {
 async function main() {
   try {
     const args = parseArgs(process.argv.slice(2));
-    const discovered = await discoverInputFiles('input');
+    let discovered = {lyrics: null, audio: null, backgroundImage: null};
+    try {
+      discovered = await discoverInputFiles('input');
+    } catch (err) {
+      if (!args.input) {
+        throw new Error(`Cannot discover input files: ${err.message}`);
+      }
+    }
     const inputPath = path.resolve(process.cwd(), args.input ?? discovered.lyrics ?? 'input/lyrics.json');
     const outputPath = path.resolve(process.cwd(), args.output ?? 'output/production_plan.json');
 

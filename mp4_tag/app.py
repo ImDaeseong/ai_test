@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import time
+from urllib.parse import urlparse
 
 import streamlit as st
 
@@ -12,6 +13,23 @@ from downloader_core import (
     is_valid_http_url,
     prepare_env,
 )
+
+# Playwright 분석이 의미 없는 사이트 — yt-dlp로 직접 처리
+_YTDLP_DOMAINS = {
+    "youtube.com", "youtu.be",
+    "twitter.com", "x.com",
+    "instagram.com", "tiktok.com",
+    "vimeo.com", "soundcloud.com",
+    "twitch.tv", "dailymotion.com",
+    "nicovideo.jp", "bilibili.com",
+}
+
+def _is_ytdlp_site(url: str) -> bool:
+    try:
+        host = urlparse(url).hostname or ""
+        return any(host == d or host.endswith("." + d) for d in _YTDLP_DOMAINS)
+    except Exception:
+        return False
 from job_manager import (
     MAX_DOWNLOAD_WORKERS,
     active_counts,
@@ -20,22 +38,13 @@ from job_manager import (
     retry_job,
     submit_fallback_download,
     submit_download,
+    submit_ytdlp_download,
 )
 from server_limits import MAX_ANALYZE_WORKERS, analysis_slot
 
 
 def run_async(coro):
-    if sys.platform == "win32" and hasattr(asyncio, "ProactorEventLoop"):
-        loop = asyncio.ProactorEventLoop()
-    else:
-        loop = asyncio.new_event_loop()
-
-    try:
-        asyncio.set_event_loop(loop)
-        return loop.run_until_complete(coro)
-    finally:
-        asyncio.set_event_loop(None)
-        loop.close()
+    return asyncio.run(coro)
 
 
 def collect_media_urls(url: str) -> list[dict]:
@@ -130,7 +139,7 @@ st.caption(
     f"| Running: {running} | Queued: {queued} | Finished/failed: {finished}"
 )
 
-col_url, col_btn, col_fallback, col_queue, col_refresh = st.columns([5, 1, 1.2, 1, 1])
+col_url, col_btn, col_ytdlp, col_fallback, col_queue, col_refresh = st.columns([5, 1, 1.2, 1.2, 1, 1])
 with col_url:
     url_input = st.text_input(
         "URL",
@@ -139,6 +148,10 @@ with col_url:
     )
 with col_btn:
     analyze_clicked = st.button("Analyze")
+with col_ytdlp:
+    _url_ready = bool(url_input.strip()) and is_valid_http_url(url_input.strip())
+    ytdlp_clicked = st.button("yt-dlp ▶", disabled=not _url_ready,
+                               help="YouTube 등 yt-dlp로 직접 다운로드")
 with col_queue:
     queue_all_clicked = st.button("Queue all", disabled=not st.session_state["streams"])
 with col_fallback:
@@ -147,12 +160,24 @@ with col_refresh:
     if st.button("Refresh"):
         rerun()
 
+if ytdlp_clicked:
+    url = url_input.strip()
+    st.session_state["page_url"] = url
+    st.session_state["fallback_job_id"] = submit_ytdlp_download(url)
+    rerun()
+
 if analyze_clicked:
     url = url_input.strip()
     if not url:
         st.warning("Enter a URL.")
     elif not is_valid_http_url(url):
         st.warning("Enter a URL that starts with http:// or https://.")
+    elif _is_ytdlp_site(url):
+        # YouTube 등 yt-dlp 전용 사이트는 Playwright 분석 생략하고 바로 다운로드
+        st.session_state["page_url"] = url
+        st.session_state["fallback_job_id"] = submit_ytdlp_download(url)
+        st.info("YouTube / 지원 사이트 감지 — yt-dlp 다운로드를 바로 시작합니다.")
+        rerun()
     else:
         st.session_state["page_url"] = url
         st.session_state["job_by_stream"] = {}
@@ -168,7 +193,10 @@ if analyze_clicked:
                     except Exception as exc:
                         st.error(f"Could not collect media URLs: {exc}")
                 if not st.session_state["streams"]:
-                    st.warning("No media streams were detected. Try a different URL.")
+                    st.warning(
+                        "No media streams detected. "
+                        "Try the **yt-dlp ▶** button — it supports many streaming sites."
+                    )
 
 if queue_all_clicked:
     page_url = st.session_state["page_url"]

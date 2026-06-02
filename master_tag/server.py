@@ -145,13 +145,6 @@ def _try_store_job(job: Job) -> tuple[bool, str]:
 
 def _run_job(job: Job) -> None:
     try:
-        job.add_event(
-            {
-                "type": "queued",
-                "message": "작업을 시작했습니다.",
-                "max_workers": MAX_WORKERS,
-            }
-        )
         with job.condition:
             job.status = "running"
             job.updated_at = time.time()

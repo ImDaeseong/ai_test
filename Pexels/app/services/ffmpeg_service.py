@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import logging
 import shutil
 import subprocess
 from pathlib import Path
 
 from app.config import settings
 from app.models.scene import SceneWithVideo
+
+logger = logging.getLogger(__name__)
 
 
 class FFmpegService:
@@ -74,7 +77,8 @@ class FFmpegService:
         target.parent.mkdir(parents=True, exist_ok=True)
         source_duration = self.probe_duration(source)
         command = self.build_trim_command(source, target, duration, orientation, loop=source_duration + 0.1 < duration)
-        subprocess.run(command, check=True, capture_output=True, text=True)
+        subprocess.run(command, check=True, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
         return target
 
     def concat(self, clips: list[Path], output: Path) -> Path:
@@ -101,8 +105,14 @@ class FFmpegService:
             str(output),
         ]
         try:
-            subprocess.run(command, check=True, capture_output=True, text=True)
-        except subprocess.CalledProcessError:
+            subprocess.run(command, check=True, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+        except subprocess.CalledProcessError as first_err:
+            logger.warning(
+                "concat stream-copy failed (%s), retrying with re-encode: %s",
+                first_err.returncode,
+                (first_err.stderr or "").strip()[-300:] or "(no stderr)",
+            )
             command = [
                 "ffmpeg",
                 "-y",
@@ -118,7 +128,8 @@ class FFmpegService:
                 "yuv420p",
                 str(output),
             ]
-            subprocess.run(command, check=True, capture_output=True, text=True)
+            subprocess.run(command, check=True, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
         return output
 
     def render(

@@ -137,3 +137,10 @@ Administrator privileges are recommended for complete process executable paths, 
 - Add a compact query CLI for historical SQLite reporting.
 - Add Prometheus/OpenTelemetry export.
 - Add signed installer packaging for enterprise deployment.
+
+
+## 개선 이력 (2026-06-02)
+
+### 테스트
+- pytest 7/7 통과 (이전 세션 검증 완료)
+- 추가 코드 변경 없음

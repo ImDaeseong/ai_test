@@ -13,6 +13,18 @@ import logging
 import argparse
 import traceback
 from pathlib import Path
+import numpy as np
+
+
+class _NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (np.integer,)):
+            return int(obj)
+        if isinstance(obj, (np.floating,)):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super().default(obj)
 
 # ── Windows CP949 → UTF-8 강제 변환 (한글 깨짐 방지) ──
 # PYTHONUTF8=1 환경변수도 설정되지만 이중 보호
@@ -23,8 +35,6 @@ else:
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace', line_buffering=True)
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace', line_buffering=True)
-
-import numpy as np
 
 # ──────────────────────────────────────────────
 # 로거 설정 (한글 로그)
@@ -83,16 +93,19 @@ def load_audio_with_retry(file_path: str, max_retries: int = 5, delay: float = 2
     path = Path(file_path)
     log.info("📂 파일 로드 시도: %s", path.name)
 
-    prev_size = -1
+    # 루프 전에 현재 크기를 읽어두면 첫 이터레이션에서 이미 안정된 파일을
+    # 즉시 감지할 수 있어 불필요한 2초 대기를 피할 수 있다.
+    prev_size = path.stat().st_size if path.exists() else -1
     for attempt in range(max_retries):
         if not path.exists():
             log.warning("  [%d/%d] 파일 없음, 대기 중...", attempt + 1, max_retries)
+            prev_size = -1
             time.sleep(delay)
             continue
 
         current_size = path.stat().st_size
-        if current_size == prev_size and current_size > 0:
-            # 파일 크기가 안정됨 → 다운로드 완료로 판단
+        if current_size > 0 and current_size == prev_size:
+            # 파일 크기가 안정됨 → 쓰기 완료로 판단
             break
         prev_size = current_size
         log.info("  [%d/%d] 파일 쓰기 진행 중 (크기: %d bytes), 대기...", attempt + 1, max_retries, current_size)
@@ -239,10 +252,11 @@ def separate_stems(file_path: str, output_dir: str = None, model: str = "htdemuc
     ]
 
     log.info("  ▶ 실행: %s", " ".join(cmd))
-    proc = subprocess.run(cmd, capture_output=False, text=True)
+    proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
 
     if proc.returncode != 0:
-        raise RuntimeError(f"Demucs 실패 (반환코드={proc.returncode})")
+        stderr_msg = (proc.stderr or "").strip()[-500:] or "(stderr 없음)"
+        raise RuntimeError(f"Demucs 실패 (반환코드={proc.returncode})\nstderr: {stderr_msg}")
 
     # demucs 출력 → 한국어 접두사 파일명으로 이동
     stem_dir = out_path / model / src.stem
@@ -485,7 +499,7 @@ def main():
             }
 
         # JSON 결과 stdout 출력 (Go가 파싱)
-        print(json.dumps(result, ensure_ascii=False, indent=2))
+        print(json.dumps(result, ensure_ascii=False, indent=2, cls=_NumpyEncoder))
 
     except Exception as e:
         error = {
@@ -495,7 +509,7 @@ def main():
             "traceback": traceback.format_exc(),
         }
         log.error("❌ 처리 실패: %s", e)
-        print(json.dumps(error, ensure_ascii=False, indent=2))
+        print(json.dumps(error, ensure_ascii=False, indent=2, cls=_NumpyEncoder))
         sys.exit(1)
 
 

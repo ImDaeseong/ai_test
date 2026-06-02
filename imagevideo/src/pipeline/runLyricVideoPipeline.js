@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import {spawn} from 'node:child_process';
+import {spawn, execSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {discoverInputFiles} from '../utils/inputDiscovery.js';
 import {validateFinalMediaOutput} from '../utils/mediaProbe.js';
@@ -73,6 +73,14 @@ const PHASES = [
   }
 ];
 
+function checkFFmpeg() {
+  try {
+    execSync('ffmpeg -version', {stdio: 'ignore'});
+  } catch {
+    throw new Error('FFmpeg is not installed or not in PATH. Install it from https://ffmpeg.org/download.html');
+  }
+}
+
 async function main() {
   const startedAt = Date.now();
   let args;
@@ -99,6 +107,7 @@ async function main() {
       ''
     ].join('\n'));
 
+    checkFFmpeg();
     const inputFiles = await validateRequiredInputs(args);
     const context = {...inputFiles, debug: args.debug, title: args.title, artist: args.artist, motionStrength: args.motionStrength};
 
@@ -378,9 +387,13 @@ async function safeLogFailure(logPath, message, startedAt) {
 
 function npmRunCommand(script, extraArgs = []) {
   if (process.platform === 'win32') {
+    // cmd.exe /c 로 npm을 실행할 때 '--' 이후 인수가 npm 7+ 에서만 안정적으로 전달된다.
+    // npm 스크립트 이름과 추가 인수를 하나의 문자열로 합쳐서 cmd /c 에 넘겨
+    // 인수 파싱 불일치를 피한다.
+    const npmArgs = ['run', script, ...(extraArgs.length > 0 ? ['--', ...extraArgs] : [])];
     return {
       command: 'cmd.exe',
-      commandArgs: ['/d', '/s', '/c', 'npm', 'run', script, ...(extraArgs.length > 0 ? ['--', ...extraArgs] : [])]
+      commandArgs: ['/d', '/s', '/c', `npm ${npmArgs.join(' ')}`]
     };
   }
 

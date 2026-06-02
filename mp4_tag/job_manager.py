@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import threading
+import time
 import uuid
 from concurrent.futures import CancelledError, Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Callable
 
 from downloader_core import DownloadResult, download_stream, download_ytdlp, timestamped_output
 
 
 MAX_DOWNLOAD_WORKERS = 3
+_JOB_TTL_HOURS = 1
 
 
 @dataclass
@@ -38,6 +40,25 @@ _lock = threading.RLock()
 _executor = ThreadPoolExecutor(max_workers=MAX_DOWNLOAD_WORKERS, thread_name_prefix="download")
 
 
+def _cleanup_loop() -> None:
+    while True:
+        time.sleep(300)
+        cutoff = datetime.now() - timedelta(hours=_JOB_TTL_HOURS)
+        with _lock:
+            expired = [
+                jid for jid, job in _jobs.items()
+                if job.state in {"done", "error", "canceled"}
+                and job.finished_at is not None
+                and job.finished_at < cutoff
+            ]
+            for jid in expired:
+                _jobs.pop(jid, None)
+                _futures.pop(jid, None)
+
+
+threading.Thread(target=_cleanup_loop, daemon=True, name="job-cleanup").start()
+
+
 def list_jobs() -> list[DownloadJob]:
     with _lock:
         return sorted(_jobs.values(), key=lambda job: job.created_at, reverse=True)
@@ -54,9 +75,25 @@ def submit_download(page_url: str, stream: dict) -> str:
     return _submit_job(job)
 
 
+def submit_ytdlp_download(page_url: str) -> str:
+    """yt-dlp로 직접 다운로드 (YouTube 등 Playwright 분석 불가 사이트용)."""
+    job_id = uuid.uuid4().hex
+    stream = {"type": "YouTube", "url": page_url}
+    job = DownloadJob(
+        id=job_id,
+        page_url=page_url,
+        stream=stream,
+        streams=[stream],
+        message="Queued yt-dlp download",
+        total_candidates=1,
+    )
+    return _submit_job(job)
+
+
 def submit_fallback_download(page_url: str, streams: list[dict]) -> str:
+    # streams 없으면 yt-dlp 직접 다운로드로 전환
     if not streams:
-        raise ValueError("At least one stream candidate is required.")
+        return submit_ytdlp_download(page_url)
     job_id = uuid.uuid4().hex
     job = DownloadJob(
         id=job_id,

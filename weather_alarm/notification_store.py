@@ -185,17 +185,17 @@ class NotificationStore:
 
     def add_subscriber(self, platform: str, target_id: str, display_name: str = "") -> None:
         now = time.time()
-        active_val = "TRUE" if self._is_pg else "1"
-        sql = self._q(f"""
+        sql = self._q("""
             INSERT INTO subscribers (platform, target_id, display_name, active, created_at, updated_at)
-            VALUES (%s, %s, %s, {active_val}, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s)
             ON CONFLICT(platform, target_id) DO UPDATE SET
                 display_name = excluded.display_name,
-                active = {active_val},
+                active = excluded.active,
                 updated_at = excluded.updated_at
         """)
+        active_val = True if self._is_pg else 1
         with self._connect() as conn:
-            self._execute(conn, sql, (platform, str(target_id), display_name, now, now))
+            self._execute(conn, sql, (platform, str(target_id), display_name, active_val, now, now))
 
     def remove_subscriber(self, platform: str, target_id: str) -> None:
         sql = self._q("""
@@ -277,17 +277,27 @@ class NotificationStore:
     ) -> Optional[int]:
         """신규 job 삽입. 새 job_id 반환, 중복이면 None."""
         now = time.time()
-        sql = self._q("""
-            INSERT INTO delivery_queue
-                (platform, target_id, message_type, message_text, idempotency_key, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT(idempotency_key) DO NOTHING
-            RETURNING id
-        """)
         params = (subscriber.platform, subscriber.target_id, message_type, message_text, idempotency_key, now, now)
         with self._connect() as conn:
-            row = self._fetchone(conn, sql, params)
-        return row["id"] if row else None
+            if self._is_pg:
+                sql = """
+                    INSERT INTO delivery_queue
+                        (platform, target_id, message_type, message_text, idempotency_key, created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT(idempotency_key) DO NOTHING
+                    RETURNING id
+                """
+                row = self._fetchone(conn, sql, params)
+                return row["id"] if row else None
+            else:
+                sql = """
+                    INSERT INTO delivery_queue
+                        (platform, target_id, message_type, message_text, idempotency_key, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(idempotency_key) DO NOTHING
+                """
+                cur = conn.execute(sql, params)
+                return cur.lastrowid if cur.rowcount > 0 else None
 
     def claim_due_jobs(self, limit: int = 100) -> List[DeliveryJob]:
         now = time.time()

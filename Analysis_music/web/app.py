@@ -80,7 +80,10 @@ def _sanitize_html(html: str) -> str:
         # bleach 미설치 시 최소 XSS 방어: script/iframe 태그만 제거
         html = re.sub(r'<script\b[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
         html = re.sub(r'<iframe\b[^>]*>.*?</iframe>', '', html, flags=re.DOTALL | re.IGNORECASE)
-        html = re.sub(r'\s+on\w+\s*=\s*"[^"]*"', '', html, flags=re.IGNORECASE)
+        html = re.sub(r'<object\b[^>]*>.*?</object>', '', html, flags=re.DOTALL | re.IGNORECASE)
+        html = re.sub(r'<embed\b[^>]*>', '', html, flags=re.IGNORECASE)
+        html = re.sub(r'\s+on\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)', '', html, flags=re.IGNORECASE)
+        html = re.sub(r'href\s*=\s*["\']?\s*javascript:[^"\'>\s]*', 'href="#"', html, flags=re.IGNORECASE)
         return html
 
     allowed_tags = set(bleach.sanitizer.ALLOWED_TAGS) | {

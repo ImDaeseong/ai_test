@@ -1,0 +1,1575 @@
+{
+  "project": {
+    "title": "환승 음악 또 나오네",
+    "language": "auto",
+    "aspect_ratio": "16:9",
+    "fps": 30,
+    "resolution": "1920x1080",
+    "duration_total": "00:03:15.960",
+    "visual_style": "original kinetic typography with soft abstract backgrounds",
+    "global_mood": "reflective",
+    "genre": "contemporary pop",
+    "color_palette": [
+      "ink black",
+      "soft violet",
+      "cool blue",
+      "warm white"
+    ],
+    "lighting_style": "soft cinematic lighting with clear lyric readability",
+    "font_style": "modern geometric sans serif",
+    "text_safe_area": "Keep primary lyric text inside the center 80% width and 75% height."
+  },
+  "segments": [
+    {
+      "id": 1,
+      "start": "00:00:13.085",
+      "end": "00:00:15.319",
+      "duration": 2.234,
+      "lyric": "환승 음악 또 나오네",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"환승 음악 또 나오네\".",
+      "image_prompt": "Original abstract lyric video background for the line \"환승 음악 또 나오네\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 2,
+      "start": "00:00:15.319",
+      "end": "00:00:17.952",
+      "duration": 2.633,
+      "lyric": "사람들 사이 널 봤고",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"사람들 사이 널 봤고\".",
+      "image_prompt": "Original abstract lyric video background for the line \"사람들 사이 널 봤고\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 3,
+      "start": "00:00:17.952",
+      "end": "00:00:20.425",
+      "duration": 2.473,
+      "lyric": "동시에 폰 보는 척",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"동시에 폰 보는 척\".",
+      "image_prompt": "Original abstract lyric video background for the line \"동시에 폰 보는 척\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 4,
+      "start": "00:00:20.425",
+      "end": "00:00:22.660",
+      "duration": 2.235,
+      "lyric": "우리 둘 다 웃겼어 좀",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"우리 둘 다 웃겼어 좀\".",
+      "image_prompt": "Original abstract lyric video background for the line \"우리 둘 다 웃겼어 좀\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 5,
+      "start": "00:00:22.660",
+      "end": "00:00:25.532",
+      "duration": 2.872,
+      "lyric": "“어… 잘 지냈어?”",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"“어… 잘 지냈어?”\".",
+      "image_prompt": "Original abstract lyric video background for the line \"“어… 잘 지냈어?”\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 6,
+      "start": "00:00:25.532",
+      "end": "00:00:27.846",
+      "duration": 2.314,
+      "lyric": "딱 거기까지였고",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"딱 거기까지였고\".",
+      "image_prompt": "Original abstract lyric video background for the line \"딱 거기까지였고\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 7,
+      "start": "00:00:27.846",
+      "end": "00:00:29.920",
+      "duration": 2.074,
+      "lyric": "열차 들어오는 소리에",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"열차 들어오는 소리에\".",
+      "image_prompt": "Original abstract lyric video background for the line \"열차 들어오는 소리에\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 8,
+      "start": "00:00:29.920",
+      "end": "00:00:32.442",
+      "duration": 2.522,
+      "lyric": "대답은 잘 안 들렸어",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"대답은 잘 안 들렸어\".",
+      "image_prompt": "Original abstract lyric video background for the line \"대답은 잘 안 들렸어\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 9,
+      "start": "00:00:32.792",
+      "end": "00:00:35.027",
+      "duration": 2.235,
+      "lyric": "아무렇지 않은 척",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"아무렇지 않은 척\".",
+      "image_prompt": "Original abstract lyric video background for the line \"아무렇지 않은 척\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 10,
+      "start": "00:00:35.027",
+      "end": "00:00:37.819",
+      "duration": 2.792,
+      "lyric": "카드 찍고 걸었는데",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"카드 찍고 걸었는데\".",
+      "image_prompt": "Original abstract lyric video background for the line \"카드 찍고 걸었는데\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 11,
+      "start": "00:00:37.819",
+      "end": "00:00:40.052",
+      "duration": 2.233,
+      "lyric": "환승 통로 끝에서",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"환승 통로 끝에서\".",
+      "image_prompt": "Original abstract lyric video background for the line \"환승 통로 끝에서\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 12,
+      "start": "00:00:40.052",
+      "end": "00:00:42.576",
+      "duration": 2.524,
+      "lyric": "괜히 뒤돌아봤네",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"괜히 뒤돌아봤네\".",
+      "image_prompt": "Original abstract lyric video background for the line \"괜히 뒤돌아봤네\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 13,
+      "start": "00:00:42.926",
+      "end": "00:00:48.430",
+      "duration": 5.504,
+      "lyric": "숨 막히게 익숙한 표정",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"숨 막히게 익숙한 표정\".",
+      "image_prompt": "Original abstract lyric video background for the line \"숨 막히게 익숙한 표정\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 14,
+      "start": "00:00:48.430",
+      "end": "00:00:51.831",
+      "duration": 3.401,
+      "lyric": "지운 줄 알았는데 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"지운 줄 알았는데 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"지운 줄 알았는데 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 15,
+      "start": "00:00:52.180",
+      "end": "00:00:57.606",
+      "duration": 5.426,
+      "lyric": "잘 지내냐는 말 한 번에 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"잘 지내냐는 말 한 번에 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"잘 지내냐는 말 한 번에 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 16,
+      "start": "00:00:57.606",
+      "end": "00:01:02.314",
+      "duration": 4.708,
+      "lyric": "괜찮던 하루가 밀려와 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"괜찮던 하루가 밀려와 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"괜찮던 하루가 밀려와 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 17,
+      "start": "00:01:02.314",
+      "end": "00:01:07.420",
+      "duration": 5.106,
+      "lyric": "닫힌 문에 네 얼굴 비쳐",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"닫힌 문에 네 얼굴 비쳐\".",
+      "image_prompt": "Original abstract lyric video background for the line \"닫힌 문에 네 얼굴 비쳐\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 18,
+      "start": "00:01:07.420",
+      "end": "00:01:11.250",
+      "duration": 3.83,
+      "lyric": "내릴 역 지나쳤어 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"내릴 역 지나쳤어 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"내릴 역 지나쳤어 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 19,
+      "start": "00:01:11.250",
+      "end": "00:01:17.632",
+      "duration": 6.382,
+      "lyric": "또 환승 음악 나오는데",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"또 환승 음악 나오는데\".",
+      "image_prompt": "Original abstract lyric video background for the line \"또 환승 음악 나오는데\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 20,
+      "start": "00:01:17.632",
+      "end": "00:01:22.659",
+      "duration": 5.027,
+      "lyric": "왜 거기 멈춰 서 있냐 나",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"왜 거기 멈춰 서 있냐 나\".",
+      "image_prompt": "Original abstract lyric video background for the line \"왜 거기 멈춰 서 있냐 나\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 21,
+      "start": "00:01:22.659",
+      "end": "00:01:27.766",
+      "duration": 5.107,
+      "lyric": "다 끝났다 했는데 왜 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"다 끝났다 했는데 왜 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"다 끝났다 했는데 왜 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 22,
+      "start": "00:01:27.766",
+      "end": "00:01:33.081",
+      "duration": 5.315,
+      "lyric": "잘 지내냐는 말 한 번에 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"잘 지내냐는 말 한 번에 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"잘 지내냐는 말 한 번에 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 23,
+      "start": "00:01:33.430",
+      "end": "00:01:35.504",
+      "duration": 2.074,
+      "lyric": "편의점 원플원 커피",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"편의점 원플원 커피\".",
+      "image_prompt": "Original abstract lyric video background for the line \"편의점 원플원 커피\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 24,
+      "start": "00:01:35.504",
+      "end": "00:01:38.298",
+      "duration": 2.794,
+      "lyric": "두 개 집었다 놨어",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"두 개 집었다 놨어\".",
+      "image_prompt": "Original abstract lyric video background for the line \"두 개 집었다 놨어\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 25,
+      "start": "00:01:38.298",
+      "end": "00:01:40.293",
+      "duration": 1.995,
+      "lyric": "습관은 아직 그대로네",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"습관은 아직 그대로네\".",
+      "image_prompt": "Original abstract lyric video background for the line \"습관은 아직 그대로네\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 26,
+      "start": "00:01:40.293",
+      "end": "00:01:41.968",
+      "duration": 1.675,
+      "lyric": "참 별거 아닌데 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"참 별거 아닌데 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"참 별거 아닌데 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 27,
+      "start": "00:01:41.968",
+      "end": "00:01:42.605",
+      "duration": 0.637,
+      "lyric": "너도 봤을까 아마",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"너도 봤을까 아마\".",
+      "image_prompt": "Original abstract lyric video background for the line \"너도 봤을까 아마\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 28,
+      "start": "00:01:42.605",
+      "end": "00:01:46.355",
+      "duration": 3.75,
+      "lyric": "내 가방 달린 키링",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"내 가방 달린 키링\".",
+      "image_prompt": "Original abstract lyric video background for the line \"내 가방 달린 키링\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 29,
+      "start": "00:01:46.355",
+      "end": "00:01:48.750",
+      "duration": 2.395,
+      "lyric": "버렸다 하기엔 아직",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"버렸다 하기엔 아직\".",
+      "image_prompt": "Original abstract lyric video background for the line \"버렸다 하기엔 아직\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 30,
+      "start": "00:01:48.750",
+      "end": "00:01:53.427",
+      "duration": 4.677,
+      "lyric": "손이 좀 느렸나 봐",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"손이 좀 느렸나 봐\".",
+      "image_prompt": "Original abstract lyric video background for the line \"손이 좀 느렸나 봐\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 31,
+      "start": "00:01:53.777",
+      "end": "00:01:56.170",
+      "duration": 2.393,
+      "lyric": "막차 시간 뜨는 전광판",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"막차 시간 뜨는 전광판\".",
+      "image_prompt": "Original abstract lyric video background for the line \"막차 시간 뜨는 전광판\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 32,
+      "start": "00:01:56.170",
+      "end": "00:01:58.802",
+      "duration": 2.632,
+      "lyric": "그 밑에서 숨만 골랐어",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"그 밑에서 숨만 골랐어\".",
+      "image_prompt": "Original abstract lyric video background for the line \"그 밑에서 숨만 골랐어\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 33,
+      "start": "00:01:58.802",
+      "end": "00:02:01.197",
+      "duration": 2.395,
+      "lyric": "모른 척 지나가기엔",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"모른 척 지나가기엔\".",
+      "image_prompt": "Original abstract lyric video background for the line \"모른 척 지나가기엔\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 34,
+      "start": "00:02:01.197",
+      "end": "00:02:03.560",
+      "duration": 2.363,
+      "lyric": "심장이 먼저 알았어",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"심장이 먼저 알았어\".",
+      "image_prompt": "Original abstract lyric video background for the line \"심장이 먼저 알았어\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 35,
+      "start": "00:02:03.909",
+      "end": "00:02:06.462",
+      "duration": 2.553,
+      "lyric": "사람들은 다 급한데",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"사람들은 다 급한데\".",
+      "image_prompt": "Original abstract lyric video background for the line \"사람들은 다 급한데\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 36,
+      "start": "00:02:06.462",
+      "end": "00:02:09.015",
+      "duration": 2.553,
+      "lyric": "나만 거기 멈춘 듯이",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"나만 거기 멈춘 듯이\".",
+      "image_prompt": "Original abstract lyric video background for the line \"나만 거기 멈춘 듯이\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 37,
+      "start": "00:02:09.015",
+      "end": "00:02:11.489",
+      "duration": 2.474,
+      "lyric": "환승은 매일 하는데",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"환승은 매일 하는데\".",
+      "image_prompt": "Original abstract lyric video background for the line \"환승은 매일 하는데\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 38,
+      "start": "00:02:11.489",
+      "end": "00:02:13.133",
+      "duration": 1.644,
+      "lyric": "너는 아직 어렵네",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"너는 아직 어렵네\".",
+      "image_prompt": "Original abstract lyric video background for the line \"너는 아직 어렵네\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 39,
+      "start": "00:02:13.484",
+      "end": "00:02:18.590",
+      "duration": 5.106,
+      "lyric": "잘 지내냐는 말 한 번에 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"잘 지내냐는 말 한 번에 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"잘 지내냐는 말 한 번에 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 40,
+      "start": "00:02:18.590",
+      "end": "00:02:23.616",
+      "duration": 5.026,
+      "lyric": "멀쩡했던 밤이 길어져 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"멀쩡했던 밤이 길어져 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"멀쩡했던 밤이 길어져 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 41,
+      "start": "00:02:23.616",
+      "end": "00:02:28.723",
+      "duration": 5.107,
+      "lyric": "세탁 안 한 후드 뒤집어쓰고",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"세탁 안 한 후드 뒤집어쓰고\".",
+      "image_prompt": "Original abstract lyric video background for the line \"세탁 안 한 후드 뒤집어쓰고\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 42,
+      "start": "00:02:28.723",
+      "end": "00:02:33.750",
+      "duration": 5.027,
+      "lyric": "한참 TV만 돌렸어 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"한참 TV만 돌렸어 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"한참 TV만 돌렸어 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 43,
+      "start": "00:02:33.750",
+      "end": "00:02:38.776",
+      "duration": 5.026,
+      "lyric": "또 환승 음악 나오겠지",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"또 환승 음악 나오겠지\".",
+      "image_prompt": "Original abstract lyric video background for the line \"또 환승 음악 나오겠지\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 44,
+      "start": "00:02:38.776",
+      "end": "00:02:42.605",
+      "duration": 3.829,
+      "lyric": "내일도 사람들 사이로",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"내일도 사람들 사이로\".",
+      "image_prompt": "Original abstract lyric video background for the line \"내일도 사람들 사이로\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "gentle lateral drift with subtle parallax",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "quick blur dissolve"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 45,
+      "start": "00:02:42.605",
+      "end": "00:02:49.068",
+      "duration": 6.463,
+      "lyric": "다신 안 본다 했는데 왜 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"다신 안 본다 했는데 왜 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"다신 안 본다 했는데 왜 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "small pull-back revealing more negative space",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "fade and rise; hold with subtle breathing scale",
+        "transition": "crossfade with light streak"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    },
+    {
+      "id": 46,
+      "start": "00:02:49.068",
+      "end": "00:02:51.592",
+      "duration": 2.524,
+      "lyric": "잘 지내냐는 말 한 번에 또",
+      "scene_summary": "Original original kinetic typography with soft abstract backgrounds scene expressing a reflective feeling for the lyric: \"잘 지내냐는 말 한 번에 또\".",
+      "image_prompt": "Original abstract lyric video background for the line \"잘 지내냐는 말 한 번에 또\", reflective mood, contemporary pop energy, original kinetic typography with soft abstract backgrounds, palette of ink black, soft violet, cool blue, warm white, no artist imitation, no recognizable copyrighted media, leave clean space for large readable typography",
+      "negative_prompt": "copyrighted characters, artist imitation, studio imitation, logos, watermarks, explicit content, unsafe imagery, low resolution, unreadable text",
+      "motion": {
+        "camera": "slow push-in with stable center framing",
+        "background_motion": "slow atmospheric movement with soft particles and gradient shifts",
+        "text_animation": "slide in with slight scale settle; hold with subtle breathing scale",
+        "transition": "soft fade out"
+      },
+      "style": {
+        "color_palette": "ink black, soft violet, cool blue, warm white",
+        "lighting": "soft cinematic lighting with clear lyric readability",
+        "background": "original kinetic typography with soft abstract backgrounds; original abstract environment with reflective atmosphere and uncluttered text-safe center.",
+        "emotional_tone": "reflective"
+      },
+      "ffmpeg_notes": "Reserve this segment for typography compositing over original abstract background assets."
+    }
+  ],
+  "subtitles": {
+    "format": "ass",
+    "karaoke_highlight": false,
+    "ass_style": {
+      "font": "modern geometric sans serif",
+      "font_size": "64",
+      "primary_color": "&H00FFFFFF",
+      "highlight_color": "&H0000D7FF",
+      "outline_color": "&H00202020",
+      "alignment": "bottom"
+    }
+  },
+  "motion_canvas": {
+    "scene_structure": [
+      {
+        "segment_id": 1,
+        "start": "00:00:13.085",
+        "end": "00:00:15.319",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 2,
+        "start": "00:00:15.319",
+        "end": "00:00:17.952",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 3,
+        "start": "00:00:17.952",
+        "end": "00:00:20.425",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 4,
+        "start": "00:00:20.425",
+        "end": "00:00:22.660",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 5,
+        "start": "00:00:22.660",
+        "end": "00:00:25.532",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 6,
+        "start": "00:00:25.532",
+        "end": "00:00:27.846",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 7,
+        "start": "00:00:27.846",
+        "end": "00:00:29.920",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 8,
+        "start": "00:00:29.920",
+        "end": "00:00:32.442",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 9,
+        "start": "00:00:32.792",
+        "end": "00:00:35.027",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 10,
+        "start": "00:00:35.027",
+        "end": "00:00:37.819",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 11,
+        "start": "00:00:37.819",
+        "end": "00:00:40.052",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 12,
+        "start": "00:00:40.052",
+        "end": "00:00:42.576",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 13,
+        "start": "00:00:42.926",
+        "end": "00:00:48.430",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 14,
+        "start": "00:00:48.430",
+        "end": "00:00:51.831",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 15,
+        "start": "00:00:52.180",
+        "end": "00:00:57.606",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 16,
+        "start": "00:00:57.606",
+        "end": "00:01:02.314",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 17,
+        "start": "00:01:02.314",
+        "end": "00:01:07.420",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 18,
+        "start": "00:01:07.420",
+        "end": "00:01:11.250",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 19,
+        "start": "00:01:11.250",
+        "end": "00:01:17.632",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 20,
+        "start": "00:01:17.632",
+        "end": "00:01:22.659",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 21,
+        "start": "00:01:22.659",
+        "end": "00:01:27.766",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 22,
+        "start": "00:01:27.766",
+        "end": "00:01:33.081",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 23,
+        "start": "00:01:33.430",
+        "end": "00:01:35.504",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 24,
+        "start": "00:01:35.504",
+        "end": "00:01:38.298",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 25,
+        "start": "00:01:38.298",
+        "end": "00:01:40.293",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 26,
+        "start": "00:01:40.293",
+        "end": "00:01:41.968",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 27,
+        "start": "00:01:41.968",
+        "end": "00:01:42.605",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 28,
+        "start": "00:01:42.605",
+        "end": "00:01:46.355",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 29,
+        "start": "00:01:46.355",
+        "end": "00:01:48.750",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 30,
+        "start": "00:01:48.750",
+        "end": "00:01:53.427",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 31,
+        "start": "00:01:53.777",
+        "end": "00:01:56.170",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 32,
+        "start": "00:01:56.170",
+        "end": "00:01:58.802",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 33,
+        "start": "00:01:58.802",
+        "end": "00:02:01.197",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 34,
+        "start": "00:02:01.197",
+        "end": "00:02:03.560",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 35,
+        "start": "00:02:03.909",
+        "end": "00:02:06.462",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 36,
+        "start": "00:02:06.462",
+        "end": "00:02:09.015",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 37,
+        "start": "00:02:09.015",
+        "end": "00:02:11.489",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 38,
+        "start": "00:02:11.489",
+        "end": "00:02:13.133",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 39,
+        "start": "00:02:13.484",
+        "end": "00:02:18.590",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 40,
+        "start": "00:02:18.590",
+        "end": "00:02:23.616",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 41,
+        "start": "00:02:23.616",
+        "end": "00:02:28.723",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 42,
+        "start": "00:02:28.723",
+        "end": "00:02:33.750",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 43,
+        "start": "00:02:33.750",
+        "end": "00:02:38.776",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 44,
+        "start": "00:02:38.776",
+        "end": "00:02:42.605",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 45,
+        "start": "00:02:42.605",
+        "end": "00:02:49.068",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      },
+      {
+        "segment_id": 46,
+        "start": "00:02:49.068",
+        "end": "00:02:51.592",
+        "layers": [
+          "background",
+          "lyric_text",
+          "transition"
+        ]
+      }
+    ],
+    "components": [
+      "BackgroundLayer",
+      "LyricText",
+      "SceneTransition"
+    ],
+    "animation_strategy": "Generate one reusable timeline where each lyric segment animates text over a consistent original abstract background system."
+  },
+  "assets": [],
+  "render": {
+    "motion_canvas": true,
+    "ffmpeg": true,
+    "intermediate_files": [
+      "output/subtitles.ass",
+      "output/rendered_typography_video.mp4"
+    ],
+    "final_output": "lyric_video.mp4",
+    "export_command": ""
+  }
+}

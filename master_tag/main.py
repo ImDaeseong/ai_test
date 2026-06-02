@@ -150,7 +150,12 @@ def normalize_lufs(
         raise AudioProcessingError(f"LUFS 측정 중 오류가 발생했습니다: {exc}") from exc
 
     if np.isinf(measured_lufs) or np.isnan(measured_lufs):
-        print("    [경고] LUFS 측정 실패. 정규화를 건너뜁니다.")
+        peak = float(np.max(np.abs(audio)))
+        if peak > 0:
+            gain = (10 ** (-1.0 / 20)) / peak
+            print(f"    [경고] LUFS 측정 불가(묵음 또는 극소 신호). 피크 정규화로 대체합니다. (gain: {gain:.3f})")
+            return (audio * gain).astype(np.float32, copy=False), None
+        print("    [경고] 묵음 파일입니다. 정규화를 건너뜁니다.")
         return audio, None
 
     normalized = pyln.normalize.loudness(audio_t, measured_lufs, target_lufs)

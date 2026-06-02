@@ -71,7 +71,12 @@ func detectEncoding(data []byte) (encoding string, hasBOM bool) {
 		return "UTF-16 BE", true
 	}
 
-	// (2) BOM 없음 → UTF-8 유효성 검사
+	// (2) 빈 파일
+	if len(data) == 0 {
+		return "Empty", false
+	}
+
+	// (3) BOM 없음 → UTF-8 유효성 검사
 	if utf8.Valid(data) {
 		return "UTF-8 (No BOM)", false
 	}
@@ -232,6 +237,9 @@ func scanHandler(w http.ResponseWriter, r *http.Request) {
 	wg.Wait()
 	if canceled || ctx.Err() != nil {
 		log.Printf("스캔 취소: %s", scanPath)
+		if ctx.Err() == context.DeadlineExceeded {
+			http.Error(w, "스캔 시간이 초과되었습니다 (제한: "+scanTimeout.String()+")", http.StatusRequestTimeout)
+		}
 		return
 	}
 
