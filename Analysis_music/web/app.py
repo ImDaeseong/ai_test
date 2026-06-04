@@ -427,6 +427,7 @@ def download(jid: str, fname: str):
 
 
 if __name__ == "__main__":
+    port = int(os.getenv("APP_PORT", "5001"))
     print("\n  AI Music Producer Web UI")
-    print("  http://localhost:5000\n")
-    app.run(debug=False, port=5000, threaded=True)
+    print(f"  http://localhost:{port}\n")
+    app.run(debug=False, port=port, threaded=True)

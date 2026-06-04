@@ -1,7 +1,7 @@
 # 소스 설명
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-05-28 (run_game 프로젝트 추가)
-> 총 18개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
+> 작성일: 2026-05-08 / 최종 수정: 2026-06-04 (별도 관리 프로젝트 정리)
+> 총 16개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
 
 ## 저장소 목표
 
@@ -29,12 +29,10 @@
 | 10 | [mp4_tag](#10-mp4_tag) | 웹사이트 HLS/MP4 영상 자동 감지 & 다운로드 | Python + Playwright | ★★★★☆ |
 | 11 | [security_scanning](#11-security_scanning) | 웹·시스템 보안 취약점 스캐너 | Python | ★★★★☆ |
 | 12 | [weather_alarm](#12-weather_alarm) | 기상청 날씨 → Discord/Telegram 알림 봇 | Python (asyncio) | ★★★★☆ |
-| 13 | [ai_anime](#13-ai_anime) | 가사 → 애니메이션 MV 스토리보드·AI 프롬프트 자동 생성 | Python (표준 라이브러리) | ★★★★☆ |
-| 14 | [ai_anime_production](#14-ai_anime_production) | ai_anime 출력물 기반 Remotion 씬 렌더링 워크스페이스 | TypeScript + React + Remotion | ★★★★☆ |
-| 15 | [findstring_foldfiles](#15-findstring_foldfiles) | 폴더·드라이브 문자열 멀티스레드 검색 GUI | Python (tkinter) | ★★★★★ |
-| 16 | [windows-port-monitor](#16-windows-port-monitor) | Windows TCP/UDP 포트 연결 이력 모니터링 서비스 | Python + SQLite | ★★★★★ |
-| 17 | [ai_img_video_prompt](#17-ai_img_video_prompt) | 고정 밴드 기준 MV 이미지·영상 모션 프롬프트 패키지 생성 | Python (표준 라이브러리) | ★★★★★ |
-| 18 | [run_game](#18-run_game) | Steam·Epic·Netmarble 게임 설치 탐지 및 런처 실행기 | C++ / MFC (Visual Studio 2022) | ★★★★★ |
+| 13 | [ai_anime_production](#13-ai_anime_production) | 별도 MV 프롬프트 워크플로 기반 Remotion 씬 렌더링 워크스페이스 | TypeScript + React + Remotion | ★★★★☆ |
+| 14 | [findstring_foldfiles](#14-findstring_foldfiles) | 폴더·드라이브 문자열 멀티스레드 검색 GUI | Python (tkinter) | ★★★★★ |
+| 15 | [windows-port-monitor](#15-windows-port-monitor) | Windows TCP/UDP 포트 연결 이력 모니터링 서비스 | Python + SQLite | ★★★★★ |
+| 16 | [run_game](#16-run_game) | Steam·Epic·Netmarble 게임 설치 탐지 및 런처 실행기 | C++ / MFC (Visual Studio 2022) | ★★★★★ |
 
 ---
 
@@ -347,7 +345,7 @@ python app.py
 ## 7. lyricvideo
 
 ### 기능 개요
-Remotion 프레임워크(React 기반 비디오 생성)를 사용하여 LRC/SRT 가사 파일과 오디오를 조합해 가사 비디오(MP4)를 프로그래밍 방식으로 렌더링하는 프로젝트. `ai_anime` 프로젝트의 Remotion 공식 문서 참조 내용을 반영하여 애니메이션 품질 개선 완료.
+Remotion 프레임워크(React 기반 비디오 생성)를 사용하여 LRC/SRT 가사 파일과 오디오를 조합해 가사 비디오(MP4)를 프로그래밍 방식으로 렌더링하는 프로젝트. 애니메이션 품질 개선 완료.
 
 ### 주요 기능
 - **가사 동기화 시각화**: 현재/이전/다음 3줄 동시 표시, `interpolate()` 기반 페이드 인/아웃
@@ -402,7 +400,7 @@ npm run build:vertical       # 9:16 렌더링
 - FFmpeg (Remotion 내장 렌더러)
 
 ### 개발 완성도: ★★★★★
-전체 렌더링 테스트 완료 (환승역.mp3, 21.8MB, 5909프레임 / 약 3분 17초). TypeScript 타입 검사 통과. `ai_anime` 프로젝트 참조 Remotion 베스트 프랙티스(`spring()`, `Sequence`) 반영 완료. `public/media/`에 오디오·가사 파일 배치 후 즉시 렌더링 가능.
+전체 렌더링 테스트 완료 (환승역.mp3, 21.8MB, 5909프레임 / 약 3분 17초). TypeScript 타입 검사 통과. Remotion 베스트 프랙티스(`spring()`, `Sequence`) 반영 완료. `public/media/`에 오디오·가사 파일 배치 후 즉시 렌더링 가능.
 
 ---
 
@@ -671,73 +669,10 @@ run_local.bat
 
 ---
 
-## 13. ai_anime
+## 13. ai_anime_production
 
 ### 기능 개요
-음악 가사(TXT/LRC/SRT/오디오)와 메타데이터를 입력받아 애니메이션 스타일의 MV 제작용 스토리보드·캐릭터 설정·씬별 AI 이미지/영상 프롬프트를 자동 생성하는 파이프라인. 장르·BPM·감정·분위기 키워드 기반으로 색상·캐릭터·씬 연출을 동적으로 결정하며, 모든 규칙은 `configs/*.json`에 정의된다.
-
-### 주요 기능
-- **파싱**: TXT/LRC/SRT/오디오 파일 → `song_master.json` (제목, BPM, 장르, 섹션, 가사)
-- **감정 분석**: 가사 전체에서 감정 곡선과 시각적 색상·무드 매핑 생성 (`emotion_analysis.json`)
-- **씬 생성**: 비주얼 월드, 캐릭터 바이블, 씬 목록, 스토리 아크 자동 생성 — 곡별 동적 색상·캐릭터 고유화 포함
-- **이미지 프롬프트**: 씬별 이미지 생성 AI 프롬프트 + 캐릭터 모델시트 생성용 프롬프트
-- **영상 프롬프트**: 씬별 Runway·Kling·Pika·Luma·Veo·Flow·Sora·Hailuo·PixVerse·Wan 2.2·Remotion **11개 플랫폼** 최적화 프롬프트
-- **Suno 연동**: URL에서 제목·태그·가사 자동 추출, `data/suno_history.jsonl` 누적 저장 (196곡)
-- **Config 자동 학습**: `suno_history.jsonl` 분석 → `genres.json`·`atmosphere_rules.json` 자동 업데이트
-- **웹 UI**: 로컬 웹 서버 — Suno 가져오기·Generate Storyboard·Config 자동 학습·씬/프롬프트 브라우저 미리보기
-
-### 폴더 구조
-```
-ai_anime/
-├── input/             ← 현재 작업 중인 곡 입력 파일
-├── analysis/          ← 감정·비주얼·영화 스타일 분석 결과
-├── character/         ← 캐릭터 설정 및 프롬프트
-├── storyboard/        ← 생성된 스토리보드 전체
-├── prompts/
-│   ├── image_prompts/ ← 씬별 이미지 프롬프트
-│   └── video_prompts/ ← 씬별 영상 프롬프트 (11개 플랫폼)
-├── configs/           ← 파이프라인 동작 규칙 설정 파일 (15개)
-├── data/              ← Suno 이력 및 Config 자동 학습 데이터
-├── output/            ← 파이프라인 실행 결과물 저장소
-├── scripts/           ← 핵심 Python 스크립트 (11개)
-├── build.bat          ← PyInstaller EXE 빌드
-└── run_web.bat        ← 웹 UI 실행
-```
-
-### 사용 방법
-```bash
-# 웹 UI (권장)
-run_web.bat
-# → http://127.0.0.1:8000
-
-# CLI 전체 파이프라인
-python scripts/run_pipeline.py
-python scripts/run_pipeline.py --snapshot
-
-# 단계별 실행
-python scripts/song_parser.py --input input
-python scripts/emotion_engine.py
-python scripts/scene_generator.py
-python scripts/image_prompt_generator.py
-python scripts/video_prompt_generator.py
-python scripts/config_learner.py   # Config 자동 업데이트
-```
-
-### 기술 스택
-- Python 3.10+ / **외부 패키지 없음** (표준 라이브러리만 사용)
-- 입력: TXT, LRC (`[MM:SS.mm]` 동기화 가사), SRT, 오디오(mp3/wav/m4a/aac/flac/ogg)
-- 출력: JSON (구조화 데이터) + Markdown (AI 프롬프트)
-- EXE 빌드: PyInstaller (단독 실행 가능)
-
-### 개발 완성도: ★★★★☆
-파이프라인 완전 작동 확인. 11개 영상 플랫폼(Runway·Kling·Pika·Luma·Veo·Flow·Sora·Hailuo·PixVerse·Wan 2.2·Remotion) 프롬프트 동시 생성. 장르·분위기 기반 동적 색상 선택 및 곡별 캐릭터 고유화 완성. Config 자동 학습으로 Suno 이력 196곡 축적 중.
-
----
-
-## 14. ai_anime_production
-
-### 기능 개요
-`ai_anime` 프로젝트에서 생성된 씬 이미지와 영상 프롬프트를 입력받아 Remotion으로 개별 씬 클립(MP4)을 렌더링하는 프로덕션 워크스페이스.
+별도 관리되는 애니메이션 MV 프롬프트 워크플로에서 생성된 씬 이미지와 영상 프롬프트를 입력받아 Remotion으로 개별 씬 클립(MP4)을 렌더링하는 프로덕션 워크스페이스.
 
 ### 주요 기능
 - **입력 파이프라인**: `input/scene_NN_name.png` + `input/scene_NN_name.md` 쌍을 스캔하여 render manifest 자동 생성
@@ -794,11 +729,11 @@ npm run studio         # → http://localhost:3000
 - Node.js (ESM 스크립트)
 
 ### 개발 완성도: ★★★★☆
-입력 파이프라인·manifest 생성·씬 렌더링 완성. `input/`에 AI 생성 씬 이미지와 프롬프트를 넣고 `run.bat` 실행으로 씬별 MP4 클립 생성 가능. `ai_anime` 프로젝트와 연계하여 사용.
+입력 파이프라인·manifest 생성·씬 렌더링 완성. `input/`에 AI 생성 씬 이미지와 프롬프트를 넣고 `run.bat` 실행으로 씬별 MP4 클립 생성 가능. 별도 관리되는 애니메이션 MV 프롬프트 워크플로와 연계하여 사용.
 
 ---
 
-## 15. findstring_foldfiles
+## 14. findstring_foldfiles
 
 ### 기능 개요
 폴더 또는 전체 드라이브에서 특정 문자열을 **멀티스레드로 빠르게 검색**하는 Python 데스크톱 GUI 앱.  
@@ -855,7 +790,7 @@ python find_string_app.py
 
 ---
 
-## 16. windows-port-monitor
+## 15. windows-port-monitor
 
 ### 기능 개요
 Windows 로컬 시스템의 TCP/UDP 포트 연결과 프로세스 소유권을 실시간 수집하여 SQLite에 이력을 저장하고 JSONL로 내보내는 백그라운드 모니터링 서비스.
@@ -938,59 +873,7 @@ collector·storage·service 전 계층 완성, 4개 모듈 pytest 통과. 백그
 
 ---
 
-## 17. ai_img_video_prompt
-
-### 기능 개요
-고정 밴드 기준 이미지와 내부 템플릿을 사용해 곡별 MV 이미지 프롬프트, 영상 모션 프롬프트, 검토용 요약 파일을 생성하는 로컬 CLI 도구.
-
-### 주요 기능
-- **고정 밴드 유지**: 캐릭터, 밴드 구성, 세계관은 고정하고 곡마다 장르, 무드, 템포, 감정, 조명, 카메라, 연주 방식, 관중 반응만 변경
-- **곡별 프롬프트 패키지**: master/style lock, vocal, guitar, bass, drum, stage, crowd, video motion 프롬프트 생성
-- **공통 기준 이미지 참조**: `reference` 폴더를 직접 참조하고 곡별 출력 폴더에 기준 이미지 사본을 만들지 않음
-- **일괄 생성**: `input/*.txt` 전체를 `create-all`로 처리하고 `Title:`/`제목:` 또는 파일명을 곡 제목으로 사용
-- **요약/감사 파일**: `summarize-all`로 `output\_ALL_PROMPT_OVERVIEW.md`, `output\_PROMPT_AUDIT.md`, 곡별 `00_prompt_overview.md` 생성
-- **검증**: 필수 파일, placeholder 잔여, 기준 이미지 경로, 이전 곡 키워드 잔여 여부 확인
-- **Windows 콘솔 보완**: CP949 콘솔에서 일부 특수문자 파일명 출력 시 crash가 나지 않도록 `stdout`/`stderr` replacement fallback 적용
-
-### 폴더 구조
-```
-ai_img_video_prompt/
-├── main.py                 # CLI 진입점 (create / create-all / validate / summarize-all)
-├── genre_profiles.json     # 장르별 프롬프트 방향 설정
-├── run_all.bat             # input 전체 일괄 생성 배치
-├── input/                  # Suno 스타일 곡 메타데이터·가사 입력
-├── templates/              # 프롬프트 템플릿
-├── reference/              # 공통 기준 이미지 PNG
-├── output/                 # 곡별 생성 결과 및 전체 요약
-└── tests/                  # pytest 테스트
-```
-
-### 사용 방법
-```powershell
-# 단일 곡 생성
-python main.py create --title "환승역" --input input\환승역.txt --force
-
-# input 폴더 전체 생성
-python main.py create-all --input-dir input --force
-
-# 전체 요약/감사 파일 생성
-python main.py summarize-all --input-dir input --output-dir output
-
-# 생성 폴더 검증
-python main.py validate --folder output\환승역 --previous-term 들리잖아
-```
-
-### 기술 스택
-- Python 3.x / 표준 라이브러리 중심
-- 입력: Suno 스타일 태그, `Title:`/`제목:`, BPM, Mood, Emotion, Instruments, Weirdness, Style Influence, 가사 섹션
-- 출력: Markdown 프롬프트 패키지 + 전체/곡별 검토용 Markdown
-
-### 개발 완성도: ★★★★★
-2026-05-28 기준 `python -m py_compile main.py`, `genre_profiles.json` 파싱, CLI help 확인, `pytest -q` 231개 테스트 통과. `create-all --input-dir input --force`로 203개 입력 생성·검증 성공, `summarize-all`로 205개 요약 파일 작성, 전체 203개 output 폴더 재검증 통과. 기본 secret-pattern scan에서 의심 항목 없음.
-
----
-
-## 18. run_game
+## 16. run_game
 
 ### 기능 개요
 `GameConfig.json`에 정의된 게임 정보를 기준으로 Windows PC에서 Steam·Epic Games·Netmarble 설치 위치와 실행 가능한 런처를 탐지하고, 해당 플랫폼 런처를 통해 게임을 실행하는 MFC 다이얼로그 애플리케이션.

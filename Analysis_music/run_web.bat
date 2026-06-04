@@ -1,10 +1,11 @@
 @echo off
 chcp 65001 > nul
 title AI Music Producer - Web UI
+if "%APP_PORT%"=="" set APP_PORT=5001
 echo.
 echo +--------------------------------------------------------------+
 echo ^|      AI Music ^& Visual Content Executive Producer          ^|
-echo ^|      Web UI ^@ http://localhost:5000                        ^|
+echo ^|      Web UI ^@ http://localhost:%APP_PORT%                        ^|
 echo +--------------------------------------------------------------+
 echo.
 cd /d "%~dp0"
@@ -44,9 +45,9 @@ echo [OK]   Output folders ready
 
 if not exist ".env" (echo [WARN]  .env not found & echo.)
 
-netstat -ano 2>nul | findstr ":5000 " | findstr "LISTENING" >nul
+netstat -ano 2>nul | findstr ":%APP_PORT% " | findstr "LISTENING" >nul
 if not errorlevel 1 (
-    echo [WARN]  Port 5000 is already in use.
+    echo [WARN]  Port %APP_PORT% is already in use.
     choice /C YN /M "Continue anyway?"
     if errorlevel 2 exit /b 0
 )
@@ -54,7 +55,7 @@ if not errorlevel 1 (
 echo [>>]  Starting Flask server...
 echo [>>]  Browser opens in 3 seconds  ^(Ctrl+C to stop^)
 echo.
-start "" cmd /c "timeout /t 3 /nobreak > nul ^&^& start http://localhost:5000"
+start "" cmd /c "timeout /t 3 /nobreak > nul ^&^& start http://localhost:%APP_PORT%"
 
 ".venv\Scripts\python.exe" web\app.py
 
