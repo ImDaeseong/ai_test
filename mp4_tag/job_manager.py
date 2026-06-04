@@ -91,9 +91,8 @@ def submit_ytdlp_download(page_url: str) -> str:
 
 
 def submit_fallback_download(page_url: str, streams: list[dict]) -> str:
-    # streams 없으면 yt-dlp 직접 다운로드로 전환
     if not streams:
-        return submit_ytdlp_download(page_url)
+        raise ValueError("At least one stream candidate is required.")
     job_id = uuid.uuid4().hex
     job = DownloadJob(
         id=job_id,

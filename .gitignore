@@ -25,3 +25,30 @@ build/
 /AGENTS.md
 /CLAUDE.md
 /.claude/
+
+# Output / generated files
+imagevideo/output/logs/*
+!imagevideo/output/logs/.gitkeep
+imagevideo/output/*.json
+imagevideo/output/*.ass
+imagevideo/output/*.mp4
+
+master_tag/outputs/*
+!master_tag/outputs/.gitkeep
+
+ai_anime_production/manifests/scene_props/*
+!ai_anime_production/manifests/scene_props/.gitkeep
+
+# Compiled binaries
+check_FileEncoding/*.exe
+run_game/x64/
+run_game/run_game/x64/
+
+# Node modules
+extensions/suno-lyric-downloader/node_modules/
+
+# Uploads / user audio data
+Analysis_music/uploads/
+Analysis_music/outputs/
+mp3_daw/inbox/
+mp3_daw/output/

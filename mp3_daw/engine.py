@@ -245,7 +245,7 @@ def separate_stems(file_path: str, output_dir: str = None, model: str = "htdemuc
     out_path.mkdir(parents=True, exist_ok=True)
 
     cmd = [
-        sys.executable, "-m", "demucs.separate",
+        sys.executable, str(Path(__file__).with_name("demucs_compat.py")),
         "--name", model,
         "--out", str(out_path),
         str(src),
