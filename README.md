@@ -13,6 +13,25 @@
 
 ---
 
+## 환경 설정
+
+API 키가 필요한 프로젝트는 각 디렉토리의 `.env.example`을 `.env`로 복사한 뒤 키를 입력하세요.
+
+```bat
+copy Pexels\.env.example Pexels\.env
+copy weather_alarm\.env.example weather_alarm\.env
+```
+
+| 프로젝트 | 필수 환경변수 | 발급처 |
+|----------|---------------|--------|
+| `Pexels` | `GEMINI_API_KEY`, `PEXELS_API_KEY` | [Google AI Studio](https://aistudio.google.com), [Pexels](https://www.pexels.com/api/) |
+| `weather_alarm` | `WEATHER_SERVICE_KEY`, `DISCORD_TOKEN`, `TELEGRAM_TOKEN` | [공공데이터포털](https://www.data.go.kr), Discord/Telegram BotFather |
+| `Analysis_music` | `LILYPOND_PATH` (선택) | LilyPond 로컬 설치 경로 |
+
+> `.env` 파일은 `.gitignore`에 등록되어 있으므로 Git에 커밋되지 않습니다.
+
+---
+
 ## 목차
 
 | # | 폴더명 | 주요 기능 | 언어/스택 | 완성도 |
