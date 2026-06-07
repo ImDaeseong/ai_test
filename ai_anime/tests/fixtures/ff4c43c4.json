@@ -1,0 +1,30 @@
+{
+  "song_id": "ff4c43c4",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151217",
+  "title": "날개짓",
+  "expected": {
+    "bpm": 115,
+    "energy": "medium",
+    "genre": "Global Soul",
+    "genre_profile": "dreamy synth cinematic anime",
+    "timing_mode": "reference_only",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "amber gold",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

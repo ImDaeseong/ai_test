@@ -1,0 +1,30 @@
+{
+  "song_id": "bb07063a",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260519-115621",
+  "title": "커피 한 잔",
+  "expected": {
+    "bpm": 95,
+    "energy": "medium",
+    "genre": "Pure Korean Trot",
+    "genre_profile": "korean trot memory cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Chorus",
+      "Verse",
+      "Chorus",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "amber gold",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

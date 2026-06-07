@@ -1,0 +1,37 @@
+{
+  "main_color_patterns": [
+    "neon magenta(?: and cyber pink)?",
+    "cyber[- ]?pink"
+  ],
+  "ambient_patterns": {
+    "shadow_color": [
+      "deep\\s+plum(?:\\s+and\\s+dark\\s+violet)?"
+    ],
+    "secondary_light": [
+      "(?:(?:subtle|faint|soft|gentle|minimal|unsteady|restrained)\\s+)?icy\\s+cyan(?:\\s+(?:secondary\\s+)?(?:pavement\\s+)?(?:reflections?|edge\\s+light|fringe|glow|flickers?))?"
+    ],
+    "highlight": [
+      "silver[-\\s]white(?:\\s+(?:rim\\s+)?(?:highlights?|light|glow|emphasis|bloom|shimmer))?",
+      "silver\\s+rim\\s+(?:light|highlights?)"
+    ]
+  },
+  "style_word_substitutions": [
+    {
+      "pattern": "\\bcyber(?:punk|[-\\s]?noir|[-\\s]?anime)?\\b",
+      "replacement": "stylized"
+    },
+    {
+      "pattern": "\\banime\\s+noir\\b",
+      "replacement": "cinematic anime"
+    },
+    {
+      "pattern": "\\bneon(?:[-\\s](?:lit|tinted|edged|reflected))?\\b",
+      "palette_key": "neon_substitute",
+      "fallback": "accent-light"
+    },
+    {
+      "pattern": "\\bfuturistic\\b",
+      "replacement": "song-specific cinematic"
+    }
+  ]
+}

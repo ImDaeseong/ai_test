@@ -1,0 +1,34 @@
+{
+  "song_id": "f744bac6",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151137",
+  "title": "나 혼자",
+  "expected": {
+    "bpm": 115,
+    "energy": "medium",
+    "genre": "K-pop Bubblegum Pop",
+    "genre_profile": "vivid idol anime pop",
+    "timing_mode": "audio_applied",
+    "scene_count": 12,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Post-Chorus",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Bridge",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "rose gold",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

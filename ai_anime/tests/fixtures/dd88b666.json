@@ -1,0 +1,31 @@
+{
+  "song_id": "dd88b666",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151733",
+  "title": "아무 일도 일어나지 않는 하루",
+  "expected": {
+    "bpm": 90,
+    "energy": "low",
+    "genre": "Lo-fi Pop",
+    "genre_profile": "quiet ambient anime drift",
+    "timing_mode": "audio_applied",
+    "scene_count": 9,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Bridge",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "electric blue",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

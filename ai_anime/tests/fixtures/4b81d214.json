@@ -1,0 +1,29 @@
+{
+  "song_id": "4b81d214",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-150216",
+  "title": "창밖에 눈이 와",
+  "expected": {
+    "bpm": 122,
+    "energy": "high",
+    "genre": "ambient indie ballad",
+    "genre_profile": "winter ambient indie anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 7,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "teal cyan",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-06-04",
+  "notes": "",
+  "known_issues": []
+}

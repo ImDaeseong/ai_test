@@ -1,0 +1,29 @@
+{
+  "song_id": "acb0f9a7",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-150206",
+  "title": "여름밤",
+  "expected": {
+    "bpm": 134,
+    "energy": "medium",
+    "genre": "jazz ballad",
+    "genre_profile": "late-night jazz cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 7,
+    "sections": [
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "coral orange",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-06-04",
+  "notes": "",
+  "known_issues": []
+}

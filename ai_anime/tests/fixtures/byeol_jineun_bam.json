@@ -1,0 +1,21 @@
+{
+  "song_id": "byeol_jineun_bam",
+  "source_file": "test_new_song.txt",
+  "title": "별이 지는 밤",
+  "expected": {
+    "bpm": 95,
+    "energy": "medium",
+    "mood": ["longing", "nostalgic", "hopeful"],
+    "genre": "dark anime pop",
+    "genre_profile": "bright emotional pop anime",
+    "timing_mode": "reference_only",
+    "scene_count": 6,
+    "sections": ["Intro", "Verse", "Pre-Chorus", "Chorus", "Bridge", "Outro"],
+    "main_color": "soft violet",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-18",
+  "notes": "dark anime pop 장르 → bright emotional pop anime 프로필 매칭(pop 키워드). 오디오 없음(reference_only). 이 곡으로 emotion_shots 단일 문자열을 리스트로 일반화하는 버그 발견 및 수정.",
+  "known_issues": []
+}

@@ -1,0 +1,29 @@
+{
+  "song_id": "33fdd552",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-150154",
+  "title": "녹슨 자전거",
+  "expected": {
+    "bpm": 70,
+    "energy": "high",
+    "genre": "folk indie ballad",
+    "genre_profile": "folk indie memory journey anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 7,
+    "sections": [
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "jade green",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-06-04",
+  "notes": "",
+  "known_issues": []
+}

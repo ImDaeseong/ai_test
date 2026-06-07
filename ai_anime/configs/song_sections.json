@@ -1,0 +1,179 @@
+{
+  "story_stages": {
+    "Intro": "opening",
+    "Verse": "development",
+    "Pre-Chorus": "development",
+    "Chorus": "turning point",
+    "Post-Chorus": "turning point",
+    "Bridge": "climax",
+    "Outro": "resolution"
+  },
+  "climax_sections": ["Bridge", "Chorus"],
+  "climax_position_ratio": 0.6,
+  "resolution_location_keywords": ["dawn", "skyline", "rooftop", "sunrise"],
+  "action_overrides": {
+    "Bridge": {
+      "hide_keywords": ["숨", "hide", "secret", "비밀"],
+      "hide_action": [
+        "mask finally slips, {prop} trembling as buried emotion breaks through the neon surface",
+        "turns away from the brightest edge, {prop} partly hidden as the emotion surfaces"
+      ],
+      "default_action": [
+        "looks past the camera as long-held emotion surfaces, {prop} vibrating faintly with the vocal line",
+        "lowers the gaze, then lets {prop} rise into the frame with restrained emotion",
+        "holds still while the surrounding light moves around {prop}"
+      ]
+    },
+    "Outro": {
+      "cry_keywords": ["울", "cry", "눈물", "tear"],
+      "cry_action": [
+        "lets the smile fall; {prop} dims as tears trace the neon edge into silence",
+        "turns the face out of frame as {prop} catches the last wet highlight"
+      ],
+      "default_action": [
+        "slows to stillness, {prop} settling into the final graphite reflection",
+        "releases the tension in the shoulders as {prop} fades to a quiet pulse",
+        "steps back from {prop}, leaving it as the final emotional anchor"
+      ]
+    },
+    "Chorus": {
+      "smile_keywords": ["웃", "smile", "laugh"],
+      "smile_action": [
+        "surges forward with {prop} raised, forced smile vivid against the neon light",
+        "turns toward the light with a fragile smile while {prop} blooms in the palm",
+        "lets the smile appear in reflection first, then lifts {prop} toward the hook",
+        "steps into the chorus glow as {prop} opens a soft path through the frame"
+      ],
+      "default_action": [
+        "pushes forward through the brightest neon layer with {prop} leading the frame",
+        "opens the posture as {prop} pulls the frame into the chorus",
+        "moves through widening light while {prop} marks the hook rhythm"
+      ]
+    },
+    "Intro": {
+      "music_cue_prefix": "music cue:",
+      "music_cue_action": [
+        "stands in controlled stillness, making a small hand gesture as {prop} begins to glow",
+        "waits inside the first sound texture as {prop} wakes with a faint pulse",
+        "turns slightly into the opening light while {prop} catches the first beat"
+      ]
+    }
+  },
+  "shot_overrides": {
+    "Intro": "wide establishing anime frame with the protagonist small but clearly identifiable",
+    "Bridge": "intimate close-up profile shifting to a three-quarter emotional reveal",
+    "Outro": "slow pullback from the signature prop to the full silhouette"
+  },
+  "chorus_shot_fast": "dynamic forward tracking shot, low angle, strong beat-synced foreground streaks",
+  "chorus_shot_default": "forward tracking shot with widening background parallax and brighter rim light",
+  "movement_patterns": {
+    "Intro": {
+      "any": [
+        "slow push-in that reveals the song-specific prop and silhouette",
+        "gentle sideways reveal from environment texture into the subject",
+        "slow tilt from the motif glow toward the full silhouette"
+      ]
+    },
+    "Verse": {
+      "fast": [
+        "tight lateral tracking with small beat-synced body accents",
+        "quick side-follow motion with clipped foreground pulses"
+      ],
+      "medium": [
+        "gentle lateral dolly following the lyric gesture",
+        "measured push-and-drift matching the vocal phrase",
+        "soft parallax slide that lets the environment answer the lyric"
+      ],
+      "slow": [
+        "lingering drift with minimal hand and eye movement",
+        "slow suspended camera breath around the motif"
+      ]
+    },
+    "Pre-Chorus": {
+      "fast": [
+        "rising handheld drift with quick light pulses before the hook",
+        "short accelerating push with light ticks gathering before the chorus"
+      ],
+      "medium": [
+        "subtle handheld drift that builds anticipation",
+        "slow diagonal rise as the harmony thickens",
+        "held push-in with a small breath before the hook"
+      ],
+      "slow": [
+        "gradual tilt and suspended pause before the emotional turn",
+        "quiet upward drift ending in a held frame"
+      ]
+    },
+    "Chorus": {
+      "fast": [
+        "beat-matched forward dolly with short acceleration bursts",
+        "hook-synced arc with quick foreground streaks"
+      ],
+      "medium": [
+        "steady forward dolly with visible rhythmic parallax",
+        "smooth orbit that widens the chorus space",
+        "lifted push-in with light pulses landing on phrase accents"
+      ],
+      "slow": [
+        "broad slow push through intensified neon atmosphere",
+        "wide gliding motion through the expanded chorus glow"
+      ]
+    },
+    "Bridge": {
+      "any": [
+        "slow tilt from the signature prop to the face, then a motivated match cut",
+        "still close frame interrupted by one precise motif-led camera shift",
+        "slow orbit into a vulnerable three-quarter reveal"
+      ]
+    },
+    "Outro": {
+      "any": [
+        "slow pullback and dissolve into graphite-gray silence",
+        "gentle backward drift until the subject becomes part of the environment",
+        "small downward tilt into the final fading motif"
+      ]
+    }
+  },
+  "default_movement": [
+    "song-tempo-aware cinematic drift",
+    "measured camera breath tied to the vocal phrase",
+    "soft parallax motion shaped by the section emotion"
+  ],
+  "intensity_defaults": {
+    "Chorus": "high",
+    "Bridge": "emotional peak",
+    "Intro": "low",
+    "Outro": "falling"
+  },
+  "final_section_intensity": "falling",
+  "aliases": {
+    "intro": "Intro",
+    "verse": "Verse",
+    "verse 1": "Verse",
+    "verse 2": "Verse",
+    "pre chorus": "Pre-Chorus",
+    "prechorus": "Pre-Chorus",
+    "pre-chorus": "Pre-Chorus",
+    "chorus": "Chorus",
+    "chorus 1": "Chorus",
+    "chorus 2": "Chorus",
+    "chorus 3": "Chorus",
+    "final chorus": "Chorus",
+    "repeat chorus": "Chorus",
+    "double chorus": "Chorus",
+    "post chorus": "Post-Chorus",
+    "bridge": "Bridge",
+    "build": "Bridge",
+    "build up": "Bridge",
+    "build-up": "Bridge",
+    "buildup": "Bridge",
+    "solo": "Bridge",
+    "outro": "Outro",
+    "hook": "Chorus",
+    "interlude": "Bridge",
+    "drop": "Chorus",
+    "breakdown": "Bridge",
+    "refrain": "Chorus"
+  },
+  "default_sections": ["Intro", "Verse", "Pre-Chorus", "Chorus", "Bridge", "Outro"]
+}

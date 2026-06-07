@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# 생성 결과물 (스냅샷 제외 — 필요 시 주석 해제)
+output/
+# output/storyboard/  # 스냅샷을 추적하려면 이 줄만 주석 해제
+
+# 파이프라인 중간 산출물 (입력 파일은 공유 필요 시 제외)
+input/song_master.json
+input/raw_song.txt
+input/ui_state.json
+analysis/
+character/
+storyboard/
+prompts/
+
+# Suno 이력 (개인 데이터)
+data/suno_history.jsonl
+data/config_backups/
+
+# 오디오·미디어 업로드
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.flac
+*.ogg
+
+# PyInstaller 빌드
+build/
+dist/
+*.spec
+
+# 환경
+.env
+*.env

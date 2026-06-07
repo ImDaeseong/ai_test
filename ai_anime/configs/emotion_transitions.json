@@ -1,0 +1,40 @@
+{
+  "chorus_lift_emotions": ["sad", "lonely", "loneliness", "nostalgic", "longing", "anxious", "bittersweet", "fearful", "dreamy"],
+  "chorus_lift_target": "hopeful",
+  "chorus_lift_exceptions": {
+    "romantic": "excited",
+    "fearful": "tense",
+    "dreamy": "hopeful"
+  },
+  "bridge_deepen": {
+    "lonely": "sad",
+    "loneliness": "sad",
+    "nostalgic": "sad",
+    "longing": "sad",
+    "romantic": "longing",
+    "hopeful": "sad",
+    "excited": "anxious",
+    "angry": "angry",
+    "defiant": "defiant",
+    "fearful": "fearful",
+    "dreamy": "longing",
+    "tense": "fearful"
+  },
+  "outro_resolve": {
+    "angry": "bittersweet",
+    "defiant": "peaceful",
+    "anxious": "peaceful",
+    "excited": "hopeful",
+    "romantic": "bittersweet",
+    "longing": "bittersweet",
+    "sad": "hope",
+    "lonely": "hope",
+    "loneliness": "hope",
+    "nostalgic": "bittersweet",
+    "fearful": "peaceful",
+    "dreamy": "peaceful",
+    "tense": "peaceful"
+  },
+  "outro_resolve_default": "hope",
+  "climax_sections": ["Chorus", "Bridge"]
+}

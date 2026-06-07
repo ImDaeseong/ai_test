@@ -1,0 +1,144 @@
+{
+  "default": {
+    "legacy_mood": ["melancholic", "cinematic"],
+    "legacy_visual_cues": ["empty street", "rain", "silhouette"],
+    "neutral_mood": ["cinematic"],
+    "neutral_visual_cues": ["song-specific setting", "signature prop", "expressive lighting"]
+  },
+  "profiles": [
+    {
+      "id": "tropical_vacation",
+      "keys": [
+        "tropical house",
+        "tropical",
+        "vacation",
+        "holiday",
+        "summer",
+        "beach",
+        "shore",
+        "ocean",
+        "sea",
+        "steel drum",
+        "steel drums",
+        "steelpan",
+        "휴가",
+        "바다",
+        "태양",
+        "해변",
+        "모래",
+        "파도",
+        "파란 하늘",
+        "여름"
+      ],
+      "stress_keys": ["stress", "pressure", "압박", "스트레스", "답답", "지쳤", "경쟁", "마감"],
+      "mood": ["hopeful", "excited", "cinematic"],
+      "stress_mood": "anxious-release",
+      "visual_cues": ["sunlit shoreline", "warm sea breeze", "bright water", "summer sky", "coral sunset"],
+      "main_color": "coral orange",
+      "primary_emotion": "hopeful",
+      "season": "sunlit tropical summer day",
+      "environment_family": "open coastal vacation atmosphere",
+      "bridge_blocked_emotions": ["sad", "bittersweet", "longing"],
+      "emotion_maps": {
+        "hopeful": {
+          "symbols": ["sunlit wave edge", "open hand in sea breeze", "coral shell charm"],
+          "lighting": "bright coastal daylight with warm coral highlights and clean white sparkle",
+          "camera": "forward tracking shot from workday pressure into open beach air",
+          "environment": "sunlit shoreline and open summer sky"
+        },
+        "excited": {
+          "symbols": ["steel-drum sparkle bursts", "running footprints in warm sand", "wide blue water"],
+          "lighting": "high-key summer pop light with coral-orange accents and crisp white highlights",
+          "camera": "rhythmic lateral tracking with buoyant percussion-timed cuts",
+          "environment": "bright beach deck and tropical pop stage energy"
+        },
+        "hope": {
+          "symbols": ["coral sunrise over water", "lifted vacation bag", "wind-open shirt hem"],
+          "lighting": "golden daylight bloom over blue water with soft coral rim light",
+          "camera": "slow crane rise toward open sky and sparkling water",
+          "environment": "coastal sunrise horizon"
+        },
+        "anxious": {
+          "symbols": ["stacked documents left behind", "clock shadow fading", "doorway opening to sunlight"],
+          "lighting": "cool office light breaking into warm coastal daylight",
+          "camera": "tight interior push-out into a wider exterior frame",
+          "environment": "workday interior giving way to seaside daylight"
+        }
+      },
+      "motif_template": "sunlit wave arcs and {main_color} shell glints marking release from routine",
+      "symbol_filter": ["empty street", "rain", "silhouette", "rain on glass", "empty bench", "flickering streetlamp"],
+      "extra_locations": [
+        {
+          "keys": ["서류", "월요일", "화면", "마감", "office", "work"],
+          "location": "bright workday room opening toward vacation daylight"
+        },
+        {
+          "keys": ["바다", "sea", "ocean", "shore", "beach", "파도", "모래"],
+          "location": "shoreline edge under bright summer sky"
+        }
+      ],
+      "section_location_preferences": {
+        "Intro": ["shoreline", "beach", "water"],
+        "Chorus": ["beach", "water", "shore"],
+        "Bridge": ["sky", "shoreline"],
+        "Outro": ["sunset", "water", "beach", "sky"]
+      },
+      "action_context_prop_keys": ["shell", "sunlit", "coral", "sea"],
+      "section_actions": {
+        "Intro": "lets the first sea-breeze rhythm reveal {prop}, standing relaxed in bright vacation light",
+        "Chorus": [
+          "runs into the sea breeze with open shoulders, lifting {prop} toward the sunlit water",
+          "steps forward with arms wide open as {prop} catches the full coastal light",
+          "moves through the open frame toward sunlit water, {prop} tracing a bright arc overhead"
+        ],
+        "Bridge": "breathes deeply under the blue sky, shoulders relaxing as {prop} glows steady in the breeze",
+        "Outro": "opens both arms to the shoreline wind, {prop} settling into a bright final summer glint"
+      },
+      "action_rules": [
+        {
+          "keys": ["모래", "파도", "바람", "soft laugh", "웃"],
+          "action": "walks barefoot along warm sand, laughing freely as {prop} flashes with wave-reflected light"
+        },
+        {
+          "keys": ["가방", "문", "떠나", "설레"],
+          "action": "steps toward the open door with a packed vacation bag, {prop} swinging in bright anticipation"
+        },
+        {
+          "keys": ["서류", "월요일", "화면", "마감", "경쟁", "답답"],
+          "action": "turns away from the workday screen toward open daylight, {prop} catching the first warm breeze"
+        }
+      ],
+      "default_action": "moves with relaxed summer-pop energy, {prop} flashing gently with the tropical rhythm",
+      "focus_rules": [
+        {
+          "keys": ["서류", "월요일", "화면", "마감", "경쟁", "답답"],
+          "focus": "workday pressure dissolving into a strip of beach daylight"
+        },
+        {
+          "keys": ["steel drum", "steel drums", "percussion", "tropical percussion"],
+          "focus": "steel-drum sparkle skipping across bright water"
+        },
+        {
+          "keys": ["바다", "태양", "sea", "ocean", "sun"],
+          "focus": "sunlight opening across blue water"
+        },
+        {
+          "keys": ["모래", "파도", "바람", "breeze"],
+          "focus": "warm sand, wave foam, and sea breeze moving around the shell charm"
+        },
+        {
+          "keys": ["자유", "휴가", "걱정은 날려"],
+          "focus": "vacation freedom carried by coral shell glints"
+        }
+      ],
+      "movement_patterns": {
+        "Intro": "gentle push-in with sea-breeze parallax and soft percussion shimmer",
+        "Verse": "light walking track with buoyant shoulder motion and sunlit foreground wipes",
+        "Chorus": "bright forward rush with wave-synced cuts and open-sky camera lift",
+        "Bridge": "slow breath-led tilt upward into blue sky, then a warm release",
+        "Outro": "slow pullback over sparkling water and coral sunset glow",
+        "default": "smooth tropical pop motion with readable beat accents"
+      }
+    }
+  ]
+}

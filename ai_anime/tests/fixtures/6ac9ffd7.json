@@ -1,0 +1,30 @@
+{
+  "song_id": "6ac9ffd7",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-152336",
+  "title": "힘들때웃어본다",
+  "expected": {
+    "bpm": 92,
+    "energy": "medium",
+    "genre": "Emotional pop rap",
+    "genre_profile": "rhythmic trap-pop cinematic anime",
+    "timing_mode": "reference_only",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "electric blue",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

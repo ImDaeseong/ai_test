@@ -1,0 +1,33 @@
+{
+  "song_id": "dfe249a3",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151105",
+  "title": "그대로 접힌 양말",
+  "expected": {
+    "bpm": 99,
+    "energy": "medium",
+    "genre": "bright emotional pop rap",
+    "genre_profile": "vivid idol anime pop",
+    "timing_mode": "audio_applied",
+    "scene_count": 11,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Post-Chorus",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "jade green",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-06-04",
+  "notes": "",
+  "known_issues": []
+}

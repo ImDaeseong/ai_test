@@ -1,0 +1,30 @@
+{
+  "song_id": "534f196e",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-150958",
+  "title": "같은 하늘 다른 세상",
+  "expected": {
+    "bpm": 120,
+    "energy": "medium",
+    "genre": "Dreamy indie pop",
+    "genre_profile": "bright emotional pop anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "soft violet",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

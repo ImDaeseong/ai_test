@@ -1,0 +1,32 @@
+{
+  "song_id": "c6a67881",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151035",
+  "title": "그 시절이 그립다",
+  "expected": {
+    "bpm": 95,
+    "energy": "medium",
+    "genre": "2010s pop rap",
+    "genre_profile": "soul-infused cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 10,
+    "sections": [
+      "Intro",
+      "Chorus",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "amber gold",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

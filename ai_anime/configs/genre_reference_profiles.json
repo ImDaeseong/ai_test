@@ -1,0 +1,324 @@
+{
+  "schema_version": 1,
+  "safety_rule": "Use sources only to derive broad genre grammar. Never reproduce a recognizable artist, face, copyrighted character, logo, exact costume, signature prop, music-video shot sequence, or exact stage design.",
+  "sources": {
+    "rockhall_live": {
+      "title": "Rock & Roll Hall of Fame exhibition and collection material",
+      "url": "https://rockhall.com/exhibitions/",
+      "institution": "Rock & Roll Hall of Fame",
+      "used_for": ["performance energy", "instrument-centered staging", "concert photography"]
+    },
+    "smithsonian_hiphop": {
+      "title": "Hip-Hop and Rap Across the Smithsonian",
+      "url": "https://www.si.edu/spotlight/hip-hop-rap",
+      "institution": "Smithsonian Institution",
+      "used_for": ["DJ culture", "dance circles", "street fashion", "graffiti and community space"]
+    },
+    "folkways_story": {
+      "title": "Smithsonian Folkways music and cultural context collections",
+      "url": "https://folkways.si.edu/",
+      "institution": "Smithsonian Folkways Recordings",
+      "used_for": ["intimate storytelling", "acoustic performance", "place and memory"]
+    },
+    "moma_visual_music": {
+      "title": "MoMA media and performance art collection",
+      "url": "https://www.moma.org/collection/terms/media-and-performance-art",
+      "institution": "The Museum of Modern Art",
+      "used_for": ["abstract motion", "light as structure", "time-based visual composition"]
+    },
+    "moma_electronic": {
+      "title": "Thinking Machines: Art and Design in the Computer Age",
+      "url": "https://www.moma.org/calendar/exhibitions/3863",
+      "institution": "The Museum of Modern Art",
+      "used_for": ["systems aesthetics", "algorithmic geometry", "human-machine interfaces"]
+    },
+    "grammy_kpop": {
+      "title": "GRAMMY Museum K-pop programming and exhibitions",
+      "url": "https://grammymuseum.org/",
+      "institution": "GRAMMY Museum",
+      "used_for": ["choreography", "fashion-led identity", "cinematic pop staging"]
+    },
+    "smithsonian_jazz": {
+      "title": "Jazz collections and resources",
+      "url": "https://americanhistory.si.edu/explore/topics/music/jazz",
+      "institution": "Smithsonian National Museum of American History",
+      "used_for": ["player-focused composition", "ensemble dialogue", "club and stage atmosphere"]
+    },
+    "smithsonian_soul": {
+      "title": "African American music collections",
+      "url": "https://nmaahc.si.edu/explore/initiatives/center-study-african-american-music",
+      "institution": "Smithsonian National Museum of African American History and Culture",
+      "used_for": ["expressive performance", "community memory", "voice-centered staging"]
+    }
+  },
+  "families": {
+    "rock": {
+      "profile_names": ["high-contrast rock anime noir"],
+      "source_ids": ["rockhall_live"],
+      "design_basis": "Instrument-led physical performance, visible stage mechanics, compressed tension that opens into collective release.",
+      "narrative_modes": [
+        "build from rehearsal-like restraint into a full-stage release",
+        "treat feedback, cables, amplifiers, and empty venue architecture as emotional pressure",
+        "alternate performer isolation with ensemble impact"
+      ],
+      "environments": [
+        "working rehearsal room with visible cables, cases, and practical lamps",
+        "backstage loading corridor opening toward stage light",
+        "compact club stage with layered amplifiers and low ceiling truss",
+        "empty arena floor seen from the edge of the stage",
+        "industrial sound-check space with movable risers"
+      ],
+      "camera_language": [
+        "low lateral tracking close to instruments with foreground hardware crossing frame",
+        "shoulder-height handheld composition with controlled off-axis urgency",
+        "wide stage geography followed by a fast push toward the lead action",
+        "rear-stage angle looking through performers toward open audience space"
+      ],
+      "motion_language": [
+        "body weight, fabric, cables, and instrument straps react to strong beats",
+        "short physical camera surges settle into readable held frames",
+        "ensemble movement converges on chorus accents without chaotic shaking"
+      ],
+      "edit_language": [
+        "hard cut on a drum or guitar accent followed by a longer reaction shot",
+        "match cut between instrument detail and performer posture",
+        "brief blackout or practical-light flare at section boundaries"
+      ],
+      "lighting_language": [
+        "practical backlights and sharp side keys reveal stage depth and equipment silhouettes",
+        "high contrast grows from isolated pools of light into wider chorus illumination"
+      ],
+      "character_language": [
+        "functional performance clothing with a strong readable silhouette and one song-specific detail",
+        "posture communicates effort, resistance, and release rather than fashion posing"
+      ],
+      "avoid": ["generic empty live-house exterior", "constant red-black palette", "unmotivated flames", "random crowd surfing"]
+    },
+    "acoustic_ballad": {
+      "profile_names": [
+        "intimate acoustic anime noir",
+        "folk indie memory journey anime",
+        "winter ambient indie anime",
+        "cozy lo-fi cassette bedroom anime",
+        "wide-open road anime noir"
+      ],
+      "source_ids": ["folkways_story"],
+      "design_basis": "Human-scale storytelling, tactile objects, lived-in rooms, landscape memory, and patient observation.",
+      "narrative_modes": [
+        "move from a private everyday ritual toward a modest emotional opening",
+        "let one tactile object carry memory across changing places",
+        "use distance, weather, and domestic detail as emotional evidence"
+      ],
+      "environments": [
+        "small kitchen before sunrise with one chair pulled away from the table",
+        "quiet practice room with acoustic panels and an open instrument case",
+        "rural bus shelter beside a long road and changing weather",
+        "attic room with stored objects and soft window dust",
+        "modest community hall after everyone has left"
+      ],
+      "camera_language": [
+        "patient eye-level medium frame with meaningful empty space",
+        "close observation of hands, worn surfaces, and small object changes",
+        "slow doorway or window reveal that preserves natural spatial depth",
+        "long-lens landscape frame with restrained subject movement"
+      ],
+      "motion_language": [
+        "small breath, hand, curtain, steam, dust, and weather motion carry the rhythm",
+        "camera movement follows phrase length rather than every beat",
+        "emotional change appears through posture and distance before facial emphasis"
+      ],
+      "edit_language": [
+        "soft match dissolve through shape, gesture, or changing daylight",
+        "hold after the lyric ends before moving to the next location",
+        "cut between present detail and remembered space without literal flashback effects"
+      ],
+      "lighting_language": [
+        "motivated window, lamp, or overcast light with gentle falloff",
+        "climax expands available light while preserving an intimate scale"
+      ],
+      "character_language": [
+        "lived-in layered clothing with tactile fabric and quiet asymmetry",
+        "a familiar human silhouette defined by gesture and personal object rather than spectacle"
+      ],
+      "avoid": ["default empty park bench", "generic rain-on-window montage", "oversized concert stage", "constant glowing particles"]
+    },
+    "hip_hop_trap": {
+      "profile_names": ["rhythmic trap-pop anime noir"],
+      "source_ids": ["smithsonian_hiphop"],
+      "design_basis": "Rhythm, self-authored identity, DJ and dance culture, neighborhood geometry, graphic surfaces, and social space.",
+      "narrative_modes": [
+        "frame the lead as an author of the space rather than a passive figure in a dark street",
+        "build visual call-and-response between performer, crew, architecture, and beat",
+        "turn repeated routes, signs, steps, and circles into rhythmic structure"
+      ],
+      "environments": [
+        "community recreation room rearranged for a dance circle",
+        "record shop listening corner with layered sleeves and speaker stacks",
+        "rooftop practice area marked by painted floor geometry",
+        "daylight neighborhood court with graphic shadows and gathering space",
+        "compact DJ booth facing an open multipurpose floor"
+      ],
+      "camera_language": [
+        "grounded wide lens that keeps body movement and neighborhood geometry readable",
+        "lateral tracking synchronized to footwork and hand rhythm",
+        "circular composition around a dance or performance exchange",
+        "graphic top-down insert followed by an eye-level return"
+      ],
+      "motion_language": [
+        "footwork, shoulders, hands, fabric, turntables, and crowd response articulate the beat",
+        "camera accents follow bars and phrase changes instead of continuous shaking",
+        "foreground people and objects create layered rhythmic wipes"
+      ],
+      "edit_language": [
+        "cut on lyrical cadence with occasional held reaction frames",
+        "graphic match cut between circular, linear, or block-shaped forms",
+        "brief speed change reserved for a clear musical switch"
+      ],
+      "lighting_language": [
+        "practical street, shop, gym, or daylight sources create graphic contrast",
+        "color accents belong to clothing, murals, equipment, and architecture rather than generic neon"
+      ],
+      "character_language": [
+        "self-authored street styling with distinct layering, footwear silhouette, and personal accessories",
+        "confident stance and social awareness replace anonymous brooding"
+      ],
+      "avoid": ["generic wet alley", "crime imagery", "anonymous hooded silhouette", "constant glitch overlays"]
+    },
+    "electronic_synth": {
+      "profile_names": ["dreamy synth anime noir", "quiet ambient anime drift", "pastel cyber anime pop", "psychedelic indie surreal anime", "telephone-signal-pop"],
+      "source_ids": ["moma_visual_music", "moma_electronic"],
+      "design_basis": "Time-based abstraction, light as a structural element, systems, interfaces, repetition, variation, and human-machine tension.",
+      "narrative_modes": [
+        "introduce a simple visual rule, vary it, break it, then resolve it in a transformed system",
+        "let human gesture alter light, geometry, or interface behavior",
+        "use repetition with controlled deviation instead of random surreal imagery"
+      ],
+      "environments": [
+        "modular light chamber with movable translucent planes",
+        "analog control room with patch cables, meters, and geometric shadows",
+        "open black-box performance space defined by projected grids",
+        "kinetic installation corridor responding to footsteps",
+        "quiet observatory-like room with rotating optical elements"
+      ],
+      "camera_language": [
+        "precise symmetrical frame that slowly reveals one controlled deviation",
+        "measured orbit around layered translucent structures",
+        "macro interface detail expanding into architectural scale",
+        "locked geometric frame with motion occurring inside the composition"
+      ],
+      "motion_language": [
+        "loops evolve through phase shifts, parameter changes, and spatial layering",
+        "light, particles, panels, and reflections respond to musical structure",
+        "human motion remains simple so system behavior stays legible"
+      ],
+      "edit_language": [
+        "phase-aligned match cut between repeated geometric states",
+        "signal-like wipe or exposure change tied to a section transformation",
+        "long continuous build interrupted by one deliberate structural cut"
+      ],
+      "lighting_language": [
+        "light defines depth, rhythm, and interface state rather than decorating the scene",
+        "controlled gradients and optical reflections change according to musical layers"
+      ],
+      "character_language": [
+        "clean modular silhouette with one tactile imperfection or analog detail",
+        "gesture reads as operating, listening, or responding to a system"
+      ],
+      "avoid": ["generic neon city", "random hologram clutter", "unstructured glitch", "default cyberpunk costume"]
+    },
+    "idol_pop": {
+      "profile_names": [
+        "bright emotional pop anime",
+        "vivid idol anime pop",
+        "tropical vacation anime pop",
+        "vivid urban latin anime"
+      ],
+      "source_ids": ["grammy_kpop"],
+      "design_basis": "Choreography, fashion-led identity, clear group geometry, cinematic set changes, and hook-centered visual recall.",
+      "narrative_modes": [
+        "build each section around a clear visual hook that develops with the song",
+        "move between personal close-up storytelling and coordinated group release",
+        "use fashion, set transformation, and choreography as one coherent identity system"
+      ],
+      "environments": [
+        "transformable studio set with moving walls and visible depth changes",
+        "bright architectural courtyard designed for group formations",
+        "color-blocked transit concourse with strong vanishing lines",
+        "sunlit rehearsal loft that transforms for the chorus",
+        "graphic rooftop pavilion with layered platforms"
+      ],
+      "camera_language": [
+        "centered formation wide shot transitioning into a clean member close-up",
+        "crane or lift revealing choreography geometry without losing faces",
+        "smooth lateral travel through changing set layers",
+        "precise push-in timed to the hook gesture"
+      ],
+      "motion_language": [
+        "choreography shapes lines, diagonals, circles, and level changes",
+        "camera and performers exchange emphasis rather than moving at maximum intensity together",
+        "hair, fabric, props, and set pieces reinforce one readable hook"
+      ],
+      "edit_language": [
+        "match cut on a signature gesture between contrasting sets",
+        "clean beat cut between formation wide and emotional close-up",
+        "set transformation or lighting shift reserved for chorus lift"
+      ],
+      "lighting_language": [
+        "high-clarity key light protects faces while set lighting carries color and scale",
+        "chorus lighting broadens into layered depth rather than simple brightness"
+      ],
+      "character_language": [
+        "fashion silhouette is coordinated but each lead retains one distinct shape or accessory",
+        "expression, gesture, and styling communicate the song concept without copying a known group"
+      ],
+      "avoid": ["generic idol stage", "uniform face design", "constant beauty close-ups", "logo-like symbols"]
+    },
+    "jazz_soul": {
+      "profile_names": [
+        "late-night jazz anime noir",
+        "soul-infused cinematic anime",
+        "orchestral cinematic anime",
+        "korean trot memory anime noir"
+      ],
+      "source_ids": ["smithsonian_jazz", "smithsonian_soul"],
+      "design_basis": "Player-centered expression, ensemble dialogue, voice and instrument detail, social memory, and dynamic light across a shared space.",
+      "narrative_modes": [
+        "treat musical exchange as conversation between faces, hands, breath, and room",
+        "move from solitary preparation toward ensemble or community connection",
+        "let repetition return with changed emotional weight"
+      ],
+      "environments": [
+        "small listening room with tables arranged around an intimate performance area",
+        "daytime rehearsal studio with sheet stands and worn wooden floor",
+        "community theater side stage with layered curtains and practical lamps",
+        "recording room separated by glass but visually connected",
+        "after-hours restaurant room rearranged for a live set"
+      ],
+      "camera_language": [
+        "medium two-shot that preserves eye line and musical exchange",
+        "close detail on breath, fingers, keys, strings, or microphone distance",
+        "slow pan across ensemble reactions before returning to the lead",
+        "layered frame through stands, curtains, or instrument silhouettes"
+      ],
+      "motion_language": [
+        "camera movement follows phrasing, call-and-response, and held notes",
+        "small performer reactions and ensemble timing carry emotional change",
+        "room atmosphere moves gently while hands and faces remain precise"
+      ],
+      "edit_language": [
+        "cut from lead phrase to listening reaction, then return on response",
+        "dissolve or pan transition motivated by a sustained note",
+        "hold a shared frame through the emotional peak instead of fragmenting it"
+      ],
+      "lighting_language": [
+        "layered practical light shapes faces, instruments, and depth without hiding expression",
+        "warm and cool zones distinguish solo focus from ensemble space"
+      ],
+      "character_language": [
+        "expressive but grounded clothing with material detail readable under practical light",
+        "identity is carried by posture, listening behavior, and relationship to instrument or voice"
+      ],
+      "avoid": ["generic smoky club", "permanent fedora imagery", "empty luxury lounge", "random vintage filters"]
+    }
+  }
+}

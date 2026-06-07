@@ -1,0 +1,30 @@
+{
+  "song_id": "100_seconds",
+  "source_file": "raw_song.txt",
+  "title": "100 Seconds",
+  "expected": {
+    "bpm": 78,
+    "energy": "medium",
+    "genre": "Contemporary K-Pop Ballad",
+    "genre_profile": "intimate acoustic cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "amber gold",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-18",
+  "notes": "78 BPM K-Pop Ballad. 오디오 파일 있음(audio_applied). 8섹션(Final Chorus→Chorus 포함). [Build-up]/[Drop]/[Breakdown]은 프로덕션 노트로 처리. 이 곡으로 choose_shot() 중복 카메라 버그 발견: 같은 emotion(bittersweet)이 Sc03/Sc05에 반복 → used_shots 추적으로 수정.",
+  "known_issues": [],
+  "input_dir": "20260530-150923"
+}
