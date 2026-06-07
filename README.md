@@ -1,7 +1,7 @@
 # 소스 설명
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-06-07 (ai-webtoon, ai-webtoon_capcut 이전)
-> 총 18개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
+> 작성일: 2026-05-08 / 최종 수정: 2026-06-07 (ai_anime, ai-webtoon, ai-webtoon_capcut 이전)
+> 총 19개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
 
 ## 저장소 목표
 
@@ -35,6 +35,7 @@
 | 16 | [run_game](#16-run_game) | Steam·Epic·Netmarble 게임 설치 탐지 및 런처 실행기 | C++ / MFC (Visual Studio 2022) | ★★★★★ |
 | 17 | [ai-webtoon](#17-ai-webtoon) | 웹툰 만화 패널 이미지 프롬프트 자동 생성 | Python + Flask | ★★★★★ |
 | 18 | [ai-webtoon_capcut](#18-ai-webtoon_capcut) | 웹툰 패널 이미지 → Remotion/CapCut 타임라인 자동 생성 | Python + Node.js (Remotion) | ★★★☆☆ |
+| 19 | [ai_anime](#19-ai_anime) | 애니메이션 MV 스토리보드 자동 생성 | Python + Flask | ★★★★★ |
 
 ---
 
@@ -951,6 +952,56 @@ python -m json.tool GameConfig.json
 
 ### 개발 완성도: ★★★★★
 2026-05-28 검증: Debug/Release 클린 빌드 warning 0 / error 0. `GameConfig.json` 파싱 정상. 레거시 심볼(Diskless 탐지, 서버 JSON 다운로드, Kingsroad 하드코딩 폴백) 완전 제거 확인. AI 개발 프롬프트: `run_game_codex_Prompts/2.초기화 프롬프트.md`.
+
+---
+
+## 19. ai_anime
+
+### 기능 개요
+동적 세계관 기반 애니메이션 뮤직비디오 스토리보드를 자동 생성하는 도구입니다.
+17개 감정 × 13개 장르 조합으로 곡마다 완전히 다른 캐릭터·세계관을 생성합니다.
+
+### 주요 기능
+- 외부 AI API 없음 (순수 Python 템플릿 엔진)
+- 이미지 프롬프트 6개 플랫폼 / 영상 프롬프트 11개 플랫폼
+- 플랫폼 정책 안전화 자동 적용
+- 웹 UI 제공 (포트 8000)
+- 33개 회귀 테스트 + 56개 단위 테스트 통과
+
+### 폴더 구조
+```
+ai_anime/
+├── scripts/          # 파이프라인·생성·검증 스크립트
+│   ├── run_pipeline.py        # 단일 곡 처리
+│   ├── run_regression.py      # 회귀 테스트
+│   ├── scene_generator.py     # 씬 생성 엔진
+│   ├── image_prompt_generator.py
+│   ├── world_builder.py
+│   └── tests_unit.py          # 56개 단위 테스트
+├── configs/          # 장르·감정·룰·플랫폼 설정 JSON
+├── tests/fixtures/   # 회귀 테스트 픽스처
+├── input/            # 곡 정보 txt 파일
+├── output/           # 생성된 스토리보드 (곡별 폴더)
+├── run_web.bat       # 웹 UI 실행
+├── run_all.bat       # 전체 input/ 일괄 처리
+└── requirements.txt
+```
+
+### 사용 방법
+```bash
+run_web.bat                                        # 웹 UI → http://localhost:8000
+python scripts/run_pipeline.py --input "input\곡명.txt"   # 단일 곡
+python scripts/run_regression.py                   # 회귀 테스트 (33개)
+python scripts/tests_unit.py                       # 단위 테스트 (56개)
+python scripts/validate_configs.py                 # 설정 검증
+```
+
+### 기술 스택
+- Python 3.x / Flask (웹 UI)
+- 외부 AI API 없음 (순수 Python 템플릿 엔진)
+
+### 개발 완성도: ★★★★★
+33 regression + 56 unit 통과. 212곡 이상 검증. 웹 UI·CLI 모두 지원. 프로덕션 사용 중.
 
 ---
 
