@@ -1,0 +1,134 @@
+{
+  "_comment": "가사 키워드 → 시각 장면 매핑. prompt_generator.py가 가사에서 키워드를 감지하면 해당 visual_scene을 패널 분위기에 반영.",
+
+  "mappings": {
+
+    "공간/장소": {
+      "창문": {
+        "keywords": ["창문", "창가", "유리창", "window"],
+        "visual_scene": "cute chibi skeleton gazing through a glowing rain-streaked window, neon magenta reflections on glass, soft city lights outside",
+        "mood": "reflective, quiet"
+      },
+      "밤": {
+        "keywords": ["밤", "밤하늘", "야간", "night", "밤이"],
+        "visual_scene": "late night cyberpunk city skyline, oversized neon magenta moon glowing, cute chibi skeleton band silhouetted against the night sky",
+        "mood": "atmospheric, nocturnal"
+      },
+      "길": {
+        "keywords": ["길", "거리", "도로", "골목", "street", "road"],
+        "visual_scene": "neon-lit cyberpunk street, cute chibi skeleton walking or standing, magenta glow reflecting on wet pavement",
+        "mood": "lonely, searching"
+      },
+      "하늘": {
+        "keywords": ["하늘", "sky", "구름", "cloud"],
+        "visual_scene": "wide shot of dramatic cyberpunk sky with oversized neon magenta moon, cute chibi skeleton looking upward",
+        "mood": "open, expansive"
+      },
+      "무대": {
+        "keywords": ["무대", "stage", "공연", "concert", "라이브"],
+        "visual_scene": "full cyberpunk concert stage with cute chibi skeleton band performing, neon magenta spotlights, crowd silhouettes below",
+        "mood": "energetic, performance"
+      }
+    },
+
+    "감정/심리": {
+      "눈물": {
+        "keywords": ["눈물", "울다", "울어", "tear", "cry", "눈물이"],
+        "visual_scene": "extreme close-up of cute chibi skeleton face, single sparkling teardrop falling from glowing hollow eye socket, neon magenta glow intensifying",
+        "mood": "emotional, sad"
+      },
+      "사랑": {
+        "keywords": ["사랑", "좋아", "사랑해", "그리워", "love"],
+        "visual_scene": "cute chibi skeleton with small heart sparkles around hollow eye sockets, warm neon magenta glow, gentle expression",
+        "mood": "warm, longing"
+      },
+      "이별": {
+        "keywords": ["이별", "헤어져", "떠나", "goodbye", "작별", "끝"],
+        "visual_scene": "cute chibi skeleton band member walking away from stage, single backward glance, neon magenta moon behind, dramatic but adorable",
+        "mood": "bittersweet, farewell"
+      },
+      "그리움": {
+        "keywords": ["그리워", "보고싶어", "그리움", "miss", "그리"],
+        "visual_scene": "cute chibi skeleton sitting alone on stage edge, gazing at oversized neon magenta moon, soft sparkle atmosphere",
+        "mood": "nostalgic, longing"
+      },
+      "행복": {
+        "keywords": ["행복", "기쁨", "좋아", "신나", "happy", "joy"],
+        "visual_scene": "cute chibi skeleton band jumping with joy, star and heart sparkle effects everywhere, vibrant neon magenta energy bursts",
+        "mood": "joyful, celebratory"
+      },
+      "외로움": {
+        "keywords": ["외로워", "혼자", "alone", "lonely", "외로"],
+        "visual_scene": "cute chibi skeleton standing alone center stage, single spotlight, oversized moon above, small sweat drop on skull",
+        "mood": "solitary, melancholic"
+      }
+    },
+
+    "시간": {
+      "아침": {
+        "keywords": ["아침", "새벽", "dawn", "morning", "해돋이"],
+        "visual_scene": "cyberpunk city at dawn, neon lights fading, cute chibi skeleton band silhouette on stage against a gradient purple-magenta sky",
+        "mood": "hopeful, new beginning"
+      },
+      "저녁": {
+        "keywords": ["저녁", "황혼", "sunset", "evening", "노을"],
+        "visual_scene": "sunset cyberpunk skyline with deep magenta-orange gradient, cute chibi skeleton in medium shot, warm glow on skull",
+        "mood": "warm, transitional"
+      },
+      "계절": {
+        "keywords": ["봄", "여름", "가을", "겨울", "spring", "summer", "autumn", "winter"],
+        "visual_scene": "seasonal webtoon panel — seasonal effects mixed with cyberpunk neon (cherry blossoms / summer heat waves / falling leaves / snow) around cute chibi skeleton",
+        "mood": "seasonal, poetic"
+      }
+    },
+
+    "자연": {
+      "비": {
+        "keywords": ["비", "빗속", "rain", "빗소리", "비가"],
+        "visual_scene": "cyberpunk city in rain, cute chibi skeleton standing in downpour, neon magenta rain drops, puddle reflections of the moon",
+        "mood": "melancholic, cinematic"
+      },
+      "바람": {
+        "keywords": ["바람", "wind", "바람이", "바람에"],
+        "visual_scene": "cute chibi skeleton with costume fabric flowing in wind, speed lines showing breeze, neon magenta particles drifting",
+        "mood": "free, flowing"
+      },
+      "별": {
+        "keywords": ["별", "star", "별빛", "별이"],
+        "visual_scene": "cyberpunk night sky filled with stars and oversized neon magenta moon, cute chibi skeleton looking up with sparkle eyes",
+        "mood": "dreamy, vast"
+      },
+      "불꽃": {
+        "keywords": ["불꽃", "불", "flame", "fire", "열정"],
+        "visual_scene": "cute chibi skeleton performing with neon magenta flame-like energy effects around stage, dynamic action lines, concert pyrotechnic vibe",
+        "mood": "passionate, intense"
+      }
+    },
+
+    "음악/공연": {
+      "노래": {
+        "keywords": ["노래", "음악", "melody", "song", "music"],
+        "visual_scene": "cute chibi skeleton vocalist at microphone, musical note sparkles floating around, neon magenta soundwave visual effects",
+        "mood": "musical, expressive"
+      },
+      "춤": {
+        "keywords": ["춤", "dance", "리듬", "rhythm", "흔들"],
+        "visual_scene": "cute chibi skeleton band in dynamic dancing pose, cartoon motion lines and star burst effects, energetic chibi action",
+        "mood": "energetic, rhythmic"
+      },
+      "박수": {
+        "keywords": ["박수", "환호", "clap", "cheer", "crowd"],
+        "visual_scene": "crowd silhouettes cheering below stage, cute chibi skeleton band waving back, neon magenta light beams sweeping the crowd",
+        "mood": "celebratory, connected"
+      }
+    }
+  },
+
+  "fallback_visual": {
+    "description": "키워드 매칭 없을 때 사용하는 기본 장면",
+    "visual_scene": "cute chibi skeleton band on cyberpunk stage, neon magenta moon above, dynamic webtoon comic panel composition",
+    "mood": "general performance"
+  },
+
+  "_usage_note": "prompt_generator.py가 가사 텍스트에서 mappings의 keywords를 검색하여 첫 번째 매칭 항목의 visual_scene을 패널 분위기 설명에 추가한다. 매칭 없으면 fallback_visual 사용."
+}

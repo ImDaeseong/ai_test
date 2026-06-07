@@ -1,0 +1,115 @@
+{
+  "_comment": "웹툰 스타일 정의. 장르/BPM/에너지 기반으로 자동 선택.",
+  "_style_note": "공통 기반: 단순하고 둥근 Western cartoon 미감 (두꺼운 외곽선, 플랫 밝은 색, 귀엽고 통통한 비율). 특정 상용 IP 참조 없음. 고유 스타일 설명어만 사용.",
+
+  "default_style": "cute_manhwa",
+
+  "adaptive_style_map": {
+    "fast_aggressive": "cute_action",
+    "fast_energetic": "cute_action",
+    "medium_emotional": "cute_manhwa",
+    "medium_pop": "cute_pop",
+    "slow_ballad": "cute_emotional",
+    "slow_acoustic": "cute_emotional",
+    "dark_heavy": "cute_dramatic",
+    "medium_signal": "telephone-signal-pop"
+  },
+  "styles": {
+    "cute_manhwa": {
+      "name": "Cute Cartoon Manhwa",
+      "description": "귀엽고 발랄한 cartoon 웹툰 스타일. 두꺼운 외곽선, 플랫 밝은 색, 통통한 캐릭터 비율. 기본 스타일.",
+      "prompt_anchor": "simple rounded cartoon webtoon style, thick bold black outlines, flat bright cel colors, large round hollow eye sockets with neon magenta inner glow, chubby rounded character proportions, clean friendly character design, vivid neon magenta accent pop colors, cheerful comic panel composition, original skeleton cartoon characters",
+      "character_feel": "charming and funny original skeleton cartoon characters — friendly and approachable",
+      "line_weight": "thick bold black outlines, consistent line weight",
+      "color_mode": "flat bright cel colors, no gradients on characters, neon magenta accents",
+      "shadow_style": "simple flat drop shadow, minimal shading",
+      "expression_style": "exaggerated simple cartoon expressions, round glowing hollow eye sockets, manga sparkle effects",
+      "background_density": "simple flat stylized colorful cyberpunk environment",
+      "whitespace": "clean open panel layout with breathing room",
+      "nijijourney_flags": "--niji 7 --ar 16:9 --s 250",
+      "genre_match": ["indie pop", "synth-pop", "k-pop", "k-ballad", "r&b"]
+    },
+
+    "cute_action": {
+      "name": "Cute Action Cartoon",
+      "description": "에너지 넘치는 귀여운 액션 cartoon. 과장된 속도선, 통통한 캐릭터가 역동적으로 움직임. 빠른 곡에 적합.",
+      "prompt_anchor": "energetic simple cartoon action style, thick bold black outlines, flat vivid colors, chubby rounded skeleton characters rocking out with exaggerated comic motion, speed lines and energy burst effects, bold pop art colors, dynamic tilted panel angles, neon magenta spark effects, lively original skeleton cartoon band",
+      "character_feel": "hyper-energetic chubby cartoon skeletons having the best time ever",
+      "line_weight": "thick bold dynamic outlines, expressive energetic strokes",
+      "color_mode": "high contrast vivid flat colors, neon magenta energy flashes, bright pop accents",
+      "shadow_style": "sharp graphic flat shadow, neon glow burst",
+      "expression_style": "super exaggerated cartoon — sweat drops, speed lines, big star bursts, chibi rage/joy face",
+      "background_density": "bold simple graphic backgrounds, action-focused composition",
+      "whitespace": "minimal, packed with energy effects and motion lines",
+      "nijijourney_flags": "--niji 7 --ar 16:9 --s 400 --style expressive",
+      "genre_match": ["hardcore punk", "garage rock", "metal", "heavy rock", "dark electronic", "electro pop"]
+    },
+
+    "cute_pop": {
+      "name": "Cute Pop Cartoon",
+      "description": "밝고 통통 튀는 팝 cartoon 스타일. 밝은 색감, 반짝이는 포인트 이펙트, 친근한 캐릭터.",
+      "prompt_anchor": "bubbly cute cartoon pop style, thick rounded black outlines, bright vivid flat colors, round chubby skeleton characters with sparkling star and heart effects around glowing hollow eye sockets, clean cheerful comic panel, bright background with simple colorful shapes, playful original cartoon skeleton band",
+      "character_feel": "friendly pop-star cartoon skeletons with sparkle charm",
+      "line_weight": "thick clean rounded outlines",
+      "color_mode": "bright flat colors, neon magenta pop accents, sparkle star effects",
+      "shadow_style": "soft simple flat shadow with glow spot",
+      "expression_style": "bright sparkling eye sockets, heart effects, big open cartoon smile-equivalent poses",
+      "background_density": "bright simple colorful flat backgrounds with decorative shapes",
+      "whitespace": "generous, light and breezy panel feel",
+      "nijijourney_flags": "--niji 7 --ar 16:9 --s 200",
+      "genre_match": ["j-pop", "k-pop", "dance pop", "city pop", "bubblegum pop"]
+    },
+
+    "cute_emotional": {
+      "name": "Cute Emotional Cartoon",
+      "description": "감성적이고 따뜻한 귀여운 cartoon 스타일. 부드러운 색감, 눈물 한 방울, 여백으로 감정 표현. 발라드에 적합.",
+      "prompt_anchor": "soft heartfelt cute cartoon style, thick rounded black outlines slightly thinner than action style, flat warm-toned colors, round chubby skeleton characters with large gentle glowing hollow eye sockets, simple teardrop sparkle effects, warm neon magenta soft glow, calm intimate comic panel composition, original skeleton cartoon characters in emotional moment",
+      "character_feel": "gentle and warmhearted chubby cartoon skeletons — emotionally expressive through simple shapes",
+      "line_weight": "medium-thick rounded outlines, slightly softer than default",
+      "color_mode": "warm flat tones with gentle neon magenta glow, no harsh contrasts",
+      "shadow_style": "soft simple graduated shadow, warm ambient glow",
+      "expression_style": "subtle teardrop sparkle, soft eye socket glow intensity, gentle drooping skull angle",
+      "background_density": "minimal warm atmospheric flat backgrounds with soft gradient",
+      "whitespace": "generous breathing space, emotional pause, open negative space",
+      "nijijourney_flags": "--niji 7 --ar 16:9 --s 150",
+      "genre_match": ["acoustic", "folk", "neo-folk", "lo-fi", "soft pop", "indie folk", "ballad"]
+    },
+
+    "cute_dramatic": {
+      "name": "Cute Dramatic Cartoon",
+      "description": "드라마틱하지만 귀여운 cartoon 스타일. 흑백 베이스 + 네온 포인트, 통통한 캐릭터로 무게감 있게 표현.",
+      "prompt_anchor": "cute dramatic cartoon style, thick bold black outlines, monochrome flat ink base with single neon magenta color highlight, round chubby skeleton characters in intense emotional pose, deep simple flat shadow with soft edges on characters, graphic dark panel composition with kawaii character contrast, original skeleton cartoon characters being dramatically adorable",
+      "character_feel": "dramatically cute — chubby cartoon skeletons being intense in an endearingly funny way",
+      "line_weight": "thick bold outlines, dramatic weight variation for emphasis",
+      "color_mode": "monochrome dark flat base with single neon magenta highlight spot",
+      "shadow_style": "bold flat dark shadow, kept simple on character shapes",
+      "expression_style": "intense glowing hollow eye sockets, single dramatic teardrop, serious brow-equivalent skull tilt",
+      "background_density": "minimal dark flat atmospheric backgrounds",
+      "whitespace": "intentional dark negative space creating emotional weight",
+      "nijijourney_flags": "--niji 7 --ar 16:9 --s 300 --style raw",
+      "genre_match": ["dark pop", "post-punk", "gothic", "shoegaze", "emo", "cinematic"]
+    },
+
+    "telephone-signal-pop": {
+      "name": "Telephone Signal Pop Cartoon",
+      "description": "Telephone-signal-pop custom cartoon style with warm phone-signal pulse, ajaeng lead shimmer, spacious calm, and a gentle uplifting hook.",
+      "prompt_anchor": "warm telephone-signal-pop cartoon style, thick rounded black outlines, flat warm cel colors, chubby rounded skeleton characters surrounded by soft telephone pulse rings, tiny signal-wave sparkle effects, subtle ajaeng string shimmer trails, spacious gentle comic panel composition, warm neon magenta and amber glow accents, original cartoon skeleton band",
+      "character_feel": "gentle chubby cartoon skeletons following a warm distant signal, hopeful and softly rhythmic",
+      "line_weight": "medium-thick rounded outlines with soft pulse accents",
+      "color_mode": "warm flat colors, amber signal glow, gentle neon magenta highlights, no harsh contrast",
+      "shadow_style": "soft flat shadow with warm signal-pulse glow",
+      "expression_style": "soft glowing hollow eye sockets, tiny signal-wave sparkle marks, gentle hopeful skull tilt",
+      "background_density": "spacious simple cyberpunk stage with telephone-line pulse motifs and subtle ajaeng shimmer",
+      "whitespace": "generous breathing space, warm signal rhythm, calm uplifting hook emphasis",
+      "nijijourney_flags": "--niji 7 --ar 16:9 --s 180",
+      "genre_match": [
+        "signal pop",
+        "korean signal pop",
+        "telephone pulse rhythm",
+        "telephone connection tone",
+        "ajaeng lead",
+        "ajaeng motif"
+      ]
+    }
+  }
+}

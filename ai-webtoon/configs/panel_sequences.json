@@ -1,0 +1,60 @@
+{
+  "_comment": "섹션별 권장 패널 타입 순서. panel_planner.py가 이 순서를 기반으로 각 패널에 타입을 배정.",
+
+  "sequences": {
+    "intro": {
+      "default":    ["wide", "silhouette"],
+      "extended":   ["wide", "silhouette", "atmosphere"],
+      "_note": "세계관 소개 → 분위기 조성 순서"
+    },
+    "verse": {
+      "default":    ["medium", "detail", "medium", "closeup"],
+      "short":      ["medium", "detail"],
+      "extended":   ["medium", "detail", "medium", "closeup", "medium", "detail"],
+      "_note": "연주 장면 중심. 중반부에 감정 클로즈업 삽입"
+    },
+    "pre_chorus": {
+      "default":    ["medium", "crowd", "closeup"],
+      "short":      ["medium", "crowd"],
+      "extended":   ["medium", "crowd", "closeup", "crowd"],
+      "_note": "긴장감 고조. 관객 반응과 퍼포머 클로즈업 교차"
+    },
+    "chorus": {
+      "default":    ["closeup", "wide", "medium", "closeup", "crowd", "wide"],
+      "short":      ["closeup", "wide", "medium", "closeup"],
+      "extended":   ["closeup", "wide", "medium", "closeup", "crowd", "wide", "medium", "closeup"],
+      "_note": "절정부. 감정 클로즈업으로 시작 → 와이드로 해방감 → 반복"
+    },
+    "bridge": {
+      "default":    ["silhouette", "atmosphere", "closeup"],
+      "short":      ["silhouette", "atmosphere"],
+      "extended":   ["silhouette", "atmosphere", "closeup", "atmosphere"],
+      "_note": "전환부. 실루엣과 분위기 패널로 무게감 조성 → 감정 클로즈업"
+    },
+    "outro": {
+      "default":    ["wide", "silhouette"],
+      "extended":   ["wide", "atmosphere", "silhouette"],
+      "_note": "마무리. 와이드 → 실루엣으로 여운 처리"
+    },
+    "instrumental": {
+      "default":    ["atmosphere", "wide"],
+      "short":      ["atmosphere"],
+      "extended":   ["atmosphere", "wide", "detail", "atmosphere"],
+      "_note": "인스트루멘탈 구간. 배경/환경 중심, 악기 디테일 가능"
+    }
+  },
+
+  "repeat_handling": {
+    "verse2":   "verse",
+    "verse3":   "verse",
+    "chorus2":  "chorus",
+    "chorus3":  "chorus",
+    "pre_chorus2": "pre_chorus",
+    "_note": "반복 섹션은 원본 섹션 순서를 재사용. panel_planner.py가 섹션명 suffix를 제거하고 매칭."
+  },
+
+  "panel_count_selection": {
+    "rule": "cut_timing.json의 panel_count가 sequences의 default 길이보다 작으면 short 사용, 크면 extended 사용, 같으면 default 사용.",
+    "fallback": "default"
+  }
+}

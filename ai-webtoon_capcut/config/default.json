@@ -1,0 +1,36 @@
+{
+  "schema_version": "3.0",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "fit": "cover",
+    "transition_ms": 300
+  },
+  "clips": {
+    "min_seconds": 2.5,
+    "preferred_min_seconds": 4.0,
+    "preferred_max_seconds": 8.0,
+    "hard_max_seconds": 12.0,
+    "max_reuse_per_image": 3
+  },
+  "subtitles": {
+    "long_cue": {
+      "median_multiplier": 2.5,
+      "absolute_floor_seconds": 10.0
+    },
+    "alignment": {
+      "mode": "auto",
+      "hold_on_unresolved_long_cue": true
+    }
+  },
+  "sections": {
+    "synthesize_edge_instrumentals": true,
+    "preserve_original_label": true
+  },
+  "assets": {
+    "image_directories": ["img", "images", "generated", "generated/images"],
+    "image_extensions": [".png", ".jpg", ".jpeg", ".webp"],
+    "audio_extensions": [".wav", ".flac", ".mp3", ".m4a"]
+  }
+}

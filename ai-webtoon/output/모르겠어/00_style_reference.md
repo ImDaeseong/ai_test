@@ -1,0 +1,72 @@
+# 모르겠어 — 웹툰 스타일 고정 블록
+
+> 모든 패널 프롬프트 생성 시 이 블록을 맨 앞에 붙인다.
+> 스타일: **cute_action** — 에너지 넘치는 귀여운 액션 cartoon. 과장된 속도선, 통통한 캐릭터가 역동적으로 움직임. 빠른 곡에 적합.
+
+---
+
+## 캐릭터 스타일 고정
+
+```
+energetic simple cartoon action style, thick bold black outlines, flat vivid colors, chubby rounded skeleton characters rocking out with exaggerated comic motion, speed lines and energy burst effects, bold pop art colors, dynamic tilted panel angles, neon magenta spark effects, lively original skeleton cartoon band
+```
+
+## 스켈레톤 밴드 정체성
+
+```
+the same original fantasy skeleton music band, rendered in a simple rounded Western cartoon style with thick bold outlines and flat bright colors.
+
+Members:
+- Vocalist: the same skeleton vocalist with a simple round skull, large circular hollow eye sockets with neon magenta inner glow, holding a decorative concert microphone, chubby rounded body proportions
+- Guitarist: the same skeleton guitarist on the left, simple geometric skull shape, large glowing hollow eye sockets, rounded stubby limbs, playful exaggerated pose
+- Bassist: the same skeleton bassist on the right, round chubby skull, simple flat cartoon body, large round hollow eye sockets softly glowing
+- Drummer: the same skeleton drummer in the background, simple rounded skull, exaggerated comic motion lines while drumming, stubby round arms
+
+Stage: the same colorful stylized cyberpunk city concert stage, drawn in simple flat cartoon style
+Moon: the same massive glowing neon magenta moon, perfectly round and simple like a giant flat circle glowing in the sky
+Costume: simple flat cartoon stage outfits in dark colors with bright neon magenta accents, rounded costume details, no complex shading
+Palette: flat bright colors — deep black base, neon magenta highlights, vivid pop color accents
+```
+
+## 곡 스타일 (Cute Action Cartoon)
+
+- 스타일: cute_action — 에너지 넘치는 귀여운 액션 cartoon. 과장된 속도선, 통통한 캐릭터가 역동적으로 움직임. 빠른 곡에 적합.
+- 분위기: 미지정 / 감정: 미지정
+- BPM 구간: fast (130 BPM)
+- 선 굵기: thick bold dynamic outlines, expressive energetic strokes
+- 색상: high contrast vivid flat colors, neon magenta energy flashes, bright pop accents
+- 표정 연출: super exaggerated cartoon — sweat drops, speed lines, big star bursts, chibi rage/joy face
+- Nijijourney: `--niji 7 --ar 16:9 --s 400 --style expressive`
+
+## Performance Direction
+
+- Profile: `in_the_round_heavy` — 인더라운드 헤비 퍼포먼스
+- Stage layout: central in-the-round platform surrounded by audience on all sides, with instruments facing multiple directions
+- Wardrobe range: retain original costumes with heavier matte panels and restrained metallic highlights, never copying signature artist attire
+- Selection basis: genre, BPM, mood, and emotion; never a hardcoded song title
+
+### Research Sources
+
+> Real artists are research provenance only. Their names must not enter image prompts.
+
+- Metallica — https://www.metallica.com/news/2022-11-28-m72-world-tour.html
+
+## 금지 규칙
+
+```
+Do not redesign the band members.
+Do not change the skeleton music band identity.
+Do not change the neon magenta moon world.
+Do not create a different band.
+Do not make the band members human.
+Do not make characters scary, gothic, or horror-themed — keep them cute and charming.
+Do not add weapons or violent props.
+Do not use realistic rendering or complex shading — keep flat cartoon style.
+Do not reference or imitate any specific copyrighted cartoon characters (SpongeBob, Winnie the Pooh, etc.) — use original character descriptions only.
+No complex details on characters — keep shapes simple and rounded.
+No text, no watermark, no logo.
+```
+
+## 레퍼런스 이미지
+
+> `ai-webtoon/reference/` 폴더의 기준 이미지를 반드시 첨부한다.

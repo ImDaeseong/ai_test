@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "webtoon-capcut"
+version = "0.1.0"
+description = "Reusable music-driven webtoon timeline planner"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+webtoon-capcut = "webtoon_capcut.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.unittest]
+start-directory = "tests"
