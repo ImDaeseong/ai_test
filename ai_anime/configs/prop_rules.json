@@ -1,0 +1,45 @@
+{
+  "rules": [
+    {
+      "keys": ["letter", "편지", "write", "쓰", "pen"],
+      "prop": "folded letter with glowing neon edge"
+    },
+    {
+      "keys": ["phone", "전화", "call", "message", "메시지"],
+      "prop": "softly glowing phone screen"
+    },
+    {
+      "keys": ["music", "song", "노래", "melody", "멜로디"],
+      "prop": "glowing audio fragment"
+    },
+    {
+      "keys": ["star", "별", "sky", "하늘"],
+      "prop": "small glowing star shard"
+    },
+    {
+      "keys": ["key", "door", "문", "열쇠"],
+      "prop": "small glowing door key"
+    },
+    {
+      "keys": ["flower", "꽃", "petal", "꽃잎"],
+      "prop": "single neon-edged flower petal"
+    },
+    {
+      "keys": ["photo", "picture", "사진"],
+      "prop": "fading photograph with cyber-pink rim"
+    },
+    {
+      "keys": ["mirror", "거울", "reflect", "반사"],
+      "prop": "small reflective shard glowing cyber pink"
+    },
+    {
+      "keys": ["rain", "비", "drop"],
+      "prop": "single raindrop suspended in cyber-pink light"
+    },
+    {
+      "keys": ["heart", "가슴", "맘", "마음"],
+      "prop": "small pulsing heart-shaped light shard"
+    }
+  ],
+  "default": "small glowing symbolic keepsake"
+}

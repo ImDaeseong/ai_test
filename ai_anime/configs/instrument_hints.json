@@ -1,0 +1,23 @@
+{
+  "hints": {
+    "piano": "soft weighted motion, keys-timed gentle camera breath",
+    "strings": "sustained emotional swell, slow arc camera movement",
+    "violin": "precise tight motion, bowing-synced light arcs",
+    "guitar": "rhythmic body accent, pick-strike synced light flash",
+    "drums": "beat-driven cuts, impact-synced rim flash, percussive camera snap",
+    "percussion": "sharp staccato cuts, impact light burst on beat",
+    "bass": "deep grounded movement, low-angle weight, subsonic visual pulse",
+    "synth": "ambient layered depth parallax, wave-like neon light drift",
+    "choir": "wide expansive frame, multiple depth layers, breath-held stillness",
+    "trumpet": "bold directional light burst, sharp staccato camera cut",
+    "sax": "melodic brass-reed sway, warm spotlight arcs following the phrase",
+    "saxophone": "melodic brass-reed sway, warm spotlight arcs following the phrase",
+    "accordion": "breathing bellows motion, nostalgic side-to-side stage sway",
+    "organ": "sustained retro chord glow, slow rotating room-light movement",
+    "taepyeongso": "piercing traditional reed accent, sharp ceremonial light flare",
+    "piri": "thin reed melody drift, delicate traditional phrase-following motion",
+    "flute": "airy drifting movement, soft high-key light touches",
+    "harp": "delicate floating motion, soft shimmer light cascade"
+  },
+  "max_hints": 3
+}

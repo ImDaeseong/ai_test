@@ -1,0 +1,197 @@
+{
+  "adaptive_identities": {
+    "fast": {
+      "identity": "driven anime protagonist channeling intense lyric emotion into every frame",
+      "silhouette": "strong forward-leaning silhouette with kinetic readiness",
+      "texture": "kinetic {main_color} atmosphere, beat-driven motion, sharp rim contrasts"
+    },
+    "slow": {
+      "identity": "introspective anime protagonist quietly holding the weight of the lyric's emotion",
+      "silhouette": "still inward-facing silhouette with deep internal light",
+      "texture": "minimal motion, slow breathing {main_color} glow, intimate frame depth"
+    },
+    "medium": {
+      "identity": "anime protagonist shaped by the song's central emotional arc",
+      "silhouette": "balanced silhouette with expressive hand and gaze language",
+      "texture": "measured {main_color} rhythm, lyric-tied movement, mid-range cinematic depth"
+    }
+  },
+  "hair_rules": [
+    {
+      "keys": ["love", "사랑", "heart", "tender", "together"],
+      "hair": "flowing dark hair with gentle {main_color} bloom at the edges"
+    },
+    {
+      "keys": ["angry", "rage", "rebel", "fierce", "fight"],
+      "hair": "sharp-textured dark hair with aggressive {main_color} color strikes"
+    },
+    {
+      "keys": ["dream", "float", "haze", "blur"],
+      "hair": "soft layered dark hair with translucent {main_color} edge light"
+    }
+  ],
+  "hair_default": "dark hair with restrained {main_color} rim glow shaped by the song's mood",
+  "outfit_rules": [
+    {
+      "keys": ["stage", "perform", "show", "concert", "공연"],
+      "outfit": "dark performance-ready outfit with reflective trim and clean stage lines"
+    },
+    {
+      "keys": ["rain", "street", "city", "비", "거리"],
+      "outfit": "dark modern street coat with subtle reflective edge detail"
+    },
+    {
+      "keys": ["room", "window", "quiet", "방", "창"],
+      "outfit": "simple layered dark casual wear with soft trim"
+    }
+  ],
+  "outfit_default": "dark contemporary outfit with subtle {main_color} accent detail",
+  "subject_rules": {
+    "environment_only": {
+      "keys": ["instrumental", "no vocals", "ambient", "soundscape", "score", "ost", "piano only", "strings only", "풍경", "배경"],
+      "identity": "song-specific atmospheric environment as the main subject, with no lead human character",
+      "silhouette": "wide cinematic environment silhouette, empty space carrying the emotional focus",
+      "prop": "recurring environmental light motif shaped by {main_color}",
+      "reference_views": ["wide establishing environment", "medium environment detail", "lighting close-up", "recurring motif close-up", "empty focal space composition"]
+    },
+    "object_symbol": {
+      "keys": ["object", "symbol", "perfume", "scent", "향기", "향", "letter", "photo", "ring", "memory", "기억", "편지", "사진"],
+      "identity": "song-specific symbolic object as the emotional lead, supported by partial human presence only when needed",
+      "silhouette": "clear object-led silhouette with the human figure secondary or cropped",
+      "prop": "central symbolic object glowing with {main_color}",
+      "reference_views": ["hero object front view", "object side view", "object in hand", "object in environment", "motif close-up"]
+    },
+    "human_duo": {
+      "keys": ["duet", "male and female", "male/female", "co-lead", "two vocals", "two singers", "남녀", "듀엣"],
+      "identity_prefix": "two song-specific lead characters with contrasting silhouettes",
+      "reference_note": "Create two distinct leads on the same model sheet; do not merge them into one face."
+    },
+    "group": {
+      "keys": ["choir", "group", "girl group", "boy band", "gang vocals", "crowd chants", "ensemble", "합창", "그룹"],
+      "identity_prefix": "song-specific small ensemble with one clear center lead and supporting silhouettes",
+      "reference_note": "Create one center lead plus simplified supporting members; keep the center lead consistent."
+    }
+  },
+  "gender_presentation_rules": {
+    "female": {
+      "keys": ["female", "female vocal", "female vocals", "female lead", "girl group", "woman", "여성", "여자"],
+      "description": "female-presenting"
+    },
+    "male": {
+      "keys": ["male", "male vocal", "male vocals", "male lead", "male voice", "boy band", "man", "남성", "남자"],
+      "description": "male-presenting"
+    },
+    "androgynous": {
+      "keys": ["androgynous", "genderless", "ambiguous", "nonbinary", "neutral", "중성"],
+      "description": "androgynous"
+    }
+  },
+  "song_unique_variants": {
+    "archetypes": [
+      "petite soft-faced protagonist with a compact frame and gentle rounded features",
+      "tall sharp-featured protagonist with long limbs and a composed angular presence",
+      "androgynous street-poet protagonist with a slim frame and quiet guarded expression",
+      "mature elegant protagonist with calm eyes, longer proportions, and refined posture",
+      "youthful restless protagonist with bright alert eyes and energetic asymmetrical styling",
+      "reserved dreamlike protagonist with delicate facial features and a still inward gaze",
+      "confident performer-like protagonist with bold posture and clean graphic silhouette",
+      "fragile introspective protagonist with narrow shoulders and soft tired eyes"
+    ],
+    "face_shapes": [
+      "round face, soft cheeks, small nose, wide-set eyes",
+      "long oval face, high cheekbones, narrow eyes, straight nose",
+      "heart-shaped face, pointed chin, large reflective eyes",
+      "square jawline, defined brows, calm heavy-lidded eyes",
+      "delicate V-shaped jaw, small lips, slightly upturned eyes",
+      "soft rectangular face, low brows, deep-set eyes",
+      "youthful short face, bright eyes, rounded chin",
+      "slender face, prominent lower lashes, quiet unsmiling mouth"
+    ],
+    "hair_bases": [
+      "short cropped dark hair with exposed ears",
+      "chin-length dark bob with blunt ends",
+      "long dark hair tied in a low ribboned tail",
+      "shoulder-length wavy dark hair with loose volume",
+      "messy wolf-cut dark hair with layered nape",
+      "straight dark hair falling past the shoulders",
+      "asymmetric undercut with longer dark fringe on one side",
+      "soft curly dark hair forming a rounded silhouette"
+    ],
+    "face_marks": [
+      "small beauty mark under the left eye",
+      "single thin eyebrow slit on the right brow",
+      "faint under-eye shadows and a sharp lower-lash line",
+      "soft round eyes with a tiny catchlight shaped like the song motif",
+      "slightly asymmetrical smile with one corner held back",
+      "narrow focused eyes and a small bandage across the cheek",
+      "gentle downturned eyes with a pale {main_color} rim highlight",
+      "clear wide eyes with a short diagonal cheek highlight"
+    ],
+    "hair_variants": [
+      "one longer side strand crossing the cheek",
+      "short tied-back half ponytail with loose front strands",
+      "uneven layered fringe parted to the left",
+      "soft wolf-cut layers with a lifted crown silhouette",
+      "chin-length side locks framing the face",
+      "slightly wavy ends with one pinned-back section",
+      "messier crown texture with a clean nape line",
+      "longer back layers visible behind the collar"
+    ],
+    "body_silhouettes": [
+      "compact petite body silhouette with small shoulders",
+      "tall narrow body silhouette with long legs",
+      "relaxed slouched silhouette with guarded shoulders",
+      "upright dancer-like silhouette with open chest line",
+      "soft rounded silhouette with gentle hand posture",
+      "angular fashion-model silhouette with sharp elbows and knees",
+      "slim androgynous silhouette with straight coat line",
+      "light floating silhouette with long sleeves covering the hands"
+    ],
+    "outfit_bases": [
+      "oversized hooded coat over slim dark layers",
+      "cropped bomber jacket over a high-neck inner shirt",
+      "long satin coat with flowing split hem",
+      "minimal sleeveless layered tunic over fitted sleeves",
+      "structured short jacket with wide trousers",
+      "soft cardigan-like coat with loose scarf layers",
+      "asymmetric wrap jacket with narrow pants",
+      "long school-uniform-inspired coat with modern clean lines"
+    ],
+    "outfit_accents": [
+      "one asymmetric sleeve strap carrying a tiny {main_color} light",
+      "short inner scarf printed with an abstract waveform",
+      "single shoulder patch shaped by the song motif",
+      "thin translucent oversleeve on one arm",
+      "small waist pouch with a glowing zipper pull",
+      "open collar with a narrow silver-white inner line",
+      "layered hem cut at a diagonal angle",
+      "one fingerless glove with a faint {main_color} pulse"
+    ],
+    "accessories": [
+      "tiny earring on one ear catching the key light",
+      "thin choker with a miniature light bead",
+      "two small hairpins arranged like a pause mark",
+      "single wrist cord tied around the left hand",
+      "transparent ID-card charm with no readable text",
+      "small ring reflecting the recurring motif",
+      "narrow ankle strap visible above one shoe",
+      "minimal pendant tucked partly under the collar"
+    ],
+    "gesture_signatures": [
+      "touches the prop with two fingers before each emotional shift",
+      "keeps one hand near the collar when holding back words",
+      "turns the wrist outward whenever the motif appears",
+      "looks away first, then returns eye contact on the beat",
+      "presses the thumb against the prop during chorus peaks",
+      "holds the prop close to the chest during quiet lines",
+      "lets one sleeve fall over the hand in vulnerable moments",
+      "opens the palm slowly as the scene resolves"
+    ],
+    "identity_locks": [
+      "Do not use the previous song's face, hairstyle, outfit, body silhouette, or accessory set.",
+      "Treat this as a completely new lead character for this song, not a costume variation of another protagonist.",
+      "Make the head shape, hair length, body proportions, and outfit category visibly distinct from any other song.",
+      "Avoid generic dark-haired anime boy sameness; preserve the exact song-specific identity lock."
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "song_id": "ed0811e5",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151926",
+  "title": "오늘은 좀 괜찮아",
+  "expected": {
+    "bpm": 91,
+    "energy": "medium",
+    "genre": "emotional indie pop",
+    "genre_profile": "rhythmic trap-pop cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 9,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Bridge",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "electric blue",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-06-04",
+  "notes": "",
+  "known_issues": []
+}

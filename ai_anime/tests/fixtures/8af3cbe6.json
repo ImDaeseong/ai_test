@@ -1,0 +1,32 @@
+{
+  "song_id": "8af3cbe6",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-152308",
+  "title": "환승역",
+  "expected": {
+    "bpm": 96,
+    "energy": "medium",
+    "genre": "96 BPM emotional indie pop",
+    "genre_profile": "bright emotional pop anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 10,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Bridge",
+      "Chorus",
+      "Verse",
+      "Pre-Chorus",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "electric blue",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

@@ -1,0 +1,108 @@
+{
+  "rules": [
+    {
+      "keys": ["smile", "laugh", "웃"],
+      "motif": "a forced smile reflected as a split neon expression"
+    },
+    {
+      "keys": ["cry", "tear", "울", "눈물"],
+      "motif": "tears turning into tiny cyber-pink light particles"
+    },
+    {
+      "keys": ["memory", "remember", "past", "그날", "기억"],
+      "motif": "memory fragments suspended like broken glass"
+    },
+    {
+      "keys": ["night", "밤", "새벽", "midnight"],
+      "motif": "midnight reflections and lonely window light"
+    },
+    {
+      "keys": ["heart", "가슴", "맘", "마음"],
+      "motif": "a pulsing heart-shaped reflection hidden in the environment"
+    },
+    {
+      "keys": ["name", "이름"],
+      "motif": "a nameless signboard glowing and fading without readable text"
+    },
+    {
+      "keys": ["wind", "바람"],
+      "motif": "wind-driven light trails crossing the character's silhouette"
+    },
+    {
+      "keys": ["street", "city", "도시", "거리"],
+      "motif": "empty urban paths with reflections stretching forward"
+    },
+    {
+      "keys": ["letter", "편지", "write", "쓰", "pen"],
+      "motif": "handwritten words dissolving into neon fragments"
+    },
+    {
+      "keys": ["mirror", "거울", "reflection", "반사"],
+      "motif": "split mirror showing two versions of the same face"
+    },
+    {
+      "keys": ["rain", "비", "wet", "drop", "빗"],
+      "motif": "cyber-pink rain trails merging with tears on glass"
+    },
+    {
+      "keys": ["light", "빛", "glow", "shine", "빛나"],
+      "motif": "a single light source pulling the character forward through darkness"
+    },
+    {
+      "keys": ["alone", "lonely", "혼자", "외로"],
+      "motif": "a solitary figure surrounded by empty neon space"
+    },
+    {
+      "keys": ["love", "사랑", "together", "같이", "곁"],
+      "motif": "two converging neon silhouettes that never fully meet"
+    },
+    {
+      "keys": ["run", "달리", "escape", "도망", "뛰"],
+      "motif": "fast-motion light streak chasing the protagonist"
+    },
+    {
+      "keys": ["wait", "기다", "stay", "머물", "멈"],
+      "motif": "a frozen clock reflection in wet pavement"
+    },
+    {
+      "keys": ["dream", "꿈", "sleep", "fantasy", "몽"],
+      "motif": "dissolving dreamscape edges around the character"
+    },
+    {
+      "keys": ["fire", "불", "burn", "flame", "타"],
+      "motif": "ember sparks rising into the neon-lit darkness"
+    },
+    {
+      "keys": ["star", "별", "sky", "하늘"],
+      "motif": "distant star reflections pulled down into the puddles"
+    },
+    {
+      "keys": ["door", "문", "enter", "exit", "열"],
+      "motif": "a doorway silhouette lit by cyber-pink from the other side"
+    },
+    {
+      "keys": ["phone", "전화", "call", "message", "메시"],
+      "motif": "an unanswered glowing screen in an empty hand"
+    },
+    {
+      "keys": ["shadow", "그림자", "어둠", "darkness"],
+      "motif": "the protagonist's shadow stretched larger and brighter than the figure"
+    },
+    {
+      "keys": ["song", "music", "노래", "melody", "sound", "음악"],
+      "motif": "sound waves made visible as drifting neon light rings"
+    },
+    {
+      "keys": ["break", "shatter", "무너", "깨", "부서"],
+      "motif": "light fragmenting across the floor like shattered glass"
+    },
+    {
+      "keys": ["road", "path", "길", "journey"],
+      "motif": "a long empty road whose vanishing point glows cyber pink"
+    },
+    {
+      "keys": ["flower", "꽃", "petal", "bloom"],
+      "motif": "neon-edged petals dissolving at the frame edges"
+    }
+  ]
+}

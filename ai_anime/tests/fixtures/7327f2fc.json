@@ -1,0 +1,30 @@
+{
+  "song_id": "7327f2fc",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151914",
+  "title": "오늘도 네 곁을 맴돌아",
+  "expected": {
+    "bpm": 124,
+    "energy": "medium",
+    "genre": "Melancholic Dance Pop",
+    "genre_profile": "dreamy synth cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "electric blue",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

@@ -1,0 +1,30 @@
+{
+  "song_id": "68912ac8",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151741",
+  "title": "아직 우리",
+  "expected": {
+    "bpm": 94,
+    "energy": "medium",
+    "genre": "korean melodic pop rap",
+    "genre_profile": "rhythmic trap-pop cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 8,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Verse",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "jade green",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-05-22",
+  "notes": "",
+  "known_issues": []
+}

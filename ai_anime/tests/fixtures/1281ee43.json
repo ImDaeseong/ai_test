@@ -1,0 +1,32 @@
+{
+  "song_id": "1281ee43",
+  "source_file": "raw_song.txt",
+  "input_dir": "20260530-151645",
+  "title": "사랑이 다가올 때",
+  "expected": {
+    "bpm": 95,
+    "energy": "medium",
+    "genre": "This hyper-Kpop fusion bursts with high-tempo industrial pop",
+    "genre_profile": "dreamy synth cinematic anime",
+    "timing_mode": "audio_applied",
+    "scene_count": 10,
+    "sections": [
+      "Intro",
+      "Verse",
+      "Pre-Chorus",
+      "Chorus",
+      "Post-Chorus",
+      "Verse",
+      "Chorus",
+      "Bridge",
+      "Chorus",
+      "Outro"
+    ],
+    "main_color": "coral orange",
+    "no_duplicate_cameras": true,
+    "no_raw_palette_in_lighting": true
+  },
+  "added_date": "2026-06-04",
+  "notes": "",
+  "known_issues": []
+}
