@@ -1,7 +1,7 @@
 # 소스 설명
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-06-04 (별도 관리 프로젝트 정리)
-> 총 16개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
+> 작성일: 2026-05-08 / 최종 수정: 2026-06-07 (ai-webtoon, ai-webtoon_capcut 이전)
+> 총 18개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
 
 ## 저장소 목표
 
@@ -33,6 +33,8 @@
 | 14 | [findstring_foldfiles](#14-findstring_foldfiles) | 폴더·드라이브 문자열 멀티스레드 검색 GUI | Python (tkinter) | ★★★★★ |
 | 15 | [windows-port-monitor](#15-windows-port-monitor) | Windows TCP/UDP 포트 연결 이력 모니터링 서비스 | Python + SQLite | ★★★★★ |
 | 16 | [run_game](#16-run_game) | Steam·Epic·Netmarble 게임 설치 탐지 및 런처 실행기 | C++ / MFC (Visual Studio 2022) | ★★★★★ |
+| 17 | [ai-webtoon](#17-ai-webtoon) | 웹툰 만화 패널 이미지 프롬프트 자동 생성 | Python + Flask | ★★★★★ |
+| 18 | [ai-webtoon_capcut](#18-ai-webtoon_capcut) | 웹툰 패널 이미지 → Remotion/CapCut 타임라인 자동 생성 | Python + Node.js (Remotion) | ★★★☆☆ |
 
 ---
 
@@ -952,6 +954,102 @@ python -m json.tool GameConfig.json
 
 ---
 
+## 17. ai-webtoon
+
+### 기능 개요
+귀여운 오리지널 cartoon 스켈레톤 밴드 세계관을 유지하면서, 곡마다 BPM·장르·감정에 맞는 웹툰 만화 패널 이미지 프롬프트를 자동 생성합니다. 영상 AI 없이 이미지만으로 뮤직비디오를 제작합니다.
+
+### 주요 기능
+- `ai_img_video_prompt`와 완전히 동일한 입력 형식 (txt 파일 재사용)
+- BPM·감정 키워드 기반 5가지 스타일 자동 선택 (cute_manhwa / cute_action / cute_pop / cute_emotional / cute_dramatic)
+- 곡당 25~50개 패널 자동 생성 (섹션 × BPM 구간)
+- 4개 이미지 플랫폼 프롬프트 동시 생성 (GPT Image / Nijijourney / FLUX.1 / Gemini)
+- 저작권 안전 오리지널 캐릭터 디자인 (특정 IP 미참조)
+- 웹 뷰어 제공 (프롬프트 복사용 포트 5350)
+
+### 폴더 구조
+```
+ai-webtoon/
+├── main.py           # CLI 진입점 (create / create-all / summarize-all)
+├── web_app.py        # Flask 웹 뷰어
+├── configs/          # 스타일·패널·플랫폼 설정 JSON
+├── scripts/          # 파이프라인·검증 스크립트
+├── input/            # 곡 정보 txt 파일
+├── output/           # 생성된 프롬프트 (곡별 폴더)
+├── tests_unit.py     # 41개 단위 테스트
+├── run_all.bat       # 전체 input/ 일괄 처리
+└── requirements.txt  # flask
+```
+
+### 사용 방법
+```bash
+pip install flask
+.\run_all.bat                                        # 전체 input/ 처리
+python main.py create --input "input\곡명.txt"       # 단일 곡
+python main.py create-all --input-dir input --force  # 전체 배치
+python -m pytest tests_unit.py -q                    # 테스트
+실행_web.bat                                         # 웹 뷰어 → http://127.0.0.1:5350
+```
+
+### 기술 스택
+- Python 3.x / Flask (웹 뷰어)
+- 외부 AI API 없음 (이미지 생성 시 GPT Image / Nijijourney 등 선택)
+
+### 개발 완성도: ★★★★★
+212/212 PASS, 41개 단위 테스트 통과. 웹 뷰어 포함. 프로덕션 사용 중.
+
+---
+
+## 18. ai-webtoon_capcut
+
+### 기능 개요
+`ai-webtoon`이 생성한 웹툰 패널 이미지를 음악 길이에 맞게 정렬하고, Remotion으로 전체·섹션별 MP4를 렌더링한 뒤 CapCut 전달 폴더까지 자동 생성합니다.
+
+### 주요 기능
+- 이미지 수와 음악 길이가 달라도 타임라인 전체 길이를 음악에 맞게 자동 정규화
+- LRC/SRT 재정렬 및 신뢰도 보고서 출력
+- Remotion(Node.js)으로 전체 미리보기 MP4 + 섹션별 MP4 생성
+- CapCut 수동 가져오기용 전달 폴더 생성
+
+### 입력 구조
+```
+input/{곡명}/
+├─ {곡명}.wav / .mp3
+├─ *.lrc / *.srt
+└─ img/
+   ├─ panel_001_intro_wide.png
+   └─ panel_NNN_*.png
+```
+
+### 폴더 구조
+```
+ai-webtoon_capcut/
+├── src/          # Python 처리 엔진
+├── remotion/     # Remotion 렌더러 (Node.js / TypeScript)
+├── config/       # 프로젝트 설정
+├── docs/         # 설계 문서
+├── scripts/      # 자동화 스크립트
+├── input/        # 곡별 입력 파일 (gitignore)
+├── output/       # 렌더 결과 (gitignore)
+└── run_all.bat   # 전체 파이프라인 실행
+```
+
+### 사용 방법
+```bash
+pip install -r requirements.txt
+npm install              # remotion/ 폴더 내
+.\run_all.bat            # 전체 파이프라인 실행
+```
+
+### 기술 스택
+- Python 3.x (타임라인 정규화, LRC/SRT 처리)
+- Node.js + Remotion (MP4 렌더링)
+
+### 개발 완성도: ★★★☆☆
+설계·문서화 완료, 구현 진행 중. Remotion 렌더 파이프라인 기초 구조 완성.
+
+---
+
 ## 공통 특징
 
 - 모든 프로젝트는 **Windows 10 환경** 기준으로 개발 (.bat 실행 스크립트 포함)
@@ -959,4 +1057,5 @@ python -m json.tool GameConfig.json
 - 음악/미디어 처리 관련 프로젝트가 다수 (Analysis_music, imagevideo, Pexels, lyricvideo, lyrics_tag, master_tag, mp3_daw, extensions)
 - 보안/진단 도구 2종 (security_scanning, windows-port-monitor) — 내부망 진단·모니터링 용도
 - **C++ / MFC 프로젝트 1종** (run_game) — Visual Studio 2022, Win32 API, 레지스트리 기반 게임 설치 탐지
+- **웹툰 MV 제작 도구 2종** (ai-webtoon, ai-webtoon_capcut) — Suno 음원 기반 웹툰 패널 이미지 프롬프트 생성 및 영상 렌더링
 - 각 `_claude_Prompts` / `_codex_Prompts` 폴더에는 해당 프로젝트 개발에 사용한 AI 프롬프트가 저장되어 있음
