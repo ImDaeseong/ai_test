@@ -1,0 +1,104 @@
+{
+  "_comment": "이미지 생성 도구별 프롬프트 형식 규칙. prompt_generator.py가 참조하여 각 플랫폼 전용 프롬프트 블록 생성.",
+
+  "platforms": {
+    "gpt_image": {
+      "name": "GPT Image (gpt-image-2)",
+      "prompt_style": "descriptive_sentence",
+      "language": "english",
+      "word_range": { "min": 40, "max": 80 },
+      "format_rules": [
+        "자연어 문장 형식 사용",
+        "쉼표로 구분된 설명적 구문 나열",
+        "스타일 앵커를 문장 앞부분에 배치",
+        "캐릭터 고정 블록(character_lock)을 반드시 포함",
+        "해상도 또는 크기 파라미터 없음 — API 파라미터로 전달"
+      ],
+      "forbidden": [
+        "-- 파라미터 플래그 사용 금지",
+        "가중치 문법(:1.2 등) 금지",
+        "한국어 혼용 금지"
+      ],
+      "size_options": ["1024x1024", "1792x1024", "1024x1792"],
+      "recommended_size": "1792x1024",
+      "template": "{style_anchor}, {character_block}, {panel_composition}, {lyric_atmosphere}, safe concert performance scene, no text, no watermark"
+    },
+
+    "nijijourney": {
+      "name": "Nijijourney (--niji 7)",
+      "prompt_style": "keyword_phrase",
+      "language": "english",
+      "word_range": { "min": 20, "max": 60 },
+      "format_rules": [
+        "쉼표로 구분된 키워드/구문 나열",
+        "스타일 앵커를 맨 앞에 배치",
+        "캐릭터 고정 블록 포함",
+        "--niji 7 플래그 필수",
+        "--ar 플래그로 종횡비 지정",
+        "--s 파라미터로 스타일 강도 조정",
+        "--no 플래그로 금지어 명시"
+      ],
+      "forbidden": [
+        "자연어 긴 문장 금지 — 키워드 구문 사용",
+        "한국어 혼용 금지",
+        "--v 플래그 금지 (niji 버전과 충돌)"
+      ],
+      "suffix_template": "--niji 7 --ar {aspect_ratio} --s {stylize} --no watermark, text, logo, human face",
+      "aspect_ratio_options": ["16:9", "9:16", "1:1"],
+      "recommended_ar": "16:9",
+      "stylize_range": { "min": 100, "max": 500 },
+      "template": "{style_anchor}, {character_block}, {panel_type_keywords}, {lyric_mood_keywords} {suffix}"
+    },
+
+    "flux1": {
+      "name": "FLUX.1 (무료)",
+      "prompt_style": "natural_language_sentence",
+      "language": "english",
+      "word_range": { "min": 40, "max": 75 },
+      "format_rules": [
+        "완전한 자연어 문장 형식 — 동사 포함",
+        "가중치 문법(:1.2, (keyword:1.5) 등) 사용 금지",
+        "스타일을 형용사/부사로 자연스럽게 삽입",
+        "캐릭터 고정 블록을 문장 안에 자연스럽게 통합",
+        "단일 문단 또는 2~3문장"
+      ],
+      "forbidden": [
+        "-- 파라미터 플래그 사용 금지",
+        "가중치 문법 금지",
+        "쉼표 나열식 키워드 금지",
+        "한국어 혼용 금지"
+      ],
+      "template": "A {style_description} illustration of {character_description} {panel_action}, set in {environment_description}. The scene conveys {lyric_atmosphere}. No text, no watermark."
+    },
+
+    "gemini": {
+      "name": "Gemini / Imagen 3",
+      "prompt_style": "natural_language_sentence",
+      "language": "korean_or_english",
+      "word_range": { "min": 30, "max": 70 },
+      "format_rules": [
+        "자연어 문장 형식 — 한국어 사용 가능",
+        "스타일과 분위기를 형용사로 명확히 설명",
+        "캐릭터 고정 블록을 문장 안에 통합",
+        "비율 설정은 API 파라미터로 전달",
+        "단순하고 명확한 문장 선호"
+      ],
+      "forbidden": [
+        "-- 파라미터 플래그 사용 금지",
+        "가중치 문법 금지"
+      ],
+      "aspect_ratio_options": ["16:9", "9:16", "1:1", "4:3"],
+      "recommended_ar": "16:9",
+      "template": "{style_description} 스타일의 일러스트레이션. {character_description}이 {panel_action}하는 장면. {lyric_atmosphere}의 분위기. 텍스트, 워터마크 없음."
+    }
+  },
+
+  "selection_guide": {
+    "free_options": ["flux1", "gemini"],
+    "paid_options": ["gpt_image", "nijijourney"],
+    "best_for_anime_webtoon": "nijijourney",
+    "best_for_realism": "gpt_image",
+    "best_for_natural_language": "flux1",
+    "best_for_korean_prompt": "gemini"
+  }
+}

@@ -1,0 +1,335 @@
+{
+  "schema_version": 1,
+  "default_profile": "intimate_four_piece",
+  "safety": {
+    "use": "Extract general concert-production attributes from public references.",
+    "do_not_use": "Do not reproduce artist names, faces, logos, exact costumes, signature props, or exact stage replicas in generated prompts."
+  },
+  "fallback_by_style": {
+    "cute_action": ["raw_power_stage", "in_the_round_heavy"],
+    "cute_dramatic": ["atmospheric_longform", "raw_power_stage"],
+    "cute_pop": ["audience_light_spectacle", "progressive_ensemble"],
+    "cute_emotional": ["intimate_four_piece", "atmospheric_longform"],
+    "cute_manhwa": ["intimate_four_piece", "progressive_ensemble", "audience_light_spectacle"],
+    "telephone-signal-pop": ["geometric_electronic", "audience_light_spectacle"]
+  },
+  "sources": {
+    "nirvana_reading": {
+      "artist": "Nirvana",
+      "url": "https://www.nirvana.com/releases/live-at-reading/",
+      "observation": "A compact rock-band performance can feel large through raw movement, practical backline, and direct festival framing."
+    },
+    "queen_montreal": {
+      "artist": "Queen",
+      "url": "https://www.queenonline.com/news/queen-rock-montreal-imax-official-trailer-and-tickets",
+      "observation": "Arena scale can be driven by a commanding frontperson, clear member blocking, hero angles, and crowd response."
+    },
+    "coldplay_sustainability": {
+      "artist": "Coldplay",
+      "url": "https://www.coldplay.com/emissions-update/",
+      "observation": "Audience lights, kinetic participation, confetti, and broad color changes can make the crowd part of the visual system."
+    },
+    "metallica_m72": {
+      "artist": "Metallica",
+      "url": "https://www.metallica.com/news/2022-11-28-m72-world-tour.html",
+      "observation": "An in-the-round layout enables orbiting viewpoints, multiple focal points, and an immersive heavy-performance scale."
+    },
+    "the_cure_40_live": {
+      "artist": "The Cure",
+      "url": "https://www.thecure.com/news/2019/40-live-cur%C3%A6tion-25-anniversary/",
+      "observation": "Long-form atmospheric performance benefits from haze, silhouettes, cool color fields, and patient lateral framing."
+    },
+    "talking_heads_sms": {
+      "artist": "Talking Heads",
+      "url": "https://a24films.com/films/stop-making-sense",
+      "observation": "A show can begin minimally and add musicians, movement, props, and light in visible stages."
+    },
+    "daft_punk_alive": {
+      "artist": "Daft Punk",
+      "url": "https://daftpunk.com/pages/alive-2007",
+      "observation": "Electronic performance can use a central geometric structure, symmetry, synchronized light grids, and monumental wide shots."
+    }
+  },
+  "profiles": {
+    "raw_power_stage": {
+      "name_ko": "거친 소규모 록 스테이지",
+      "description": "Practical amps, close member spacing, raw movement, and immediate handheld energy.",
+      "match": {
+        "keywords": ["punk", "hardcore", "garage rock", "grunge", "alternative rock", "lo-fi"],
+        "bpm_ranges": ["fast", "very_fast"],
+        "style_keys": ["cute_action", "cute_dramatic"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "compact rectangular stage with practical amplifier stacks, drummer close behind, and members sharing a tight performance zone",
+      "lighting_variants": [
+        "hard white backlight with dirty amber side fill and visible haze",
+        "alternating red and cold white practical stage lamps",
+        "low-saturation blue wash interrupted by bright cymbal flashes"
+      ],
+      "camera_variants": [
+        "shoulder-height handheld framing with slight off-axis urgency",
+        "low close wide-angle view from the front edge of the stage",
+        "tight instrument detail followed by an abrupt full-band reveal"
+      ],
+      "performance_variants": [
+        "short explosive movements with members crossing into each other's space",
+        "vocalist leaning toward the crowd while guitar and bass form opposing diagonals",
+        "drummer-driven accents with the front line reacting on the same beat"
+      ],
+      "audience_variants": [
+        "dense front-row silhouettes close to the stage barrier",
+        "raised hands entering the lower frame without readable signs",
+        "crowd shown as a compressed moving texture rather than individual faces"
+      ],
+      "wardrobe_treatment": "retain the original skeleton-band outfits but simplify them into worn matte layers with one song-specific accent color",
+      "source_refs": ["nirvana_reading"]
+    },
+    "arena_frontperson": {
+      "name_ko": "관객 호응형 아레나 쇼",
+      "description": "Clear member blocking, commanding center focus, call-and-response, and heroic arena framing.",
+      "match": {
+        "keywords": ["arena rock", "glam rock", "classic rock", "anthemic", "gang vocals", "shout-along"],
+        "bpm_ranges": ["medium", "fast", "very_fast"],
+        "style_keys": ["cute_action", "cute_manhwa"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 1
+      },
+      "stage_layout": "broad arena stage with a clear central vocalist lane, balanced side positions, and open space for large gestures",
+      "lighting_variants": [
+        "clean white follow spot with gold rim lighting",
+        "large red and amber backlight blocks framing the center lane",
+        "bright audience wash during call-and-response moments"
+      ],
+      "camera_variants": [
+        "heroic low angle centered on the vocalist with the band layered behind",
+        "long-lens crowd-to-stage compression emphasizing scale",
+        "wide symmetrical full-band tableau before a decisive close-up"
+      ],
+      "performance_variants": [
+        "frontperson directs a clear crowd response while the band holds strong silhouettes",
+        "members spread across the width and converge for the hook",
+        "large readable gestures timed to vocal or drum accents"
+      ],
+      "audience_variants": [
+        "large crowd answering with synchronized raised arms",
+        "foreground audience silhouettes framing a bright center-stage figure",
+        "crowd lights briefly raised to reveal venue scale"
+      ],
+      "wardrobe_treatment": "retain original character silhouettes with bold geometric stagewear accents, avoiding any recognizable real costume",
+      "source_refs": ["queen_montreal"]
+    },
+    "audience_light_spectacle": {
+      "name_ko": "관객 조명형 스타디움",
+      "description": "The audience becomes part of the light design through waves of color and participatory spectacle.",
+      "match": {
+        "keywords": ["pop rock", "synth-pop", "uplifting", "stadium", "festival", "colorful", "hopeful"],
+        "bpm_ranges": ["medium", "fast"],
+        "style_keys": ["cute_pop", "cute_manhwa", "telephone-signal-pop"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "wide stadium platform with a central band zone and visual pathways extending into a field of audience lights",
+      "lighting_variants": [
+        "multi-color audience light waves moving from foreground to stage",
+        "soft rainbow beams with warm confetti-like particles",
+        "deep blue venue field punctuated by thousands of small colored lights"
+      ],
+      "camera_variants": [
+        "very wide venue reveal with the band as a bright focal point",
+        "reverse angle from stage showing the audience light field",
+        "gentle crane-like diagonal framing connecting performer and crowd"
+      ],
+      "performance_variants": [
+        "band invites the audience into a shared visual rhythm",
+        "members move from intimate center grouping to a broad celebratory formation",
+        "hook lands with a coordinated light wave rather than aggressive movement"
+      ],
+      "audience_variants": [
+        "audience represented by many small synchronized colored lights",
+        "soft silhouettes with illuminated hands creating depth",
+        "crowd participation shown as broad color patterns without logos or text"
+      ],
+      "wardrobe_treatment": "retain original outfits with bright removable color panels that change with the lighting palette",
+      "source_refs": ["coldplay_sustainability"]
+    },
+    "in_the_round_heavy": {
+      "name_ko": "인더라운드 헤비 퍼포먼스",
+      "description": "An immersive central stage supports orbiting camera positions and multiple heavy focal points.",
+      "match": {
+        "keywords": ["metal", "heavy rock", "thrash", "industrial", "heavy", "distorted"],
+        "bpm_ranges": ["fast", "very_fast"],
+        "style_keys": ["cute_action", "cute_dramatic"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "central in-the-round platform surrounded by audience on all sides, with instruments facing multiple directions",
+      "lighting_variants": [
+        "crimson floor glow with hard white vertical beams",
+        "cold steel-blue overhead grid with brief orange impact flashes",
+        "dark venue with circular light rings tracing the stage perimeter"
+      ],
+      "camera_variants": [
+        "orbiting wide angle that keeps the crowd visible behind each member",
+        "low radial composition looking across the center stage",
+        "overhead circular geometry followed by a tight rhythmic detail"
+      ],
+      "performance_variants": [
+        "members rotate toward different audience sections between accents",
+        "two members form a strong diagonal while the drummer anchors the opposite side",
+        "heavy synchronized downbeat poses distributed around the circular stage"
+      ],
+      "audience_variants": [
+        "audience surrounds the stage as a continuous dark ring",
+        "alternating crowd sections illuminated on opposite sides",
+        "close foreground hands contrast with distant audience layers"
+      ],
+      "wardrobe_treatment": "retain original costumes with heavier matte panels and restrained metallic highlights, never copying signature artist attire",
+      "source_refs": ["metallica_m72"]
+    },
+    "atmospheric_longform": {
+      "name_ko": "대기감 중심 포스트펑크 무대",
+      "description": "Patient silhouettes, haze, cool color fields, and layered musicianship support reflective songs.",
+      "match": {
+        "keywords": ["post-punk", "gothic", "shoegaze", "dark wave", "dream pop", "melancholic", "melancholy"],
+        "bpm_ranges": ["slow", "medium", "fast"],
+        "style_keys": ["cute_dramatic", "cute_emotional", "cute_manhwa"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "deep layered stage with wide spacing, backlit instruments, and empty negative space around the vocalist",
+      "lighting_variants": [
+        "cool violet haze with a narrow pale backlight",
+        "deep blue field with slow magenta edge light",
+        "near-silhouette lighting with a soft moonlike overhead pool"
+      ],
+      "camera_variants": [
+        "slow lateral composition with foreground equipment creating depth",
+        "long static-feeling wide shot with restrained subject scale",
+        "profile close-up separated from the background by haze"
+      ],
+      "performance_variants": [
+        "minimal body movement with emotion carried by posture and spacing",
+        "members remain isolated in separate pools of light",
+        "the full band gradually becomes visible through haze"
+      ],
+      "audience_variants": [
+        "audience appears as a quiet dark horizon",
+        "occasional small lights break a broad field of shadow",
+        "crowd detail is withheld to preserve contemplative negative space"
+      ],
+      "wardrobe_treatment": "retain original costumes using low-contrast cool accents and soft fabric shapes without copying real styling",
+      "source_refs": ["the_cure_40_live"]
+    },
+    "progressive_ensemble": {
+      "name_ko": "점층적 앙상블 무대",
+      "description": "The visual arrangement grows section by section, adding movement and stage density.",
+      "match": {
+        "keywords": ["new wave", "art rock", "funk", "groovy", "dance rock", "minimal", "percussion"],
+        "bpm_ranges": ["medium", "fast"],
+        "style_keys": ["cute_pop", "cute_manhwa", "cute_action"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "clean open stage that begins with one focal performer and gains visible layers of instruments and movement",
+      "lighting_variants": [
+        "neutral work light that gradually gains saturated color blocks",
+        "single warm pool expanding into a full-stage geometric wash",
+        "clean white side light with rhythmic primary-color accents"
+      ],
+      "camera_variants": [
+        "full-body frontal composition emphasizing readable movement",
+        "locked wide geometry that becomes richer as elements enter",
+        "precise side angle connecting repeated performer shapes"
+      ],
+      "performance_variants": [
+        "one clear movement motif is repeated and expanded by the group",
+        "stage density increases at each section boundary",
+        "members use simple coordinated steps and instrument gestures"
+      ],
+      "audience_variants": [
+        "audience held back until the arrangement reaches full scale",
+        "clean lower-frame silhouettes preserve stage geometry",
+        "crowd response appears as a final visual layer rather than constant noise"
+      ],
+      "wardrobe_treatment": "retain original member identity while varying simple geometric layers and one contrasting accent per section",
+      "source_refs": ["talking_heads_sms"]
+    },
+    "geometric_electronic": {
+      "name_ko": "기하학적 전자음악 무대",
+      "description": "A central geometric performance structure and synchronized light grid create monumental electronic imagery.",
+      "match": {
+        "keywords": ["electronic", "house", "techno", "electro", "edm", "synthwave", "signal pop", "pulse"],
+        "bpm_ranges": ["medium", "fast", "very_fast"],
+        "style_keys": ["telephone-signal-pop", "cute_pop", "cute_action"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "elevated central geometric console with symmetrical band positions and a large abstract light surface behind it",
+      "lighting_variants": [
+        "synchronized amber and magenta light grid",
+        "deep black field with sharp cyan geometric pulses",
+        "concentric signal rings expanding from the central console"
+      ],
+      "camera_variants": [
+        "perfectly symmetrical monumental wide shot",
+        "high three-quarter angle revealing the stage geometry",
+        "tight control-surface detail contrasted with a distant crowd field"
+      ],
+      "performance_variants": [
+        "movement is restrained while lighting carries the rhythmic intensity",
+        "members trigger synchronized visual pulses from fixed positions",
+        "the full band forms a balanced geometric silhouette"
+      ],
+      "audience_variants": [
+        "crowd rendered as a dark field beneath the central light structure",
+        "small audience lights echo the stage signal pattern",
+        "silhouettes pulse in alternating bands of color"
+      ],
+      "wardrobe_treatment": "retain original skeleton identity with abstract reflective panels and no helmet, logo, or recognizable artist costume",
+      "source_refs": ["daft_punk_alive"]
+    },
+    "intimate_four_piece": {
+      "name_ko": "친밀한 4인조 라이브",
+      "description": "A balanced small-venue layout emphasizes member relationships and emotional close framing.",
+      "match": {
+        "keywords": ["indie pop", "indie rock", "ballad", "acoustic", "folk", "soft pop", "intimate", "heartfelt"],
+        "bpm_ranges": ["slow", "medium"],
+        "style_keys": ["cute_emotional", "cute_manhwa"],
+        "keyword_weight": 4,
+        "bpm_weight": 1,
+        "style_weight": 2
+      },
+      "stage_layout": "small balanced four-piece stage with warm practical lamps, visible instruments, and close relational spacing",
+      "lighting_variants": [
+        "warm amber practical lamps with soft magenta edge light",
+        "muted teal and warm white cross-light",
+        "single soft overhead pool with dim background bulbs"
+      ],
+      "camera_variants": [
+        "eye-level medium framing that includes another member in the background",
+        "gentle close-up with instrument details at the frame edge",
+        "quiet wide shot preserving space between all four members"
+      ],
+      "performance_variants": [
+        "members exchange small visual cues rather than large gestures",
+        "vocalist remains close to the microphone while the band forms a supportive arc",
+        "subtle synchronized breathing and instrument movement carry the section"
+      ],
+      "audience_variants": [
+        "small audience silhouettes close to the stage",
+        "soft seated or still crowd shapes with sparse warm lights",
+        "audience mostly outside frame to preserve intimacy"
+      ],
+      "wardrobe_treatment": "retain the original outfits with soft fabric overlays and restrained song-specific accent colors",
+      "source_refs": ["nirvana_reading", "the_cure_40_live"]
+    }
+  }
+}

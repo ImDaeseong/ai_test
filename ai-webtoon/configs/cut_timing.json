@@ -1,0 +1,58 @@
+{
+  "_comment": "BPM별 섹션별 권장 패널 수와 지속 시간. panel_planner.py가 참조하여 스토리보드 생성.",
+  "_style_note": "웹툰 스틸컷 MV 기준. 이미지 1장에 Ken Burns 효과(느린 줌/패닝)를 적용하여 5~8초 표시. BPM은 패널 수(다양성)에만 영향, 지속 시간은 웹툰 편집 기준으로 고정.",
+
+  "bpm_ranges": {
+    "slow":      { "min": 0,   "max": 89,  "label": "Slow (0–89 BPM)" },
+    "medium":    { "min": 90,  "max": 119, "label": "Medium (90–119 BPM)" },
+    "fast":      { "min": 120, "max": 149, "label": "Fast (120–149 BPM)" },
+    "very_fast": { "min": 150, "max": 999, "label": "Very Fast (150+ BPM)" }
+  },
+
+  "sections": {
+    "intro": {
+      "slow":      { "panel_count": 2, "seconds_per_panel": 8 },
+      "medium":    { "panel_count": 2, "seconds_per_panel": 7 },
+      "fast":      { "panel_count": 3, "seconds_per_panel": 6 },
+      "very_fast": { "panel_count": 3, "seconds_per_panel": 5 }
+    },
+    "verse": {
+      "slow":      { "panel_count": 4, "seconds_per_panel": 7 },
+      "medium":    { "panel_count": 4, "seconds_per_panel": 6 },
+      "fast":      { "panel_count": 5, "seconds_per_panel": 5 },
+      "very_fast": { "panel_count": 6, "seconds_per_panel": 4 }
+    },
+    "pre_chorus": {
+      "slow":      { "panel_count": 2, "seconds_per_panel": 6 },
+      "medium":    { "panel_count": 3, "seconds_per_panel": 5 },
+      "fast":      { "panel_count": 3, "seconds_per_panel": 5 },
+      "very_fast": { "panel_count": 4, "seconds_per_panel": 4 }
+    },
+    "chorus": {
+      "slow":      { "panel_count": 5, "seconds_per_panel": 7 },
+      "medium":    { "panel_count": 6, "seconds_per_panel": 6 },
+      "fast":      { "panel_count": 7, "seconds_per_panel": 5 },
+      "very_fast": { "panel_count": 8, "seconds_per_panel": 4 }
+    },
+    "bridge": {
+      "slow":      { "panel_count": 3, "seconds_per_panel": 7 },
+      "medium":    { "panel_count": 3, "seconds_per_panel": 6 },
+      "fast":      { "panel_count": 4, "seconds_per_panel": 5 },
+      "very_fast": { "panel_count": 4, "seconds_per_panel": 4 }
+    },
+    "outro": {
+      "slow":      { "panel_count": 2, "seconds_per_panel": 8 },
+      "medium":    { "panel_count": 2, "seconds_per_panel": 7 },
+      "fast":      { "panel_count": 3, "seconds_per_panel": 6 },
+      "very_fast": { "panel_count": 3, "seconds_per_panel": 5 }
+    },
+    "instrumental": {
+      "slow":      { "panel_count": 2, "seconds_per_panel": 8 },
+      "medium":    { "panel_count": 3, "seconds_per_panel": 6 },
+      "fast":      { "panel_count": 4, "seconds_per_panel": 5 },
+      "very_fast": { "panel_count": 4, "seconds_per_panel": 4 }
+    }
+  },
+
+  "_usage_note": "패널 수는 BPM에 따라 변함(빠를수록 많은 패널 = 다양성). 지속 시간은 웹툰 MV 편집 기준(Ken Burns 효과 포함 5~8초). CapCut/DaVinci에서 각 이미지 클립 길이를 이 값에 맞춰 설정한다."
+}

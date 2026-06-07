@@ -1,0 +1,87 @@
+{
+  "_comment": "패널 타입별 카메라 구도, 피사체, 구성 규칙.",
+
+  "types": {
+    "wide": {
+      "name": "Wide Establishing Shot",
+      "description": "전경 와이드샷. 무대 전체, 세계관 소개.",
+      "camera": "wide establishing shot, low angle looking up at the stage",
+      "subject": "full skeleton band on stage, entire cyberpunk city skyline visible, neon magenta moon prominent",
+      "composition": "band centered, city towers on both sides, moon directly above",
+      "depth": "deep field, multiple layers: crowd foreground, stage midground, city background",
+      "typical_duration_seconds": 6,
+      "energy_level": "establishing"
+    },
+    "medium": {
+      "name": "Medium Performance Shot",
+      "description": "상반신 미디엄샷. 연주 장면, 퍼포먼스 에너지.",
+      "camera": "medium shot from waist up, three-quarter angle",
+      "subject": "specific band member performing, instrument prominently visible, expressive body language",
+      "composition": "subject fills two-thirds of frame, stage and city background visible",
+      "depth": "shallow focus on performer, soft background",
+      "typical_duration_seconds": 4,
+      "energy_level": "performance"
+    },
+    "closeup": {
+      "name": "Emotion Close-up",
+      "description": "감정 클로즈업. 얼굴/감정 강조, 코러스/절정.",
+      "camera": "extreme close-up on skull face, eye-level or slight tilt up",
+      "subject": "skeleton face, hollow eye sockets with faint glow, expressive pose",
+      "composition": "face fills most of frame, minimal background visible",
+      "depth": "very shallow, background completely blurred",
+      "typical_duration_seconds": 3,
+      "energy_level": "emotional peak"
+    },
+    "silhouette": {
+      "name": "Silhouette Against Moon",
+      "description": "달 앞 실루엣. 분위기 전환, 인트로/아웃트로.",
+      "camera": "dramatic backlit shot, low angle",
+      "subject": "full body silhouette of band or vocalist against glowing neon magenta moon",
+      "composition": "dark silhouette against bright moon, no facial detail",
+      "depth": "pure outline shape, no fill detail",
+      "typical_duration_seconds": 5,
+      "energy_level": "atmospheric"
+    },
+    "detail": {
+      "name": "Instrument Detail Shot",
+      "description": "악기/손 디테일. 연주 기술, 버스 전환.",
+      "camera": "tight close-up on hands and instrument",
+      "subject": "stylized cartoon fingers on strings, drumsticks, microphone stand — specific instrument focus",
+      "composition": "hands and instrument fill frame, slight angle to show depth",
+      "depth": "shallow, instrument sharp, background soft",
+      "typical_duration_seconds": 3,
+      "energy_level": "intimate"
+    },
+    "crowd": {
+      "name": "Crowd Reaction Shot",
+      "description": "관객 반응 원경. 공연의 규모감, 프리코러스.",
+      "camera": "wide crowd angle, slightly elevated looking toward stage",
+      "subject": "crowd silhouettes in foreground, skeleton band on stage in distance, magenta lights overhead",
+      "composition": "crowd fills bottom third, stage in upper center, moon visible",
+      "depth": "deep field, crowd sharp, stage slightly soft",
+      "typical_duration_seconds": 4,
+      "energy_level": "scale"
+    },
+    "atmosphere": {
+      "name": "Atmospheric Background",
+      "description": "배경/분위기 패널. 인물 없음, 세계관 묘사, 전환부.",
+      "camera": "environment-focused, no fixed camera rule",
+      "subject": "cyberpunk city, neon magenta moon, empty stage, smoke and particles — no characters",
+      "composition": "environment fills entire frame, atmospheric",
+      "depth": "varies by scene",
+      "typical_duration_seconds": 3,
+      "energy_level": "transition"
+    },
+    "text": {
+      "name": "Lyric Text Panel",
+      "description": "가사 자막 패널. 배경 이미지 위 가사 오버레이 (편집 단계에서 추가).",
+      "camera": "N/A — added in editing",
+      "subject": "background atmosphere image + lyric overlay text",
+      "composition": "text centered or lower third",
+      "depth": "N/A",
+      "typical_duration_seconds": 4,
+      "energy_level": "narrative",
+      "_note": "이 타입은 이미지 생성이 아닌 편집 단계에서 처리. prompt 파일 불필요."
+    }
+  }
+}

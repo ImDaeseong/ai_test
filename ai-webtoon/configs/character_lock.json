@@ -1,0 +1,45 @@
+{
+  "_comment": "스켈레톤 밴드 정체성 고정 블록. 모든 패널 프롬프트에 반드시 포함.",
+  "_style_note": "고유 캐릭터 스타일. 특정 상용 캐릭터(스폰지밥, 곰돌이푸 등) 직접 참조 금지. 아래 설명어로 동일한 귀엽고 단순한 cartoon 미감을 구현.",
+
+  "identity_block": {
+    "band_description": "the same original fantasy skeleton music band, rendered in a simple rounded Western cartoon style with thick bold outlines and flat bright colors",
+    "members": {
+      "vocalist": "the same skeleton vocalist with a simple round skull, large circular hollow eye sockets with neon magenta inner glow, holding a decorative concert microphone, chubby rounded body proportions",
+      "guitarist": "the same skeleton guitarist on the left, simple geometric skull shape, large glowing hollow eye sockets, rounded stubby limbs, playful exaggerated pose",
+      "bassist": "the same skeleton bassist on the right, round chubby skull, simple flat cartoon body, large round hollow eye sockets softly glowing",
+      "drummer": "the same skeleton drummer in the background, simple rounded skull, exaggerated comic motion lines while drumming, stubby round arms"
+    },
+    "stage": "the same colorful stylized cyberpunk city concert stage, drawn in simple flat cartoon style",
+    "moon": "the same massive glowing neon magenta moon, perfectly round and simple like a giant flat circle glowing in the sky",
+    "costume": "simple flat cartoon stage outfits in dark colors with bright neon magenta accents, rounded costume details, no complex shading",
+    "palette": "flat bright colors — deep black base, neon magenta highlights, vivid pop color accents"
+  },
+
+  "art_style_anchor": {
+    "base": "simple rounded Western cartoon style — thick bold black outlines, flat bright cel colors, large round hollow eye sockets with neon glow, chubby geometric body shapes, minimal detail, clean and friendly character design",
+    "proportions": "chubby rounded proportions — large round skull, short stubby limbs, soft rounded edges on everything, no sharp angles on characters",
+    "line_art": "thick bold black outlines, same line weight throughout, simple clean edges — classic flat cartoon aesthetic",
+    "color": "flat bright colors with no gradients on characters — deep black base, neon magenta accent glow, vivid solid color fills",
+    "expression_style": "very exaggerated simple expressions — round hollow eye sockets convey emotion through inner glow intensity and simple brow-like skull shapes, manga-style sparkle and sweat drop effects",
+    "background": "simple flat stylized backgrounds — colorful but not photorealistic, cartoon cyberpunk world"
+  },
+
+  "style_anchor_webtoon": "Simple rounded cartoon style. Skeleton characters are charming, friendly, and funny — not scary. Think classic Western animation meets Korean webtoon panel layout. Original character design, not based on any existing IP.",
+
+  "negative_rules": [
+    "Do not redesign the band members.",
+    "Do not change the skeleton music band identity.",
+    "Do not change the neon magenta moon world.",
+    "Do not create a different band.",
+    "Do not make the band members human.",
+    "Do not make characters scary, gothic, or horror-themed — keep them cute and charming.",
+    "Do not add weapons or violent props.",
+    "Do not use realistic rendering or complex shading — keep flat cartoon style.",
+    "Do not reference or imitate any specific copyrighted cartoon characters (SpongeBob, Winnie the Pooh, etc.) — use original character descriptions only.",
+    "No complex details on characters — keep shapes simple and rounded.",
+    "No text, no watermark, no logo."
+  ],
+
+  "reference_note": "Always attach the reference images from the reference folder when using this prompt."
+}
