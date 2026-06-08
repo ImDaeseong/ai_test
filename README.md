@@ -1,7 +1,7 @@
 # 소스 설명
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-06-08 (ai_anime 제거)
-> 총 18개 소스 프로젝트 수록 (각 `_claude_Prompts` / `_codex_Prompts` 폴더는 AI 개발 프롬프트 저장소이므로 제외)
+> 작성일: 2026-05-08 / 최종 수정: 2026-06-08 (ai_anime 제거, ai-webtoon_capcut CLI 구현 완료, Doc 폴더 정리)
+> 총 18개 소스 프로젝트 수록 (`Doc/` 폴더에 프로젝트별 AI 개발 프롬프트·설계 문서 통합 보관)
 
 ## 저장소 목표
 
@@ -53,7 +53,7 @@ copy weather_alarm\.env.example weather_alarm\.env
 | 15 | [windows-port-monitor](#15-windows-port-monitor) | Windows TCP/UDP 포트 연결 이력 모니터링 서비스 | Python + SQLite | ★★★★★ |
 | 16 | [run_game](#16-run_game) | Steam·Epic·Netmarble 게임 설치 탐지 및 런처 실행기 | C++ / MFC (Visual Studio 2022) | ★★★★★ |
 | 17 | [ai-webtoon](#17-ai-webtoon) | 웹툰 만화 패널 이미지 프롬프트 자동 생성 | Python + Flask | ★★★★★ |
-| 18 | [ai-webtoon_capcut](#18-ai-webtoon_capcut) | 웹툰 패널 이미지 → Remotion/CapCut 타임라인 자동 생성 | Python + Node.js (Remotion) | ★★★☆☆ |
+| 18 | [ai-webtoon_capcut](#18-ai-webtoon_capcut) | 웹툰 패널 이미지 → 편집 타임라인 자동 생성 Python CLI | Python 3.12 | ★★★★☆ |
 
 ---
 
@@ -1022,50 +1022,62 @@ python -m pytest tests_unit.py -q                    # 테스트
 ## 18. ai-webtoon_capcut
 
 ### 기능 개요
-`ai-webtoon`이 생성한 웹툰 패널 이미지를 음악 길이에 맞게 정렬하고, Remotion으로 전체·섹션별 MP4를 렌더링한 뒤 CapCut 전달 폴더까지 자동 생성합니다.
+`ai-webtoon`이 생성한 웹툰 패널 이미지·음악·LRC/SRT를 입력받아 곡 길이에 맞는 편집 타임라인(JSON/CSV)을 자동 생성하는 Python CLI. 패널 수·음악 길이·자막 유무가 곡마다 달라도 동일 명령으로 처리.
 
 ### 주요 기능
-- 이미지 수와 음악 길이가 달라도 타임라인 전체 길이를 음악에 맞게 자동 정규화
-- LRC/SRT 재정렬 및 신뢰도 보고서 출력
-- Remotion(Node.js)으로 전체 미리보기 MP4 + 섹션별 MP4 생성
-- CapCut 수동 가져오기용 전달 폴더 생성
+- **214곡 탐색**: `ai-webtoon/output` 전체 스캔, 곡별 준비 상태(PROMPTS_ONLY → BUILD_READY) 자동 판정
+- **LRC/SRT 정규화**: Suno 메타데이터 분리, 긴 cue 탐지, 신뢰도 점수 비교 후 최적 자막 선택
+- **섹션 경계 추론**: trusted section cue → storyboard weight → 균등 폴백 3단계 전략, 신뢰도 기록
+- **타임라인 생성**: 섹션별 이미지 배분, 자동 반복·모션 프리셋 할당, 프레임 경계 정렬, timeline.json/CSV 출력
+- **배치 처리**: `build-all` 명령으로 준비된 곡 전체 처리, 곡별 예외 격리
+- **14개 단위 테스트 통과**
 
 ### 입력 구조
 ```
-input/{곡명}/
+ai-webtoon/output/{곡명}/
+├─ 01_storyboard.md
 ├─ {곡명}.wav / .mp3
-├─ *.lrc / *.srt
-└─ img/
-   ├─ panel_001_intro_wide.png
-   └─ panel_NNN_*.png
+├─ lyrics.lrc / lyrics.srt
+└─ panels/  (또는 img/)
+   └─ panel_001_*.png  ...
 ```
 
 ### 폴더 구조
 ```
 ai-webtoon_capcut/
-├── src/          # Python 처리 엔진
-├── remotion/     # Remotion 렌더러 (Node.js / TypeScript)
-├── config/       # 프로젝트 설정
-├── docs/         # 설계 문서
-├── scripts/      # 자동화 스크립트
-├── input/        # 곡별 입력 파일 (gitignore)
-├── output/       # 렌더 결과 (gitignore)
-└── run_all.bat   # 전체 파이프라인 실행
+├── src/webtoon_capcut/   # Python CLI (domain/adapters/discovery/subtitles/sections/timeline/application)
+├── remotion/             # Remotion 렌더러 (Node.js) — 미구현
+├── config/default.json   # 클립 길이·캔버스·자막 정책
+├── schemas/              # JSON Schema (manifest/timeline/subtitles)
+├── scripts/              # webtoon-capcut.ps1, test.ps1, validate-project.ps1
+├── tests/unit/           # 14개 단위 테스트
+└── docs/                 # 설계 문서 15개
 ```
 
 ### 사용 방법
-```bash
-pip install -r requirements.txt
-npm install              # remotion/ 폴더 내
-.\run_all.bat            # 전체 파이프라인 실행
+```powershell
+# 설치 (Python 3.12 필요)
+py -3.12 -m pip install -e .
+
+# 곡 목록 탐색
+.\scripts\webtoon-capcut.ps1 discover --output-root "..\ai-webtoon\output"
+
+# 단일 곡 타임라인 생성
+.\scripts\webtoon-capcut.ps1 build --song-dir "..\ai-webtoon\output\곡명"
+
+# 준비된 곡 전체 배치 처리
+.\scripts\webtoon-capcut.ps1 build-all --output-root "..\ai-webtoon\output" --ready-only
+
+# 테스트
+.\scripts\test.ps1
 ```
 
 ### 기술 스택
-- Python 3.x (타임라인 정규화, LRC/SRT 처리)
-- Node.js + Remotion (MP4 렌더링)
+- Python 3.12 / stdlib만 사용 (외부 의존성 없음)
+- ffprobe (오디오·이미지 프로브, 선택)
 
-### 개발 완성도: ★★★☆☆
-설계·문서화 완료, 구현 진행 중. Remotion 렌더 파이프라인 기초 구조 완성.
+### 개발 완성도: ★★★★☆
+Python CLI 전 계층 구현 완료 (43개 모듈, 14 tests passed). 타임라인 생성·자막 정규화·섹션 추론·배치 처리 동작. 현재 `ai-webtoon/output`에 실제 이미지·오디오 파일 생성 후 end-to-end 검증 필요. Remotion 렌더러·CapCut 패키징은 미구현(HOLD).
 
 ---
 
@@ -1077,4 +1089,5 @@ npm install              # remotion/ 폴더 내
 - 보안/진단 도구 2종 (security_scanning, windows-port-monitor) — 내부망 진단·모니터링 용도
 - **C++ / MFC 프로젝트 1종** (run_game) — Visual Studio 2022, Win32 API, 레지스트리 기반 게임 설치 탐지
 - **웹툰 MV 제작 도구 2종** (ai-webtoon, ai-webtoon_capcut) — Suno 음원 기반 웹툰 패널 이미지 프롬프트 생성 및 영상 렌더링
-- 각 `_claude_Prompts` / `_codex_Prompts` 폴더에는 해당 프로젝트 개발에 사용한 AI 프롬프트가 저장되어 있음
+- **`Doc/` 폴더**에 프로젝트별 AI 개발 프롬프트·설계 문서 통합 보관 (`{프로젝트명}_claude_Prompts` / `{프로젝트명}_codex_Prompts` 형식)
+- **`_ai_rules/` 폴더**에 신규 프로젝트 시작 시 참조할 공통 규칙·체크리스트 보관

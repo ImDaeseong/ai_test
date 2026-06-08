@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://webtoon-capcut/schemas/manifest.schema.json",
+  "title": "Song Manifest",
+  "description": "Top-level descriptor for a single song's source assets and processing status.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "song_id",
+    "title",
+    "source",
+    "input_hashes",
+    "profile",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Schema version identifier.",
+      "const": "2.0"
+    },
+    "song_id": {
+      "type": "string",
+      "description": "Stable unique identifier: '{slug}-{hash8}'.",
+      "minLength": 1,
+      "pattern": "^[a-z0-9가-힣][a-z0-9가-힣\\-]*-[0-9a-f]{8}$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable song title.",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "description": "Relative paths to source assets (relative to this manifest file).",
+      "required": ["song_dir"],
+      "additionalProperties": false,
+      "properties": {
+        "song_dir": {
+          "type": "string",
+          "description": "Relative path to the raw song folder.",
+          "minLength": 1
+        },
+        "storyboard": {
+          "type": ["string", "null"],
+          "description": "Storyboard Markdown filename within song_dir."
+        },
+        "song_text": {
+          "type": ["string", "null"],
+          "description": "Relative path to the original song lyrics/structure TXT."
+        },
+        "image_dir": {
+          "type": ["string", "null"],
+          "description": "Relative path to the panel image directory within song_dir."
+        },
+        "audio": {
+          "type": ["string", "null"],
+          "description": "Audio filename within song_dir."
+        },
+        "lrc": {
+          "type": ["string", "null"],
+          "description": "LRC subtitle filename within song_dir."
+        },
+        "srt": {
+          "type": ["string", "null"],
+          "description": "SRT subtitle filename within song_dir."
+        }
+      }
+    },
+    "input_hashes": {
+      "type": "object",
+      "description": "SHA-256 hashes of input files, keyed by relative path.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "profile": {
+      "type": "string",
+      "description": "Named render/output profile (e.g. 'youtube_1080p', 'preview').",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "description": "Song readiness status.",
+      "enum": [
+        "PROMPTS_ONLY",
+        "IMAGES_READY",
+        "MEDIA_READY",
+        "SUBTITLE_READY",
+        "BUILD_READY",
+        "REVIEW_REQUIRED",
+        "BLOCKED"
+      ]
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Non-blocking warning messages accumulated during processing.",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

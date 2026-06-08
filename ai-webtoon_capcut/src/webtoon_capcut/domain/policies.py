@@ -1,0 +1,40 @@
+from .enums import CanonicalType, PanelType
+
+SECTION_ALIASES: dict[str, CanonicalType] = {
+    "Intro": CanonicalType.intro,
+    "Verse": CanonicalType.verse,
+    "Verse 1": CanonicalType.verse,
+    "Verse 2": CanonicalType.verse,
+    "Verse 3": CanonicalType.verse,
+    "Verse 4": CanonicalType.verse,
+    "Verse 5": CanonicalType.verse,
+    "Pre-Chorus": CanonicalType.pre_chorus,
+    "Pre Chorus": CanonicalType.pre_chorus,
+    "Chorus": CanonicalType.chorus,
+    "Chorus 1": CanonicalType.chorus,
+    "Chorus 2": CanonicalType.chorus,
+    "Chorus 3": CanonicalType.chorus,
+    "Chorus 4": CanonicalType.chorus,
+    "Final Chorus": CanonicalType.chorus,
+    "Post-Chorus": CanonicalType.post_chorus,
+    "Post Chorus": CanonicalType.post_chorus,
+    "Hook": CanonicalType.hook,
+    "Drop": CanonicalType.drop,
+    "Build": CanonicalType.build,
+    "Bridge": CanonicalType.bridge,
+    "Breakdown": CanonicalType.breakdown,
+    "Interlude": CanonicalType.instrumental,
+    "Instrumental": CanonicalType.instrumental,
+    "Outro": CanonicalType.outro,
+}
+
+MOTION_PRESETS: dict[PanelType, list[str]] = {
+    PanelType.wide: ["slow_zoom_in", "slow_pan_left", "slow_pan_right"],
+    PanelType.closeup: ["slow_zoom_in", "subtle_drift"],
+    PanelType.silhouette: ["slow_zoom_out", "slow_pan_right"],
+    PanelType.medium: ["slow_pan_right", "slow_zoom_in"],
+    PanelType.detail: ["slow_zoom_in", "slow_pan_left"],
+    PanelType.crowd: ["slow_zoom_out", "slow_pan_right"],
+    PanelType.atmosphere: ["slow_pan_left", "slow_pan_right", "slow_zoom_in"],
+    PanelType.unknown: ["slow_zoom_in"],
+}
