@@ -55,7 +55,7 @@ if not errorlevel 1 (
 echo [>>]  Starting Flask server...
 echo [>>]  Browser opens in 3 seconds  ^(Ctrl+C to stop^)
 echo.
-start "" cmd /c "timeout /t 3 /nobreak > nul ^&^& start http://localhost:%APP_PORT%"
+start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep 3; Start-Process 'http://localhost:%APP_PORT%'"
 
 ".venv\Scripts\python.exe" web\app.py
 

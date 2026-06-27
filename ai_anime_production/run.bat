@@ -2,6 +2,14 @@
 cd /d "%~dp0"
 title AI Anime Production
 
+if not exist "node_modules" (
+    echo [SETUP] Installing npm packages...
+    call npm install
+    if errorlevel 1 ( echo [ERROR] npm install failed. & pause & exit /b 1 )
+    echo [OK] npm packages ready.
+    echo.
+)
+
 if /I "%~1"=="full" goto FULL
 if /I "%~1"=="import" goto IMPORT
 if /I "%~1"=="render" goto RENDER

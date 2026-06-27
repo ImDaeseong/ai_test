@@ -72,7 +72,11 @@ if errorlevel 1 ( echo Render failed. & pause & exit /b 1 )
 echo.
 echo Render complete. Output folder:
 echo %~dp0out
-start "" "%~dp0out"
+if exist "%~dp0out" (
+    start "" "%~dp0out"
+) else (
+    echo [WARN] Output folder not found. Check render output above for errors.
+)
 pause
 
 endlocal

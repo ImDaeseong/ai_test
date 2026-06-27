@@ -28,10 +28,11 @@ set "PYTHON=.venv\Scripts\python.exe"
 set "PIP=.venv\Scripts\pip.exe"
 
 echo [2/5] Installing requirements...
-"%PYTHON%" -m pip install --upgrade pip
+"%PYTHON%" -m pip install --upgrade pip -q
 if errorlevel 1 goto :fail
-"%PIP%" install -r requirements.txt
+"%PIP%" install -r requirements.txt -q
 if errorlevel 1 goto :fail
+echo [OK] Requirements ready.
 
 if not exist ".env" (
     echo.
@@ -64,7 +65,7 @@ if not exist "output" (
 if not exist "output\.gitkeep" type nul > "output\.gitkeep"
 
 echo [4/5] Running tests...
-"%PYTHON%" -m pytest
+"%PYTHON%" -m pytest --basetemp=.pytest_tmp -q
 if errorlevel 1 goto :fail
 
 echo [5/5] Generating video and browser report...

@@ -16,6 +16,14 @@ mkdir output\logs
 echo [CLEAN] Done.
 echo.
 
+if not exist "node_modules" (
+    echo [SETUP] Installing npm packages...
+    call npm install
+    if errorlevel 1 ( echo [ERROR] npm install failed. & pause & exit /b 1 )
+    echo [OK] npm packages ready.
+    echo.
+)
+
 echo [1/2] Running pipeline...
 call npm run lyric-video -- --clean
 if %errorlevel% neq 0 (

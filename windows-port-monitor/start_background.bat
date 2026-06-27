@@ -12,8 +12,18 @@ if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
 if exist "%STOP_FILE%" del /f /q "%STOP_FILE%" >nul 2>&1
 
-set "PYTHON_EXE=python"
-if exist "%APP_DIR%.venv\Scripts\python.exe" set "PYTHON_EXE=%APP_DIR%.venv\Scripts\python.exe"
+if not exist "%APP_DIR%.venv\Scripts\python.exe" (
+    echo [SETUP] Creating virtual environment...
+    cd /d "%APP_DIR%"
+    py -3.12 -m venv .venv 2>nul || python -m venv .venv
+    if errorlevel 1 ( echo [ERROR] Python not found. & pause & exit /b 1 )
+    echo [SETUP] Installing packages...
+    "%APP_DIR%.venv\Scripts\pip.exe" install -r "%APP_DIR%requirements.txt" -q
+    if errorlevel 1 ( echo [ERROR] pip install failed. & pause & exit /b 1 )
+    echo [OK] Setup complete.
+)
+
+set "PYTHON_EXE=%APP_DIR%.venv\Scripts\python.exe"
 
 if exist "%PID_FILE%" (
     for /f "usebackq delims=" %%P in ("%PID_FILE%") do set "OLD_PID=%%P"
