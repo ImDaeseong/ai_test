@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "node --import tsx/esm --test src/parsers.test.ts",
     "predev": "node scripts/write-media-manifest.mjs",
     "dev": "remotion studio src/index.ts",
     "prebuild": "node scripts/write-media-manifest.mjs",
@@ -16,15 +17,16 @@
     "@remotion/cli": "4.0.458",
     "@remotion/media-utils": "4.0.458",
     "@remotion/renderer": "4.0.458",
-    "vite": "^7.1.12",
-    "typescript": "^5.9.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "remotion": "4.0.458"
+    "remotion": "4.0.458",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
   },
   "devDependencies": {
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.1.0"
+    "@vitejs/plugin-react": "^5.1.0",
+    "tsx": "^4.22.4"
   }
 }
