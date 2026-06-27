@@ -1,0 +1,275 @@
+{
+  "tool": "DefenseScan",
+  "version": "1.0",
+  "scan_id": "ds_20260628_071950",
+  "timestamp": "2026-06-28T07:19:50.246663",
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "version": "10.0.19045",
+    "name": "Windows 10 22H2",
+    "build": 19045,
+    "machine": "AMD64",
+    "hostname": "DESKTOP-RL0JCEU"
+  },
+  "scan_config": {
+    "modules_run": [
+      "system"
+    ],
+    "web_target": "",
+    "threads": 5,
+    "timeout": 10,
+    "admin_mode": false,
+    "verbose": false,
+    "verify_tls": true,
+    "allow_private_targets": false,
+    "duration_s": 4.09
+  },
+  "summary": {
+    "total_findings": 20,
+    "actionable_findings": 6,
+    "by_risk_level": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 0,
+      "info": 14
+    },
+    "by_status": {
+      "FAIL": 6,
+      "WARN": 0,
+      "PASS": 0,
+      "SKIP": 0,
+      "INFO": 14
+    },
+    "top_5_findings": [
+      {
+        "category": "system",
+        "risk_level": "High",
+        "title": "Risky Port Listening: 3389 (RDP)",
+        "detail": "Port 3389 is open: RDP — ensure NLA enabled, restrict via firewall. Verify this service is intentionally exposed and access is restricted.",
+        "recommendation": "If not required externally, add a firewall rule blocking port 3389. If the service must be accessible, enforce authentication and encryption.",
+        "evidence": "Port 3389 — svchost.exe (PID 1156, C:\\Windows\\System32\\svchost.exe)",
+        "owasp": "A05:2021 - Security Misconfiguration"
+      },
+      {
+        "category": "system",
+        "risk_level": "High",
+        "title": "Risky Port Listening: 445 (SMB)",
+        "detail": "Port 445 is open: SMB — verify patched against EternalBlue/MS17-010. Verify this service is intentionally exposed and access is restricted.",
+        "recommendation": "If not required externally, add a firewall rule blocking port 445. If the service must be accessible, enforce authentication and encryption.",
+        "evidence": "Port 445 — System (PID 4, path unknown)",
+        "owasp": "A05:2021 - Security Misconfiguration"
+      },
+      {
+        "category": "system",
+        "risk_level": "High",
+        "title": "Windows Defender Real-Time Protection Disabled",
+        "detail": "Windows Defender real-time protection is disabled. (RealTimeProtection=False, AntivirusEnabled=False). The system is unprotected against known malware.",
+        "recommendation": "Re-enable Windows Defender via Settings → Windows Security → Virus & Threat Protection. If a third-party AV is installed, ensure it is active and up-to-date.",
+        "evidence": "RealTimeProtectionEnabled=False, AntivirusEnabled=False, BehaviorMonitorEnabled=False",
+        "owasp": "A06:2021 - Vulnerable and Outdated Components"
+      },
+      {
+        "category": "system",
+        "risk_level": "High",
+        "title": "Defender Signatures Outdated (4294967295 Days Old)",
+        "detail": "Antivirus signatures are 4294967295 days old. Signatures older than 7 days leave the system exposed to recent malware variants.",
+        "recommendation": "Update Defender signatures immediately: Update-MpSignature (PowerShell) or Windows Security → Check for Updates.",
+        "evidence": "AntivirusSignatureAge: 4294967295 days",
+        "owasp": "A06:2021 - Vulnerable and Outdated Components"
+      },
+      {
+        "category": "system",
+        "risk_level": "Medium",
+        "title": "Risky Port Listening: 135 (RPC endpoint mapper)",
+        "detail": "Port 135 is open: RPC endpoint mapper — restrict via firewall. Verify this service is intentionally exposed and access is restricted.",
+        "recommendation": "If not required externally, add a firewall rule blocking port 135. If the service must be accessible, enforce authentication and encryption.",
+        "evidence": "Port 135 — svchost.exe (PID 660, C:\\Windows\\System32\\svchost.exe)",
+        "owasp": "A05:2021 - Security Misconfiguration"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "category": "system",
+      "risk_level": "High",
+      "title": "Risky Port Listening: 3389 (RDP)",
+      "detail": "Port 3389 is open: RDP — ensure NLA enabled, restrict via firewall. Verify this service is intentionally exposed and access is restricted.",
+      "recommendation": "If not required externally, add a firewall rule blocking port 3389. If the service must be accessible, enforce authentication and encryption.",
+      "evidence": "Port 3389 — svchost.exe (PID 1156, C:\\Windows\\System32\\svchost.exe)",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "system",
+      "risk_level": "High",
+      "title": "Risky Port Listening: 445 (SMB)",
+      "detail": "Port 445 is open: SMB — verify patched against EternalBlue/MS17-010. Verify this service is intentionally exposed and access is restricted.",
+      "recommendation": "If not required externally, add a firewall rule blocking port 445. If the service must be accessible, enforce authentication and encryption.",
+      "evidence": "Port 445 — System (PID 4, path unknown)",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "system",
+      "risk_level": "High",
+      "title": "Windows Defender Real-Time Protection Disabled",
+      "detail": "Windows Defender real-time protection is disabled. (RealTimeProtection=False, AntivirusEnabled=False). The system is unprotected against known malware.",
+      "recommendation": "Re-enable Windows Defender via Settings → Windows Security → Virus & Threat Protection. If a third-party AV is installed, ensure it is active and up-to-date.",
+      "evidence": "RealTimeProtectionEnabled=False, AntivirusEnabled=False, BehaviorMonitorEnabled=False",
+      "owasp": "A06:2021 - Vulnerable and Outdated Components"
+    },
+    {
+      "category": "system",
+      "risk_level": "High",
+      "title": "Defender Signatures Outdated (4294967295 Days Old)",
+      "detail": "Antivirus signatures are 4294967295 days old. Signatures older than 7 days leave the system exposed to recent malware variants.",
+      "recommendation": "Update Defender signatures immediately: Update-MpSignature (PowerShell) or Windows Security → Check for Updates.",
+      "evidence": "AntivirusSignatureAge: 4294967295 days",
+      "owasp": "A06:2021 - Vulnerable and Outdated Components"
+    },
+    {
+      "category": "system",
+      "risk_level": "Medium",
+      "title": "Risky Port Listening: 135 (RPC endpoint mapper)",
+      "detail": "Port 135 is open: RPC endpoint mapper — restrict via firewall. Verify this service is intentionally exposed and access is restricted.",
+      "recommendation": "If not required externally, add a firewall rule blocking port 135. If the service must be accessible, enforce authentication and encryption.",
+      "evidence": "Port 135 — svchost.exe (PID 660, C:\\Windows\\System32\\svchost.exe)",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "system",
+      "risk_level": "Medium",
+      "title": "Risky Port Listening: 139 (NetBIOS Session Service)",
+      "detail": "Port 139 is open: NetBIOS Session Service — disable if not needed. Verify this service is intentionally exposed and access is restricted.",
+      "recommendation": "If not required externally, add a firewall rule blocking port 139. If the service must be accessible, enforce authentication and encryption.",
+      "evidence": "Port 139 — System (PID 4, path unknown)",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Limited Scan: No Administrator Privileges",
+      "detail": "Running without administrator rights. Process exe paths, network connections from other users, and some registry keys may be inaccessible. Re-run as Administrator for complete results.",
+      "recommendation": "Right-click the terminal and choose 'Run as Administrator'.",
+      "evidence": "is_admin=False",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Active Network Connections (20 established)",
+      "detail": "20 ESTABLISHED TCP connections across 8 process(es).",
+      "recommendation": "",
+      "evidence": "8 processes with active connections",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Running Processes (260 total)",
+      "detail": "Total number of processes enumerated on this host.",
+      "recommendation": "",
+      "evidence": "260 processes (some may be inaccessible without admin rights)",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Listening Ports Summary (20 ports)",
+      "detail": "Active listening ports detected on this host.",
+      "recommendation": "",
+      "evidence": "Ports: 135, 139, 445, 3389, 5000, 5040, 7680, 43860, 49664, 49665, 49666, 49667, 49668, 49669, 49670, 50911, 50912, 59540, 64737, 65449",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Directory Permissions Look Acceptable: Windows System Temp (C:\\Windows\\Temp)",
+      "detail": "No world-writable or overly permissive ACEs detected on 'C:\\Windows\\Temp'.",
+      "recommendation": "",
+      "evidence": "icacls 'C:\\Windows\\Temp': no high-risk ACEs found",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Directory Permissions Look Acceptable: ProgramData Directory",
+      "detail": "No world-writable or overly permissive ACEs detected on 'C:\\ProgramData'.",
+      "recommendation": "",
+      "evidence": "icacls 'C:\\ProgramData': no high-risk ACEs found",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Directory Permissions Look Acceptable: Public User Directory",
+      "detail": "No world-writable or overly permissive ACEs detected on 'C:\\Users\\Public'.",
+      "recommendation": "",
+      "evidence": "icacls 'C:\\Users\\Public': no high-risk ACEs found",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Directory Permissions Look Acceptable: Windows System32",
+      "detail": "No world-writable or overly permissive ACEs detected on 'C:\\Windows\\System32'.",
+      "recommendation": "",
+      "evidence": "icacls 'C:\\Windows\\System32': no high-risk ACEs found",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Directory Permissions Look Acceptable: Windows Root Directory",
+      "detail": "No world-writable or overly permissive ACEs detected on 'C:\\Windows'.",
+      "recommendation": "",
+      "evidence": "icacls 'C:\\Windows': no high-risk ACEs found",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Directory Permissions Look Acceptable: User Temp (C:\\Users\\cs930\\AppData\\Local\\Temp)",
+      "detail": "No world-writable or overly permissive ACEs detected on 'C:\\Users\\cs930\\AppData\\Local\\Temp'.",
+      "recommendation": "",
+      "evidence": "icacls 'C:\\Users\\cs930\\AppData\\Local\\Temp': no high-risk ACEs found",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Registry Autorun Entries (4 found)",
+      "detail": "4 startup entries found across Run/RunOnce registry keys.",
+      "recommendation": "",
+      "evidence": "Scanned keys: HKLM\\Run, HKLM\\RunOnce, HKCU\\Run, HKCU\\RunOnce, HKLM\\Run (WOW64)",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "User Startup Folder: 1 item(s)",
+      "detail": "Startup folder contains 1 file(s).",
+      "recommendation": "",
+      "evidence": "C:\\Users\\cs930\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "All-Users Startup Folder: 1 item(s)",
+      "detail": "Startup folder contains 1 file(s).",
+      "recommendation": "",
+      "evidence": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup",
+      "owasp": "N/A"
+    },
+    {
+      "category": "system",
+      "risk_level": "Info",
+      "title": "Windows Firewall Enabled (All Profiles)",
+      "detail": "Windows Firewall is active on Domain, Private, and Public profiles.",
+      "recommendation": "",
+      "evidence": "All profiles: Enabled",
+      "owasp": "N/A"
+    }
+  ]
+}

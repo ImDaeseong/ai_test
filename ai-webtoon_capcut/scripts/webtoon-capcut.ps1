@@ -28,29 +28,31 @@ $ProjectRoot = Split-Path -Parent $PSScriptRoot
 Push-Location $ProjectRoot
 
 try {
-    # venv 자동 활성화
-    $VenvActivate = Join-Path $ProjectRoot '.venv\Scripts\Activate.ps1'
-    if (Test-Path $VenvActivate) {
-        . $VenvActivate
-    }
-
-    # Python 3.12+ 탐색 (py launcher 우선, 그 다음 PATH의 python)
+    # venv Python 우선 탐색
+    $VenvPython = Join-Path $ProjectRoot '.venv\Scripts\python.exe'
     $PyExe = $null
-    foreach ($candidate in @('py -3.12', 'py -3.11', 'python3', 'python')) {
-        $parts = $candidate -split ' '
-        $cmd = Get-Command $parts[0] -ErrorAction SilentlyContinue
-        if ($cmd) {
-            if ($parts.Count -gt 1) {
-                $ver = & $parts[0] $parts[1] --version 2>&1
-            } else {
-                $ver = & $parts[0] --version 2>&1
-            }
-            if ($ver -match 'Python 3\.(1[1-9]|[2-9]\d)') {
-                $PyExe = $parts
-                break
+
+    if (Test-Path $VenvPython) {
+        $PyExe = @($VenvPython)
+    } else {
+        # venv 없으면 py launcher / 시스템 Python 탐색
+        foreach ($candidate in @('py -3.12', 'py -3.11', 'python3', 'python')) {
+            $parts = $candidate -split ' '
+            $cmd = Get-Command $parts[0] -ErrorAction SilentlyContinue
+            if ($cmd) {
+                if ($parts.Count -gt 1) {
+                    $ver = & $parts[0] $parts[1] --version 2>&1
+                } else {
+                    $ver = & $parts[0] --version 2>&1
+                }
+                if ($ver -match 'Python 3\.(1[1-9]|[2-9]\d)') {
+                    $PyExe = $parts
+                    break
+                }
             }
         }
     }
+
     if (-not $PyExe) {
         Write-Error '[ERROR] Python 3.11 이상을 찾을 수 없습니다.'
         Write-Host '  py -3.12 -m venv .venv  으로 가상환경을 만드세요.'

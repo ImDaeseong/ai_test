@@ -1,0 +1,203 @@
+{
+  "tool": "DefenseScan",
+  "version": "1.0",
+  "scan_id": "ds_20260628_053641",
+  "timestamp": "2026-06-28T05:36:41.953154",
+  "platform": {
+    "system": "Windows",
+    "release": "10",
+    "version": "10.0.19045",
+    "name": "Windows 10 22H2",
+    "build": 19045,
+    "machine": "AMD64",
+    "hostname": "DESKTOP-RL0JCEU"
+  },
+  "scan_config": {
+    "modules_run": [
+      "web"
+    ],
+    "web_target": "https://naver.com",
+    "threads": 5,
+    "timeout": 10,
+    "admin_mode": false,
+    "verbose": false,
+    "verify_tls": true,
+    "allow_private_targets": false,
+    "duration_s": 3.75
+  },
+  "summary": {
+    "total_findings": 12,
+    "actionable_findings": 7,
+    "by_risk_level": {
+      "critical": 0,
+      "high": 1,
+      "medium": 1,
+      "low": 5,
+      "info": 5
+    },
+    "by_status": {
+      "FAIL": 2,
+      "WARN": 5,
+      "PASS": 0,
+      "SKIP": 0,
+      "INFO": 5
+    },
+    "top_5_findings": [
+      {
+        "category": "web",
+        "risk_level": "High",
+        "title": "Missing Security Header: Content-Security-Policy",
+        "detail": "The 'Content-Security-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+        "recommendation": "Add the header: Content-Security-Policy: default-src 'self'; script-src 'self'",
+        "evidence": "Header not present in HTTP response",
+        "owasp": "A03:2021 - Injection"
+      },
+      {
+        "category": "web",
+        "risk_level": "Medium",
+        "title": "Missing Security Header: X-Content-Type-Options",
+        "detail": "The 'X-Content-Type-Options' header is absent from the response. This header provides an important browser-enforced security control.",
+        "recommendation": "Add the header: X-Content-Type-Options: nosniff",
+        "evidence": "Header not present in HTTP response",
+        "owasp": "A05:2021 - Security Misconfiguration"
+      },
+      {
+        "category": "web",
+        "risk_level": "Low",
+        "title": "Cross-Domain Redirect Detected",
+        "detail": "The redirect chain crosses a domain boundary (naver.com → … → www.naver.com). If a redirect target can be influenced by user input, this may represent an open redirect vulnerability.",
+        "recommendation": "Audit redirect logic. Whitelist permitted destination domains explicitly. Never construct redirect URLs from unvalidated user input.",
+        "evidence": "Cross-domain: https://naver.com/  →  https://www.naver.com/",
+        "owasp": "A01:2021 - Broken Access Control"
+      },
+      {
+        "category": "web",
+        "risk_level": "Low",
+        "title": "Missing Security Header: Permissions-Policy",
+        "detail": "The 'Permissions-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+        "recommendation": "Add the header: Permissions-Policy: geolocation=(), camera=(), microphone=()",
+        "evidence": "Header not present in HTTP response",
+        "owasp": "A05:2021 - Security Misconfiguration"
+      },
+      {
+        "category": "web",
+        "risk_level": "Low",
+        "title": "Missing Security Header: Cross-Origin-Opener-Policy",
+        "detail": "The 'Cross-Origin-Opener-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+        "recommendation": "Add the header: Cross-Origin-Opener-Policy: same-origin",
+        "evidence": "Header not present in HTTP response",
+        "owasp": "A05:2021 - Security Misconfiguration"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "category": "web",
+      "risk_level": "High",
+      "title": "Missing Security Header: Content-Security-Policy",
+      "detail": "The 'Content-Security-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+      "recommendation": "Add the header: Content-Security-Policy: default-src 'self'; script-src 'self'",
+      "evidence": "Header not present in HTTP response",
+      "owasp": "A03:2021 - Injection"
+    },
+    {
+      "category": "web",
+      "risk_level": "Medium",
+      "title": "Missing Security Header: X-Content-Type-Options",
+      "detail": "The 'X-Content-Type-Options' header is absent from the response. This header provides an important browser-enforced security control.",
+      "recommendation": "Add the header: X-Content-Type-Options: nosniff",
+      "evidence": "Header not present in HTTP response",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "web",
+      "risk_level": "Low",
+      "title": "Cross-Domain Redirect Detected",
+      "detail": "The redirect chain crosses a domain boundary (naver.com → … → www.naver.com). If a redirect target can be influenced by user input, this may represent an open redirect vulnerability.",
+      "recommendation": "Audit redirect logic. Whitelist permitted destination domains explicitly. Never construct redirect URLs from unvalidated user input.",
+      "evidence": "Cross-domain: https://naver.com/  →  https://www.naver.com/",
+      "owasp": "A01:2021 - Broken Access Control"
+    },
+    {
+      "category": "web",
+      "risk_level": "Low",
+      "title": "Missing Security Header: Permissions-Policy",
+      "detail": "The 'Permissions-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+      "recommendation": "Add the header: Permissions-Policy: geolocation=(), camera=(), microphone=()",
+      "evidence": "Header not present in HTTP response",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "web",
+      "risk_level": "Low",
+      "title": "Missing Security Header: Cross-Origin-Opener-Policy",
+      "detail": "The 'Cross-Origin-Opener-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+      "recommendation": "Add the header: Cross-Origin-Opener-Policy: same-origin",
+      "evidence": "Header not present in HTTP response",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "web",
+      "risk_level": "Low",
+      "title": "Missing Security Header: Cross-Origin-Resource-Policy",
+      "detail": "The 'Cross-Origin-Resource-Policy' header is absent from the response. This header provides an important browser-enforced security control.",
+      "recommendation": "Add the header: Cross-Origin-Resource-Policy: same-origin",
+      "evidence": "Header not present in HTTP response",
+      "owasp": "A05:2021 - Security Misconfiguration"
+    },
+    {
+      "category": "web",
+      "risk_level": "Low",
+      "title": "Information Disclosure via Server Software",
+      "detail": "The 'Server' header discloses the software: 'nfront'. Technology disclosure aids fingerprinting and targeted attacks.",
+      "recommendation": "Remove the 'server' header from all server responses.",
+      "evidence": "server: nfront",
+      "owasp": "A06:2021 - Vulnerable and Outdated Components"
+    },
+    {
+      "category": "web",
+      "risk_level": "Info",
+      "title": "Response Time: 691 ms",
+      "detail": "Server responded in 691 ms.",
+      "recommendation": "",
+      "evidence": "Response time: 691 ms",
+      "owasp": "N/A"
+    },
+    {
+      "category": "web",
+      "risk_level": "Info",
+      "title": "HTTP Status: 200",
+      "detail": "Server returned HTTP 200.",
+      "recommendation": "",
+      "evidence": "HTTP 200",
+      "owasp": "N/A"
+    },
+    {
+      "category": "web",
+      "risk_level": "Info",
+      "title": "TLS Protocol: TLSv1.3",
+      "detail": "Server negotiated TLSv1.3.",
+      "recommendation": "",
+      "evidence": "Protocol: TLSv1.3",
+      "owasp": "A02:2021 - Cryptographic Failures"
+    },
+    {
+      "category": "web",
+      "risk_level": "Info",
+      "title": "Cipher Suite: TLS_AES_256_GCM_SHA384",
+      "detail": "Negotiated cipher: TLS_AES_256_GCM_SHA384 (256-bit key).",
+      "recommendation": "",
+      "evidence": "Cipher: TLS_AES_256_GCM_SHA384",
+      "owasp": "A02:2021 - Cryptographic Failures"
+    },
+    {
+      "category": "web",
+      "risk_level": "Info",
+      "title": "TLS Certificate Valid (89 Days Remaining)",
+      "detail": "Certificate is valid until Sep 24 23:59:59 2026 GMT.",
+      "recommendation": "",
+      "evidence": "notAfter: Sep 24 23:59:59 2026 GMT",
+      "owasp": "A02:2021 - Cryptographic Failures"
+    }
+  ]
+}

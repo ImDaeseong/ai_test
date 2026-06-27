@@ -68,7 +68,7 @@ async function main() {
       ''
     ].join('\n'));
 
-    await runFfmpeg(command, paths.log);
+    await runFfmpeg(command, paths.log, renderSettings.durationSeconds);
     await validateOutput(paths.output);
 
     await appendLog(paths.log, `\nTypography render completed: ${new Date().toISOString()}\n`);
@@ -394,7 +394,35 @@ function describeEffectChain(paths) {
     : `animated gradient/noise background (${paths.motionStrength}), dark overlay, vignette, subtitles`;
 }
 
-function runFfmpeg(args, logPath) {
+function parseProgress(line, totalSeconds) {
+  const timeMatch = line.match(/time=(\d{2}):(\d{2}):(\d{2}\.\d+)/);
+  if (!timeMatch) return null;
+  const elapsed =
+    parseInt(timeMatch[1], 10) * 3600 +
+    parseInt(timeMatch[2], 10) * 60 +
+    parseFloat(timeMatch[3]);
+  if (elapsed < 0 || !Number.isFinite(elapsed)) return null;
+  const percent = Math.min(100, (elapsed / totalSeconds) * 100).toFixed(1);
+  const fpsMatch = line.match(/fps=\s*(\S+)/);
+  const speedMatch = line.match(/speed=\s*(\S+)/);
+  const frameMatch = line.match(/frame=\s*(\d+)/);
+  return {
+    elapsed,
+    percent,
+    fps: fpsMatch ? fpsMatch[1] : '?',
+    speed: speedMatch ? speedMatch[1] : '?',
+    frame: frameMatch ? frameMatch[1] : '?'
+  };
+}
+
+function formatTime(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function runFfmpeg(args, logPath, totalSeconds) {
   return new Promise((resolve, reject) => {
     const child = spawn('ffmpeg', args, {
       cwd: process.cwd(),
@@ -406,11 +434,25 @@ function runFfmpeg(args, logPath) {
       appendLog(logPath, chunk.toString()).catch(() => {});
     });
 
+    let stderrBuf = '';
     child.stderr.on('data', (chunk) => {
-      appendLog(logPath, chunk.toString()).catch(() => {});
+      const text = chunk.toString();
+      appendLog(logPath, text).catch(() => {});
+      stderrBuf += text;
+      const parts = stderrBuf.split('\r');
+      stderrBuf = parts.pop();
+      for (const line of parts) {
+        const prog = parseProgress(line, totalSeconds);
+        if (prog) {
+          process.stderr.write(
+            `\r  [${String(prog.percent).padStart(5)}%] frame=${String(prog.frame).padStart(5)}  fps=${String(prog.fps).padStart(4)}  speed=${String(prog.speed).padStart(6)}  ${formatTime(prog.elapsed)} / ${formatTime(totalSeconds)}   `
+          );
+        }
+      }
     });
 
     child.on('error', (error) => {
+      process.stderr.write('\n');
       if (error.code === 'ENOENT') {
         reject(new Error('FFmpeg is not installed or not available on PATH.'));
       } else {
@@ -419,6 +461,7 @@ function runFfmpeg(args, logPath) {
     });
 
     child.on('close', (code) => {
+      process.stderr.write('\n');
       if (code === 0) {
         resolve();
       } else {
