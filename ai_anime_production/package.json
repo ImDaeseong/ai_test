@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Production and rendering workspace for AI anime music videos generated from scene image and prompt inputs.",
   "scripts": {
+    "test": "node --test scripts/parsers.test.mjs",
     "import:input": "node scripts/import_input.mjs",
     "import": "node scripts/import_package.mjs",
     "manifest": "node scripts/create_manifest.mjs",

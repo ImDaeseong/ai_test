@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "node --test src/utils/timecode.test.js src/utils/lyricParsers.test.js src/utils/validation.test.js",
     "plan": "node src/planner/generateProductionPlan.js",
     "lyric-video:plan": "node src/planner/generateProductionPlan.js",
     "subtitles": "node src/subtitles/generateAssSubtitles.js",
