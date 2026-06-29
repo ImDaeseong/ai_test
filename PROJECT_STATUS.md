@@ -103,6 +103,7 @@
 |---------|------|---------|
 | run_game | Visual Studio 빌드 환경 필요 (C++/MFC 자동화 불가) | P3 영구 HOLD |
 | master_tag / Pexels / windows-port-monitor | pytest 임시폴더 권한 이슈 (환경 문제, 코드 무관) | P2 |
+| ai-webtoon_capcut | `webtoon_capcut` 패키지 editable 설치 누락 시 ImportError 발생. 새 환경 구성 후 `pip install -e .` 필수 (2026-06-29 확인) | P1 |
 
 ---
 
@@ -114,3 +115,4 @@
 | 2026-06-28 | CLAUDE.md 15개 작성 완료 (weather_alarm 포함 전체), ai-webtoon 52개·imagevideo 33개·lyricvideo 16개 테스트 작성 및 전량 PASS, 80% 게이트 달성 |
 | 2026-06-28 | ai_anime_production parsers.mjs 추출 22개·extensions lyricUtils.js 추출 26개 테스트 전량 PASS, run_game 영구 HOLD 문서화, 90% 게이트 달성 |
 | 2026-06-28 | run_game 영구 HOLD 정식 처리 (Visual Studio 빌드 환경 의존), 검증 루프 100% 완료 |
+| 2026-06-29 | 헤르메스 감시 재검증. ai-webtoon_capcut: editable 미설치로 3 ImportError → pip install -e . 후 14 passed 복구. P1 이슈 등재. |
