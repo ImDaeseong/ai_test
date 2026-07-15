@@ -7,6 +7,7 @@
 __pycache__/
 *.py[cod]
 *.pyd
+**/.pytest_tmp/
 
 # Virtual environment
 .venv/
