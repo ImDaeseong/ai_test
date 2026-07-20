@@ -19,7 +19,7 @@ service/windows_service.py     # pywin32 서비스 래퍼
 config/                        # 설정 파일
 models.py                      # 데이터 모델
 logging_setup.py               # 로깅 설정
-tests/                         # pytest 테스트 (3개 통과 / 4개 파일쓰기 환경 차단)
+tests/                         # pytest 테스트 (7개 전량 통과)
 ```
 
 ## 실행
@@ -35,8 +35,6 @@ stop_background.bat         # 중지
 ```bash
 pytest tests/ -v
 ```
-
-> 파일 쓰기 관련 4개 테스트는 pytest 임시 디렉토리 권한 문제 — 코드 로직 이상 없음.
 
 ## 주의사항
 

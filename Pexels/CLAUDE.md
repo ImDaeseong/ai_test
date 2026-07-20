@@ -17,7 +17,7 @@ output/          # 생성 결과
 scripts/         # 유틸리티 스크립트
 storage/         # 캐시·임시 저장
 docs/            # 문서
-tests/           # pytest 테스트 (12개 통과 / 11개 파일쓰기 환경 차단)
+tests/           # pytest 테스트 (23개 전량 통과)
 ```
 
 ## 실행
@@ -32,7 +32,6 @@ run.bat
 pytest tests/ -v
 ```
 
-> 파일 쓰기 관련 11개 테스트는 pytest 임시 디렉토리 권한 문제 — 코드 로직 이상 없음, 로컬 실행 시 정상.
 
 ## 주의사항
 
