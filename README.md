@@ -996,7 +996,7 @@ ai-webtoon/
 ├── scripts/          # 파이프라인·검증 스크립트
 ├── input/            # 곡 정보 txt 파일
 ├── output/           # 생성된 프롬프트 (곡별 폴더)
-├── tests_unit.py     # 41개 단위 테스트
+├── tests_unit.py     # 52개 단위 테스트
 ├── run_all.bat       # 전체 input/ 일괄 처리
 └── requirements.txt  # flask
 ```
@@ -1016,7 +1016,7 @@ python -m pytest tests_unit.py -q                    # 테스트
 - 외부 AI API 없음 (이미지 생성 시 GPT Image / Nijijourney 등 선택)
 
 ### 개발 완성도: ★★★★★
-212/212 PASS, 41개 단위 테스트 통과. 웹 뷰어 포함. 프로덕션 사용 중.
+212/212 PASS, 52개 단위 테스트 통과. 웹 뷰어 포함. 프로덕션 사용 중.
 
 ---
 

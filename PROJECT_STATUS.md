@@ -35,14 +35,11 @@
 | findstring_foldfiles | Python | 5 | PASS |
 | mp3_daw | Go | ok | PASS |
 | check_FileEncoding | Go | ok | PASS |
+| Pexels | Python | 23 | PASS |
+| master_tag | Python | 18 | PASS |
+| windows-port-monitor | Python | 7 | PASS |
 
-### ⚠️ 부분 검증 (코드 로직 통과 / 파일 쓰기 테스트 환경 차단)
-
-| 프로젝트 | 통과 | 차단 | 원인 |
-|---------|------|------|------|
-| Pexels | 12 | 11 errors | pytest 임시 디렉토리 권한 (로컬 실행 시 정상) |
-| master_tag | 17 | 1 error | 동일 |
-| windows-port-monitor | 3 | 4 errors | 동일 |
+> 과거 "부분 검증(pytest 임시 디렉토리 권한 차단)" 항목은 해소되어 전량 PASS로 통합함 (2026-07-20 재검증).
 
 ### 🔴 영구 HOLD
 
@@ -86,14 +83,14 @@
 | imagevideo | 이미지→영상 변환 | Node.js | ✅ | ✅ 33 | ✅ 완성 |
 | lyrics_tag | 가사 태그 관리 | Python | ✅ | ✅ 18 | ✅ 완성 |
 | lyricvideo | 가사 영상 생성 | Node.js | ✅ | ✅ 16 | ✅ 완성 |
-| master_tag | 마스터 오디오 태그 | Python | ✅ | ⚠️ 17+1err | ✅ 완성 |
+| master_tag | 마스터 오디오 태그 | Python | ✅ | ✅ 18 | ✅ 완성 |
 | mp3_daw | MP3 DAW 연동 | Go | ✅ | ✅ ok | ✅ 완성 |
 | mp4_tag | MP4 메타태그 관리 | Python | ✅ | ✅ 50 | ✅ 완성 |
-| Pexels | Pexels API 이미지 수집 | Python | ✅ | ⚠️ 12+11err | ✅ 완성 |
+| Pexels | Pexels API 이미지 수집 | Python | ✅ | ✅ 23 | ✅ 완성 |
 | run_game | 게임 런처 | C++/MFC | ✅ | ❌ | 영구 HOLD (VS 빌드 환경) |
 | security_scanning | 보안 취약점 스캔 | Python | ✅ | ✅ 53 | ✅ 완성 |
 | weather_alarm | 날씨 알림 봇 | Python | ✅ | ✅ 55 | ✅ 완성 |
-| windows-port-monitor | 포트 모니터링 | Python | ✅ | ⚠️ 3+4err | ✅ 완성 |
+| windows-port-monitor | 포트 모니터링 | Python | ✅ | ✅ 7 | ✅ 완성 |
 
 ---
 
@@ -102,7 +99,6 @@
 | 프로젝트 | 이슈 | 우선순위 |
 |---------|------|---------|
 | run_game | Visual Studio 빌드 환경 필요 (C++/MFC 자동화 불가) | P3 영구 HOLD |
-| master_tag / Pexels / windows-port-monitor | pytest 임시폴더 권한 이슈 (환경 문제, 코드 무관) | P2 |
 | ai-webtoon_capcut | `webtoon_capcut` 패키지 editable 설치 누락 시 ImportError 발생. 새 환경 구성 후 `pip install -e .` 필수 (2026-06-29 확인) | P1 |
 
 ---
@@ -116,3 +112,4 @@
 | 2026-06-28 | ai_anime_production parsers.mjs 추출 22개·extensions lyricUtils.js 추출 26개 테스트 전량 PASS, run_game 영구 HOLD 문서화, 90% 게이트 달성 |
 | 2026-06-28 | run_game 영구 HOLD 정식 처리 (Visual Studio 빌드 환경 의존), 검증 루프 100% 완료 |
 | 2026-06-29 | 헤르메스 감시 재검증. ai-webtoon_capcut: editable 미설치로 3 ImportError → pip install -e . 후 14 passed 복구. P1 이슈 등재. |
+| 2026-07-20 | 전체 재검증. ai-webtoon: `pytest.ini` 누락으로 bare `pytest -q`가 0개 수집하던 결함 수정(52 passed 확인). Pexels(23)·master_tag(18)·windows-port-monitor(7) "부분 검증(pytest 임시폴더 권한 차단)" 상태 재확인 결과 전량 PASS로 해소되어 P2 이슈 제거. root README.md의 ai-webtoon 스테일 테스트 수(41→52) 정정. |
