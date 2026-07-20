@@ -37,6 +37,24 @@ try {
         exit 1
     }
 
+    # webtoon_capcut 패키지가 editable install 안 된 인터프리터를 선택했을 수 있음
+    # (venv 미존재 + PATH상 다른 python이 먼저 잡히는 경우) -- 조용히 ModuleNotFoundError로
+    # 실패하는 대신 여기서 감지하고 자동으로 editable install을 시도한다.
+    # 네이티브 명령의 stderr을 터미네이팅 에러로 바꾸는 Stop 정책을 이 검사 동안만 완화한다.
+    $PrevEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    & $PyExe[0] ($PyExe | Select-Object -Skip 1) -c "import webtoon_capcut" *> $null
+    $ImportExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $PrevEAP
+    if ($ImportExitCode -ne 0) {
+        Write-Host "[SETUP] webtoon_capcut 미설치 감지 -- pip install -e . 실행 중..."
+        & $PyExe[0] ($PyExe | Select-Object -Skip 1) -m pip install -e $ProjectRoot --quiet
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error '[ERROR] webtoon_capcut editable install 실패. 수동으로 `pip install -e .` 실행 후 재시도하세요.'
+            exit 1
+        }
+    }
+
     Write-Host '[TEST] pytest 실행 중...'
     Write-Host "  루트: $ProjectRoot"
     Write-Host ''
