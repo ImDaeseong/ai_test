@@ -132,6 +132,8 @@ npm run motion:dev
 → 브라우저에서 `Video (FFmpeg)` exporter 선택 → `output/rendered_typography_video.mp4` 저장  
 → `npm run lyric-video -- --skip-plan --skip-subtitles --skip-motion` 으로 최종 합성만 실행
 
+**보안 참고:** `@motion-canvas/vite-plugin`이 vite를 `4.x || 5.x`로 제한해 vite 6.4.3의 dev-server 취약점 패치를 아직 받을 수 없다(업스트림 대기 중, `vite.config.ts`에 `server.host: '127.0.0.1'`로 로컬호스트 바인딩 명시). `npm run motion:dev` 실행 중에는 다른 브라우저 탭에서 신뢰할 수 없는 사이트를 열지 않는 것을 권장한다.
+
 ## 개별 Phase 실행
 
 ```bash
