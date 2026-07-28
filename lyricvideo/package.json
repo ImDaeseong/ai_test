@@ -14,12 +14,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@remotion/cli": "4.0.458",
-    "@remotion/media-utils": "4.0.458",
-    "@remotion/renderer": "4.0.458",
+    "@remotion/cli": "4.0.500",
+    "@remotion/media-utils": "4.0.500",
+    "@remotion/renderer": "4.0.500",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "remotion": "4.0.458",
+    "remotion": "4.0.500",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
   },
