@@ -15,8 +15,8 @@
 | 40% | ✅ | 18개 프로젝트 구조 파악, 위험 요소 파악 완료 |
 | 60% | ✅ | 구현 완료, README·설계 문서 체계화 |
 | 80% | ✅ | CLAUDE.md 18개 완료, 테스트 완료 (ai-webtoon 52, imagevideo 33, lyricvideo 16 포함), HOLD 3개 (extensions/run_game/ai_anime_production — 특수 환경 필요) |
-| 90% | ✅ | ai_anime_production 22개·extensions 26개 순수함수 단위 테스트 PASS, run_game 영구 HOLD (VS 빌드 환경 필요) |
-| 100% | ✅ | run_game은 Visual Studio 빌드 환경 의존성으로 영구 HOLD 정식 처리 — 나머지 17개 프로젝트 전량 완성 |
+| 90% | ✅ | ai_anime_production 22개·extensions 26개 순수함수 단위 테스트 PASS, run_game은 명시적 검증 범위 예외 |
+| 100% | ✅ | run_game MFC 빌드는 기존 검증 데이터로 인정하고 로컬 PASS/HOLD 판정에서 제외 — 나머지 17개 프로젝트 전량 완성 |
 
 ---
 
@@ -41,11 +41,11 @@
 
 > 과거 "부분 검증(pytest 임시 디렉토리 권한 차단)" 항목은 해소되어 전량 PASS로 통합함 (2026-07-20 재검증).
 
-### 🔴 영구 HOLD
+### ⚪ 검증 범위 예외
 
-| 프로젝트 | 이유 |
-|---------|------|
-| run_game | Visual Studio 빌드 환경 필요 — C++/MFC 자동화 불가 |
+| 프로젝트 | 예외와 재검토 조건 |
+|---------|------------------|
+| run_game | 2026-05-28 Debug/Release 빌드 검증 데이터 인정. 로컬 MFC 설치·빌드는 판정에서 제외하며, C++ 소스·프로젝트·솔루션·번들 라이브러리 변경 시 사람 검토 재개 |
 
 > ai_anime_production·extensions: 순수 함수 단위 테스트로 전환 완료 (2026-06-28)
 
@@ -87,7 +87,7 @@
 | mp3_daw | MP3 DAW 연동 | Go | ✅ | ✅ ok | ✅ 완성 |
 | mp4_tag | MP4 메타태그 관리 | Python | ✅ | ✅ 50 | ✅ 완성 |
 | Pexels | Pexels API 이미지 수집 | Python | ✅ | ✅ 23 | ✅ 완성 |
-| run_game | 게임 런처 | C++/MFC | ✅ | ❌ | 영구 HOLD (VS 빌드 환경) |
+| run_game | 게임 런처 | C++/MFC | ✅ | 범위 제외 | 기존 빌드 검증 데이터 인정; 관련 파일 변경 시 재검토 |
 | security_scanning | 보안 취약점 스캔 | Python | ✅ | ✅ 53 | ✅ 완성 |
 | weather_alarm | 날씨 알림 봇 | Python | ✅ | ✅ 55 | ✅ 완성 |
 | windows-port-monitor | 포트 모니터링 | Python | ✅ | ✅ 7 | ✅ 완성 |
@@ -98,7 +98,7 @@
 
 | 프로젝트 | 이슈 | 우선순위 |
 |---------|------|---------|
-| run_game | Visual Studio 빌드 환경 필요 (C++/MFC 자동화 불가) | P3 영구 HOLD |
+| run_game | 로컬 MFC 빌드는 검증 범위 제외; C++ 소스·프로젝트 설정 변경 시 사람 검토 재개 | P3 예외 |
 | ai-webtoon_capcut | `webtoon_capcut` 패키지 editable 설치 누락 시 ImportError 발생. 새 환경 구성 후 `pip install -e .` 필수 (2026-06-29 확인) | P1 |
 
 ---
@@ -113,3 +113,4 @@
 | 2026-06-28 | run_game 영구 HOLD 정식 처리 (Visual Studio 빌드 환경 의존), 검증 루프 100% 완료 |
 | 2026-06-29 | 헤르메스 감시 재검증. ai-webtoon_capcut: editable 미설치로 3 ImportError → pip install -e . 후 14 passed 복구. P1 이슈 등재. |
 | 2026-07-20 | 전체 재검증. ai-webtoon: `pytest.ini` 누락으로 bare `pytest -q`가 0개 수집하던 결함 수정(52 passed 확인). Pexels(23)·master_tag(18)·windows-port-monitor(7) "부분 검증(pytest 임시폴더 권한 차단)" 상태 재확인 결과 전량 PASS로 해소되어 P2 이슈 제거. root README.md의 ai-webtoon 스테일 테스트 수(41→52) 정정. |
+| 2026-07-29 | 사용자 결정으로 `run_game` MFC 빌드를 로컬 전체 검증의 PASS/HOLD 판정에서 제외. 2026-05-28 검증 데이터를 인정하되 C++ 소스·프로젝트·솔루션·번들 라이브러리 변경 시 예외를 해제하고 사람 검토를 재개. |
