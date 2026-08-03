@@ -139,8 +139,8 @@ Administrator privileges are recommended for complete process executable paths, 
 - Add signed installer packaging for enterprise deployment.
 
 
-## °³¼± ÀÌ·Â (2026-06-02)
+## ê°œì„  ì´ë ¥ (2026-06-02)
 
-### Å×½ºÆ®
-- pytest 7/7 Åë°ú (ÀÌÀü ¼¼¼Ç °ËÁõ ¿Ï·á)
-- Ãß°¡ ÄÚµå º¯°æ ¾øÀ½
+### í…ŒìŠ¤íŠ¸
+- pytest 7/7 í†µê³¼ (ì´ì „ ì„¸ì…˜ ê²€ì¦ ì™„ë£Œ)
+- ì¶”ê°€ ì½”ë“œ ë³€ê²½ ì—†ìŒ

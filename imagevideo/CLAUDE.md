@@ -35,6 +35,7 @@ npm start
 
 ## 주의사항
 
-- 테스트 파일 미작성 (HOLD) — 신규 기능 추가 시 `src/validate/` 검증 로직 우선 확인
+- 파이프라인 전체 통합 테스트는 없음 (HOLD) — 신규 기능 추가 시 `src/validate/` 검증 로직 우선 확인
+- `src/utils/`의 순수함수(lyricParsers/timecode/validation)는 33개 단위 테스트로 자동 검증됨(2026-06-28 작성 완료): `node src/utils/lyricParsers.test.js && node src/utils/timecode.test.js && node src/utils/validation.test.js`
 - FFmpeg PATH 미등록 시 렌더 단계에서 실패 — 에러 메시지 `ffmpeg not found` 확인
 - `input/` 폴더 내 파일 형식이 지원 목록과 다르면 `validate/` 단계에서 차단됨
