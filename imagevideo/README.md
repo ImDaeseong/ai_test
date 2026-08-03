@@ -152,13 +152,12 @@ output/logs/ffmpeg.log     Phase 4 ìƒì„¸ ë¡œê·¸
 ```
 
 
-## °³¼± ÀÌ·Â (2026-06-02)
+## ê°œì„  ì´ë ¥ (2026-06-02)
 
-### ¹ö±× ¼öÁ¤
-| ÆÄÀÏ | ³»¿ë |
+### ë²„ê·¸ ìˆ˜ì •
+| íŒŒì¼ | ë‚´ìš© |
 |---|---|
-| src/pipeline/runLyricVideoPipeline.js:388 | Windows¿¡¼­ cmd.exe /c npm run script -- extraArgs ÇüÅÂ·Î ÀÎ¼ö Àü´Ş ½Ã npm 7 ¹Ì¸¸¿¡¼­ ´©¶ôµÇ´ø ¹®Á¦ ¼öÁ¤ ? args¸¦ ´ÜÀÏ ¹®ÀÚ¿­·Î ÇÕÃÄ Àü´ŞÇÏµµ·Ï º¯°æ |
+| src/pipeline/runLyricVideoPipeline.js:388 | Windowsì—ì„œ cmd.exe /c npm run script -- extraArgs í˜•íƒœë¡œ ì¸ìˆ˜ ì „ë‹¬ ì‹œ npm 7 ë¯¸ë§Œì—ì„œ ëˆ„ë½ë˜ë˜ ë¬¸ì œ ìˆ˜ì • â€” argsë¥¼ ë‹¨ì¼ ë¬¸ìì—´ë¡œ í•©ì³ ì „ë‹¬í•˜ë„ë¡ ë³€ê²½ |
 
-### ºôµå °ËÁõ
-- 
-ode --check ÁÖ¿ä ÆÄÀÏ ÀüÃ¼ Åë°ú
+### ë¹Œë“œ ê²€ì¦
+- node --check ì£¼ìš” íŒŒì¼ ì „ì²´ í†µê³¼

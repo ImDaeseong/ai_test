@@ -28,4 +28,5 @@ npm run render    # 렌더링 출력
 - `src/LyricVideo.tsx:165`: 배경 영상은 반드시 `<Video loop>` (HTML5) 사용 — `<OffthreadVideo>`는 `loop` 미지원으로 영상 종료 후 검은 화면 발생
 - Remotion v4 API 준수: `<Html5Video>`, `<Html5Audio>`, `trimBefore`/`trimAfter` 사용 (`<Video deprecated>`, `startFrom`/`endAt` deprecated)
 - `useCurrentFrame()` + `interpolate()`로만 애니메이션 처리
-- 테스트 파일 미작성 (HOLD) — 타입 체크로 기본 검증: `npx tsc --noEmit`
+- Remotion 렌더링 자체의 통합 테스트는 없음 (HOLD) — 타입 체크로 기본 검증: `npx tsc --noEmit`
+- `src/parsers.ts`(가사 파싱 순수함수)는 16개 단위 테스트로 자동 검증됨: `npm test`

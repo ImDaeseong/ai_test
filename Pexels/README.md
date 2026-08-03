@@ -58,14 +58,14 @@ Use it to run tests, validate data, generate without opening the browser, or cle
 | 7 | `ffmpeg_service.py` | MP3 íŒŒì¼ì— ë‚´ì¥ëœ ì•¨ë²”ì•„íŠ¸(video stream)ë¥¼ `.m4a` ì»¨í…Œì´ë„ˆì— ì“°ë ¤ë‹¤ ì‹¤íŒ¨í•˜ë˜ ë²„ê·¸ ìˆ˜ì • â†’ `trim_audio`ì— `-vn` í”Œë˜ê·¸ ì¶”ê°€ |
 
 
-## °³¼± ÀÌ·Â (2026-06-02)
+## ê°œì„  ì´ë ¥ (2026-06-02)
 
-### ¹ö±× ¼öÁ¤
-| ÆÄÀÏ | ³»¿ë |
+### ë²„ê·¸ ìˆ˜ì •
+| íŒŒì¼ | ë‚´ìš© |
 |---|---|
-| pp/services/ffmpeg_service.py:77 | 	rim_scene subprocess ÀÎÄÚµù ¹ÌÁöÁ¤ ¼öÁ¤ (encoding='utf-8', errors='replace' Ãß°¡) |
-| pp/services/ffmpeg_service.py:104 | concat 1Â÷ ½ÇÆĞ ½Ã ¿À·ù Á¤º¸°¡ ¼Ò½ÇµÇ´ø ¹®Á¦ ¼öÁ¤ ? logger.warningÀ¸·Î stderr ±â·Ï ÈÄ Àç½Ãµµ |
-| pp/services/ffmpeg_service.py:1 | import logging ¹× logger = logging.getLogger(__name__) Ãß°¡ |
+| app/services/ffmpeg_service.py:77 | trim_scene subprocess ì¸ì½”ë”© ë¯¸ì§€ì • ìˆ˜ì • (encoding='utf-8', errors='replace' ì¶”ê°€) |
+| app/services/ffmpeg_service.py:104 | concat 1ì°¨ ì‹¤íŒ¨ ì‹œ ì˜¤ë¥˜ ì •ë³´ê°€ ì†Œì‹¤ë˜ë˜ ë¬¸ì œ ìˆ˜ì • â€” logger.warningìœ¼ë¡œ stderr ê¸°ë¡ í›„ ì¬ì‹œë„ |
+| app/services/ffmpeg_service.py:1 | import logging ë° logger = logging.getLogger(__name__) ì¶”ê°€ |
 
-### Å×½ºÆ®
-- pytest 23/23 Åë°ú
+### í…ŒìŠ¤íŠ¸
+- pytest 23/23 í†µê³¼

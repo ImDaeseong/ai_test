@@ -32,5 +32,6 @@ Chrome → `chrome://extensions/` → 개발자 모드 ON → `dist/` 폴더 "�
 
 - `contentScript.js:523`: 재주입 대기 시간 800ms — SPA 페이지 전환 후 이전 songId 경쟁 조건 방지. 600ms 이하로 줄이지 말 것
 - Chrome MV3 제약: XMLHttpRequest 불가, fetch/ServiceWorker 사용
-- 테스트는 실제 Chrome + Suno.com 로그인 환경 필요 — 자동화 테스트 없음 (HOLD)
+- 실제 Chrome + Suno.com 로그인이 필요한 통합 동작은 자동화 테스트 없음 (HOLD) — 수동 확인만 가능
+- `lyricUtils.js`(순수함수)는 26개 단위 테스트로 자동 검증됨(2026-06-28 전환 완료): `node src/lyricUtils.test.js`
 - `dist/` 는 빌드 산출물 — 직접 편집 금지, 항상 `src/` 수정 후 빌드
