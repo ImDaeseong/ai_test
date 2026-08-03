@@ -19,8 +19,8 @@
 ## 새 프로젝트 시작 시
 
 ```
-1. 이 _templates 폴더에서 파일 4개를 복사한다
-   (GOVERNANCE_REF.md는 선택)
+1. 이 _ai_rules 폴더에서 파일 8개를 복사한다
+   (GOVERNANCE_REF.md는 선택 — 포함하면 9개)
 
 2. 프로젝트 루트에 붙여넣는다
 
