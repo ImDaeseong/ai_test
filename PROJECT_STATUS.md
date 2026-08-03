@@ -75,7 +75,7 @@
 |---------|------|------|-----------|--------|------|
 | Analysis_music | 음악 분석 자동화 | Python | ✅ | ✅ 67 | ✅ 완성 |
 | ai-webtoon | 웹툰 생성 Flask 앱 | Python | ✅ | ✅ 52 | ✅ 완성 |
-| ai-webtoon_capcut | 웹툰 CapCut 타임라인 생성 | Python | ✅ | ✅ 14 | ✅ 완성 |
+| ai-webtoon_capcut | 웹툰 CapCut 타임라인 생성 | Python | ✅ | ✅ 14 | 🟡 부분완성 (CLI 완료, Remotion 렌더러·CapCut 패키징 미구현 HOLD — README.md 참고) |
 | ai_anime_production | 애니메이션 영상 제작 | Node.js | ✅ | ✅ 22 | ✅ 완성 (순수함수) |
 | check_FileEncoding | 파일 인코딩 검사 | Go | ✅ | ✅ ok | ✅ 완성 |
 | extensions | Chrome 확장 (Suno 자동화) | JS | ✅ | ✅ 26 | ✅ 완성 (순수함수) |
