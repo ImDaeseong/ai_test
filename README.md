@@ -1050,7 +1050,7 @@ ai-webtoon_capcut/
 ├── remotion/             # Remotion 렌더러 (Node.js) — 미구현
 ├── config/default.json   # 클립 길이·캔버스·자막 정책
 ├── schemas/              # JSON Schema (manifest/timeline/subtitles)
-├── scripts/              # webtoon-capcut.ps1, test.ps1, validate-project.ps1
+├── scripts/              # webtoon-capcut.ps1, test.ps1, validate-project.ps1, install-renderer.ps1, install-alignment.ps1
 ├── tests/unit/           # 14개 단위 테스트
 └── docs/                 # 설계 문서 15개
 ```
