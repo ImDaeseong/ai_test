@@ -99,7 +99,7 @@
 | 프로젝트 | 이슈 | 우선순위 |
 |---------|------|---------|
 | run_game | 로컬 MFC 빌드는 검증 범위 제외; C++ 소스·프로젝트 설정 변경 시 사람 검토 재개 | P3 예외 |
-| ai-webtoon_capcut | `webtoon_capcut` 패키지 editable 설치 누락 시 ImportError 발생. 새 환경 구성 후 `pip install -e .` 필수 (2026-06-29 확인) | P1 |
+| ai-webtoon_capcut | Remotion 렌더러·CapCut 패키징 미구현 (HOLD, 설계 범위 밖 대형 기능 — README.md 참고) | HOLD |
 
 ---
 
@@ -114,3 +114,5 @@
 | 2026-06-29 | 헤르메스 감시 재검증. ai-webtoon_capcut: editable 미설치로 3 ImportError → pip install -e . 후 14 passed 복구. P1 이슈 등재. |
 | 2026-07-20 | 전체 재검증. ai-webtoon: `pytest.ini` 누락으로 bare `pytest -q`가 0개 수집하던 결함 수정(52 passed 확인). Pexels(23)·master_tag(18)·windows-port-monitor(7) "부분 검증(pytest 임시폴더 권한 차단)" 상태 재확인 결과 전량 PASS로 해소되어 P2 이슈 제거. root README.md의 ai-webtoon 스테일 테스트 수(41→52) 정정. |
 | 2026-07-29 | 사용자 결정으로 `run_game` MFC 빌드를 로컬 전체 검증의 PASS/HOLD 판정에서 제외. 2026-05-28 검증 데이터를 인정하되 C++ 소스·프로젝트·솔루션·번들 라이브러리 변경 시 예외를 해제하고 사람 검토를 재개. |
+| 2026-08-17 | 전체 재검증 루프. 17개 프로젝트(run_game 제외) 테스트 전량 재실행 — Python 11개(Analysis_music 67·ai-webtoon 52·ai-webtoon_capcut 14·findstring_foldfiles 5·lyrics_tag 18·master_tag 18·mp4_tag 50·Pexels 23·security_scanning 53·weather_alarm 55·windows-port-monitor 7) 전량 PASS, Go 2개(check_FileEncoding·mp3_daw) 전량 PASS, Node 4개(ai_anime_production 22·extensions 26·imagevideo 33·lyricvideo 16) 전량 PASS. 18개 CLAUDE.md 전량 존재 확인, `git status` 클린 확인(사이드이펙트 없음). 이전 100% 게이트 대비 회귀 없음. |
+| 2026-08-17 | ai-webtoon_capcut 문서-스크립트 불일치 결함 수정. README.md·IMPLEMENTATION.md가 참조하던 `scripts/install-renderer.ps1`(remotion npm install)·`scripts/install-alignment.ps1`(WhisperX/Demucs pip install)이 실제로 존재하지 않아 문서대로 따라가면 실패하던 결함 발견 및 두 스크립트 신설. 동시에 `test.ps1`에만 있던 editable-install 자동 감지·복구 로직을 `webtoon-capcut.ps1`(실사용 CLI 래퍼)에도 동일 적용해 신규 환경에서 ModuleNotFoundError로 실패하던 P1 이슈 해소. pytest 14 passed 재확인, `webtoon-capcut.ps1` 실행 exit 0 확인. |
