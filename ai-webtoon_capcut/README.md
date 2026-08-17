@@ -150,29 +150,12 @@ ai-webtoon_capcut/
             └─ timeline.json
 ```
 
-기본 실행:
+기본 실행 (현재 구현된 명령은 `discover / inspect / normalize / plan / build / build-all`뿐이다):
 
 ```powershell
-.\scripts\install-renderer.ps1
 .\scripts\webtoon-capcut.ps1 inspect --song "UPGRADE"
 .\scripts\webtoon-capcut.ps1 build --song "UPGRADE"
-.\scripts\webtoon-capcut.ps1 render --song "UPGRADE" --profile preview
 .\scripts\webtoon-capcut.ps1 build-all --ready-only
-```
-
-자막 시간이 불안정한 곡은 먼저 자동 보정한다. 기본값은 Demucs 보컬 분리 후
-WhisperX 정렬이며 CPU에서는 오래 걸릴 수 있다.
-
-```powershell
-.\scripts\install-alignment.ps1
-.\scripts\webtoon-capcut.ps1 align --song "UPGRADE"
-```
-
-CapCut에서는 `subtitles-aligned.srt`를 먼저 가져온 뒤 귀로 들으며 최종
-조정한다. Remotion에 자막을 굽는 검토 영상이 필요한 경우에만 다음을 사용한다.
-
-```powershell
-.\scripts\webtoon-capcut.ps1 render --song "UPGRADE" --burn-subtitles
 ```
 
 Windows에서는 프로젝트 루트의 `webtoon-capcut.bat`을 더블클릭해 메뉴를
@@ -180,10 +163,13 @@ Windows에서는 프로젝트 루트의 `webtoon-capcut.bat`을 더블클릭해 
 
 ```bat
 webtoon-capcut.bat build --song "UPGRADE"
-webtoon-capcut.bat render --song "UPGRADE"
 webtoon-capcut.bat build-all --ready-only
 webtoon-capcut.bat discover
 ```
+
+`render`(Remotion)와 `align`(WhisperX/Demucs 자막 보정)은 아직 구현되지 않았다 — CLI에
+해당 명령이 없다. `scripts\install-renderer.ps1`·`scripts\install-alignment.ps1`은 그 기능을
+구현할 때 쓸 의존성 설치 스크립트를 미리 준비해 둔 것뿐이다.
 
 `--song-dir`, `--input-root`, `--output-root`로 다른 위치도 지정할 수 있다.
 원본 `input/`은 읽기 전용으로 취급하고 생성 결과는 `output/`에만 기록한다.

@@ -1,5 +1,14 @@
 # HANDOFF - ai-webtoon_capcut
 
+> **2026-08-17 정정**: 이 문서의 이전 버전은 Remotion 렌더, WhisperX/Demucs 정렬, CapCut
+> handoff 자동 검증 스크립트, 테스트 45개 통과를 "완료"로 기록했으나, 실제 저장소 코드로
+> 확인한 결과 해당 기능은 존재하지 않는다 — `remotion/`에는 `package.json`뿐이고 렌더
+> 컴포지션 소스가 없고, CLI에 `render`/`align` 명령이 없고, `scripts/validate-capcut-handoff.ps1`
+> 파일이 없고, 테스트는 14개다(`git log`상 이 문서와 `remotion/`은 2026-06-07 단일 import
+> 커밋 이후 변경 이력이 없음 — 다른 환경의 작업 기록이 코드 없이 문서만 넘어온 것으로 보임).
+> 아래는 코드 기준으로 정정한 내용이다. 향후 이 문서를 실제 진행 상황의 근거로 쓰지 말고,
+> 항상 코드·테스트 실행 결과로 재확인한다.
+
 ## 현재 목표
 
 곡별 하드코딩 없이 웹툰 이미지·음악·Suno 자막을 분석하고 편집 타임라인을
@@ -15,34 +24,26 @@
 6. `AI_CODING_REVIEW.md`
 7. `HERMES_REVIEW.md`
 
-## 완료
+## 완료 (코드로 확인됨)
 
-- Python 분석/계획 CLI
+- Python 분석/계획 CLI: `discover / inspect / normalize / plan / build / build-all`
 - WAV·이미지·스토리보드·LRC/SRT 분석
 - 자막 품질 라우팅
 - 동적 섹션·타임라인
-- CapCut handoff
 - 3곡 회귀와 214곡 discover
-- Hermes 필수 문서와 자동 검증
+- Hermes 필수 문서와 자동 검증 (`scripts/validate-project.ps1`)
 - Suno 밀집 섹션 태그 연쇄의 일반화된 경계 재분배
 - 기본 경로 `input/{노래명}` → `output/{노래명}/{run_id}`
 - 더블클릭 메뉴와 명령 전달을 지원하는 `webtoon-capcut.bat`
-- Remotion 기본 무자막 preview MP4와 선택적 자막 검토 영상
-- WhisperX 실제 30 cue 정렬 및 CapCut용 원본/보정 SRT 분리
-- Demucs 8초 샘플 보컬/반주 분리 검증
-- MP3/FLAC/M4A ffprobe 지원 (Remotion 번들 ffprobe 자동 탐색, PATH fallback)
-- Remotion 클립 간 크로스페이드 전환 (기본 300ms, config `canvas.transition_ms`로 조정)
-- 추가 2곡 end-to-end 검증: SRT_WIDE_TEST(18패널·120s·SRT전용), LRC_PORTRAIT_TEST(24패널·90s·LRC전용)
-- CapCut 핸드오프 자동 검증 스크립트 (`scripts/validate-capcut-handoff.ps1`), 전 곡 PASS
-- 5곡 전체 재빌드 및 handoff 구조 통일
-- full 1080p 렌더 PASS: UPGRADE 1920×1080 H.264/AAC 30fps 242.97s (468 MB)
-- 통합 테스트 15개 추가 (`tests/test_fixture_integration.py`), 전체 45 passed
+- 단위 테스트 14개 (`tests/unit/`) 전량 PASS
 
-## 미완료
+## 미완료 (설계 범위 밖, 착수 전)
 
-- 사람 CapCut import Q3/Q4 체감 싱크 검수
-  - 자동 검증: `scripts/validate-capcut-handoff.ps1` (전 곡 PASS)
-  - 남은 것: CapCut 앱에서 SRT import 후 귀로 싱크 확인 (자동화 불가)
+- Remotion 렌더러: `remotion/`에 `package.json`만 있고 컴포지션 소스·CLI `render` 명령 없음
+- CapCut 패키징/handoff 자동화: 관련 코드·검증 스크립트 없음
+- WhisperX/Demucs 자막 정렬: CLI `align` 명령 없음, `requirements-alignment.txt`는 있으나
+  이를 사용하는 소스 코드 없음
+- 위 셋 모두 사람 Q3/Q4 검수 이전 단계가 아니라 **구현 자체가 시작 전**
 
 ## 검증 명령
 
@@ -50,29 +51,15 @@
 .\scripts\test.ps1
 .\scripts\validate-project.ps1
 .\scripts\webtoon-capcut.ps1 build --song "곡명"
-.\scripts\webtoon-capcut.ps1 render --song "곡명"
-.\scripts\webtoon-capcut.ps1 align --song "곡명"
 ```
 
 ## 다음 단계
 
-1. 네 번째·다섯 번째 곡 fixture 추가
-2. CapCut에서 자동 보정 SRT 체감 싱크 검수
-3. full 1080p 실제 곡 렌더
-4. 추가 곡 정렬 회귀
+착수 순서는 정해진 바 없음. Remotion 렌더러/CapCut 패키징을 시작하려면 먼저 스펙(입출력
+계약, 실패 처리, 검증 기준)을 잡고 `docs/`에 설계 문서를 추가한 뒤 진행한다.
 
 ## 알려진 판정
 
-- 분석/계획 및 preview 렌더: PASS WITH LIMITATIONS
-- 전체 영상 자동화: HOLD
+- 분석/계획 CLI: PASS
+- Remotion 렌더러·CapCut 패키징: 착수 전 (HOLD)
 - 공개/배포: HOLD
-
-2026-06-06 실제 검증:
-
-- 무자막 preview MP4: H.264/AAC, 960x540, 30fps, 목표 길이 1프레임 이내
-- WhisperX: 디저트 30 cue 정렬, invalid 0
-- Demucs: 8초 샘플 vocals/no_vocals 생성
-- full 1080p MP4 (UPGRADE): 1920×1080, H.264/AAC, 30fps, 242.97s, 468MB — PASS
-- SRT_WIDE_TEST (18패널·120s·SRT): BUILD_READY → PASS, gap 0, 21 clips
-- LRC_PORTRAIT_TEST (24패널·90s·LRC·세로형): BUILD_READY → PASS, gap 0, 24 clips
-- 전체 테스트: 45 passed (기존 30 + 통합 15)

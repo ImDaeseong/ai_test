@@ -57,13 +57,17 @@ Then 실패하지 않고 PROMPTS_ONLY로 분류한다
 
 ## DoD
 
-- [x] 자동 테스트 30개
+> **2026-08-17 정정**: Remotion/WhisperX/Demucs 3개 항목은 현재 코드에 해당 기능이 없어
+> [ ]로 되돌렸다. 자동 테스트 수는 2026-08-17 재확인 기준 14개다 (`AI_CODING_REVIEW.md`
+> 참고).
+
+- [x] 자동 테스트 (2026-08-17 기준 14개)
 - [x] 세 곡 타임라인 연속성 확인
 - [x] 214곡 discover 예외 없음
 - [x] 하드코딩·절대 경로·비밀값 검사
-- [x] Remotion 실제 preview 렌더
-- [x] WhisperX 실제 곡 정렬
-- [x] Demucs 짧은 샘플 보컬 분리
+- [ ] Remotion 실제 preview 렌더 (현재 코드에 렌더러 없음)
+- [ ] WhisperX 실제 곡 정렬 (현재 코드에 `align` 명령 없음)
+- [ ] Demucs 짧은 샘플 보컬 분리 (현재 코드에 없음)
 - [ ] full 1080p 실제 곡 렌더
 - [ ] 전체 곡 Demucs+WhisperX 결합 검증
 - [ ] Q3 CapCut 탐색 검수
