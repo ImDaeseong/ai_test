@@ -1,6 +1,6 @@
 # 프로젝트 현황 — ai_test
 
-> 마지막 업데이트: 2026-08-17 (아래 "업데이트 기록"의 최신 행 날짜와 항상 동일해야 함)
+> 마지막 업데이트: 2026-09-06 (아래 "업데이트 기록"의 최신 행 날짜와 항상 동일해야 함)
 > 새 프로젝트 추가 또는 주요 변경 시 이 파일을 업데이트한다.
 
 ---
@@ -117,3 +117,4 @@
 | 2026-08-17 | 전체 재검증 루프. 17개 프로젝트(run_game 제외) 테스트 전량 재실행 — Python 11개(Analysis_music 67·ai-webtoon 52·ai-webtoon_capcut 14·findstring_foldfiles 5·lyrics_tag 18·master_tag 18·mp4_tag 50·Pexels 23·security_scanning 53·weather_alarm 55·windows-port-monitor 7) 전량 PASS, Go 2개(check_FileEncoding·mp3_daw) 전량 PASS, Node 4개(ai_anime_production 22·extensions 26·imagevideo 33·lyricvideo 16) 전량 PASS. 18개 CLAUDE.md 전량 존재 확인, `git status` 클린 확인(사이드이펙트 없음). 이전 100% 게이트 대비 회귀 없음. |
 | 2026-08-17 | ai-webtoon_capcut 문서-스크립트 불일치 결함 수정. README.md·IMPLEMENTATION.md가 참조하던 `scripts/install-renderer.ps1`(remotion npm install)·`scripts/install-alignment.ps1`(WhisperX/Demucs pip install)이 실제로 존재하지 않아 문서대로 따라가면 실패하던 결함 발견 및 두 스크립트 신설. 동시에 `test.ps1`에만 있던 editable-install 자동 감지·복구 로직을 `webtoon-capcut.ps1`(실사용 CLI 래퍼)에도 동일 적용해 신규 환경에서 ModuleNotFoundError로 실패하던 P1 이슈 해소. pytest 14 passed 재확인, `webtoon-capcut.ps1` 실행 exit 0 확인. |
 | 2026-08-17 | ai-webtoon_capcut 문서 허위 완료 표시 정정. `HANDOFF.md`·`HERMES_REVIEW.md`·`TESTING_DONE_CRITERIA.md`가 Remotion 렌더(full 1080p PASS)·WhisperX/Demucs 정렬·CapCut handoff 자동 검증 스크립트·테스트 45개를 "완료"로 기록하고 있었으나, 코드 확인 결과 `remotion/`에 컴포지션 소스가 없고 CLI에 `render`/`align` 명령이 없고 검증 스크립트가 없고 테스트는 14개임을 확인(`git log`상 이 문서들은 2026-06-07 단일 import 커밋 이후 미변경 — 다른 환경 작업 기록이 코드 없이 문서만 넘어온 것으로 추정). 4개 문서와 `README.md`의 실행 예제(`render`/`align` 명령)를 코드 기준으로 정정, 원문은 삭제 대신 스테일 표시로 보존. |
+| 2026-09-06 | 로컬 자동 검증 대상 17개 하위 프로젝트 PASS. weather_alarm import 시 로그 쓰기·stdout 교체 부작용을 시작 시 초기화로 변경하고 subprocess 회귀 검사 추가: 56 PASS. Python 나머지 10개·Go 2개·Node 4개 통과, anime/lyricvideo 타입 검사 및 확장 빌드 통과. 실제 API·전체 렌더·사람 검토는 기존 범위 유지. |
