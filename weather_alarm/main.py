@@ -1,5 +1,4 @@
 import asyncio
-import io
 import os
 import sys
 from dataclasses import dataclass
@@ -11,29 +10,31 @@ from loguru import logger
 
 load_dotenv()
 
-# Windows cp949 콘솔에서 한글/이모지 깨짐 방지
-if hasattr(sys.stdout, "buffer"):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-
-os.makedirs("logs", exist_ok=True)
-logger.remove()
-logger.add(
-    sys.stdout,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan> - <level>{message}</level>",
-    level="INFO",
-)
-logger.add(
-    "logs/weather_alarm.log",
-    mode="w",
-    level="DEBUG",
-    encoding="utf-8",
-)
-
 from broadcaster import BroadcastDispatcher, build_discord_sender, build_telegram_sender
 from weather_client import WeatherClient
 from discord_bot import DiscordWeatherBot
 from notification_store import NotificationStore
 from telegram_bot import TelegramWeatherBot
+
+
+def configure_logging() -> None:
+    # Windows cp949 콘솔에서 한글/이모지 깨짐 방지
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+    os.makedirs("logs", exist_ok=True)
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan> - <level>{message}</level>",
+        level="INFO",
+    )
+    logger.add(
+        "logs/weather_alarm.log",
+        mode="w",
+        level="DEBUG",
+        encoding="utf-8",
+    )
 
 
 @dataclass
@@ -267,6 +268,7 @@ async def main():
 
 
 if __name__ == "__main__":
+    configure_logging()
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
