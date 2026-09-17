@@ -10,7 +10,7 @@ from loguru import logger
 
 _KST = timezone(timedelta(hours=9))
 
-WEATHER_API_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst"
+WEATHER_API_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst"
 # 격자 좌표와 지역명은 환경변수로 재정의 가능합니다 (기본: 서울 가산동 NX=58, NY=125).
 NX = int(os.getenv("WEATHER_NX", "58"))
 NY = int(os.getenv("WEATHER_NY", "125"))

@@ -71,7 +71,7 @@ class SQLiteStore:
             )
             self._connection.execute("PRAGMA journal_mode=WAL")
             self._connection.execute("PRAGMA synchronous=NORMAL")
-            self._connection.execute(f"PRAGMA busy_timeout={self.config.sqlite_busy_timeout_ms}")
+            self._connection.execute(f"PRAGMA busy_timeout={self.config.sqlite_busy_timeout_ms}")  # qa:allow CWE-89 - value is int()-coerced local config (config_loader.py), and sqlite3 PRAGMA doesn't accept parameter placeholders
             self._connection.executescript(SCHEMA_SQL)
             self._connection.commit()
             logger.info("sqlite_store_opened", extra={"database_path": str(self.path)})
