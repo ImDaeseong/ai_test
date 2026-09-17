@@ -61,7 +61,7 @@ class TestIsValidHttpUrl:
         assert dc.is_valid_http_url("http://127.0.0.1:8080/path") is False
 
     def test_link_local_ip_is_blocked(self):
-        assert dc.is_valid_http_url("http://169.254.1.1/resource") is False
+        assert dc.is_valid_http_url("http://169.254.1.1/resource") is False  # qa:allow CWE-319 - link-local test fixture, asserting this URL is rejected
 
     def test_url_with_path_and_query_is_valid(self):
         assert dc.is_valid_http_url("https://cdn.example.com/stream.m3u8?token=xyz") is True

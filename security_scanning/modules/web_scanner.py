@@ -301,11 +301,11 @@ class SecurityHeadersCheck(BaseCheck):
                     title="CSP: 'unsafe-eval' Directive Detected",
                     detail=(
                         "The Content-Security-Policy contains 'unsafe-eval', permitting "
-                        "eval(), new Function(), setTimeout(string), and similar dynamic "
+                        "eval(), new Function(), setTimeout(string), and similar dynamic "  # qa:allow CWE-95 - descriptive string in this scanner's own finding message, not executed code
                         "code execution. Attackers can use this to escalate reflected XSS."
                     ),
                     recommendation=(
-                        "Remove 'unsafe-eval'. Refactor code that uses eval() or "
+                        "Remove 'unsafe-eval'. Refactor code that uses eval() or "  # qa:allow CWE-95 - descriptive string in this scanner's own finding message, not executed code
                         "string-based setTimeout/setInterval."
                     ),
                     evidence=f"Content-Security-Policy: {value[:150]}",
