@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai_test — 쉬운 설명</title>
+<style>
+  :root{
+    --bg:#f8faf6; --card:#ffffff; --ink:#182016; --sub:#657059;
+    --accent:#5a9e3f; --accent-soft:#e2f0d8; --line:#e8efe1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#141a11; --card:#1c2418; --ink:#eef5e8; --sub:#a3b096;
+      --accent:#8ac56d; --accent-soft:#243620; --line:#2d3927; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Pretendard,sans-serif;
+    padding:32px 20px 56px}
+  .wrap{max-width:640px;margin:0 auto}
+  .hero{text-align:center;padding:36px 16px}
+  .emoji{font-size:88px;line-height:1}
+  h1{font-size:26px;margin:14px 0 6px}
+  .tag{color:var(--sub);font-size:15px}
+  .analogy{background:var(--accent-soft);border-radius:20px;padding:24px 22px;
+    margin:24px 0;font-size:17px;line-height:1.65}
+  .analogy b{color:var(--accent)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+  @media (max-width:480px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px}
+  .card .ic{font-size:28px}
+  .card h3{font-size:14px;margin:8px 0 4px}
+  .card p{font-size:13px;color:var(--sub);margin:0;line-height:1.5}
+  .run{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 20px;margin-top:24px}
+  .run h3{font-size:14px;margin:0 0 10px}
+  code{display:block;background:var(--accent-soft);color:var(--ink);
+    padding:12px 14px;border-radius:10px;font-size:13px;overflow-x:auto;
+    white-space:pre}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="emoji">🪚🪵</div>
+    <h1>ai_test</h1>
+    <div class="tag">음악·영상·자동화용 18개 작은 도구를 만든 공방</div>
+  </div>
+
+  <div class="analogy">
+    목공방을 하나 차렸다고 생각해보세요. 의자도 만들고 책상도 만들고
+    서랍장도 만듭니다. <b>각 작품(프로그램)은 서로 독립적으로 완성</b>되어
+    있고, 필요할 때 하나씩 꺼내 씁니다. 개발 연습이 아니라 실제로
+    쓸모 있는 도구로 반복 작업을 줄이는 게 목적입니다.
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="ic">🎚️</div><h3>master_tag</h3>
+      <p>Suno 음원을 유튜브 표준 음량으로 자동 마스터링</p></div>
+    <div class="card"><div class="ic">🎤</div><h3>lyrics_tag</h3>
+      <p>가사에 타이밍을 붙여 자막(LRC) 생성</p></div>
+    <div class="card"><div class="ic">🌦️</div><h3>weather_alarm</h3>
+      <p>날씨 API로 디스코드/텔레그램 알림</p></div>
+    <div class="card"><div class="ic">🔒</div><h3>security_scanning</h3>
+      <p>웹사이트 보안 취약점 스캔</p></div>
+  </div>
+
+  <div class="run">
+    <h3>🔍 확인해보려면</h3>
+    <code>각 프로젝트 폴더의 README.md 실행 명령(대부분 .bat 하나)
+PROJECT_STATUS.md — 전체 검증 이력</code>
+  </div>
+</div>
+</body>
+</html>
