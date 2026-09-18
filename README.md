@@ -1,6 +1,6 @@
 # 소스 설명
 
-**🤔 [쉬운 설명 보기](ELI5.html)** — 비개발자를 위한 한 페이지 요약
+**🤔 [쉬운 설명 보기](https://htmlpreview.github.io/?https://github.com/ImDaeseong/ai_test/blob/main/ELI5.html)** — 비개발자를 위한 한 페이지 요약
 
 > 작성일: 2026-05-08 / 최종 수정: 2026-08-17 (간결화 — 프로젝트별 상세 내용은 각 프로젝트 `README.md`/`CLAUDE.md`로 이동)
 > 총 18개 소스 프로젝트 수록 (`Doc/` 폴더에 프로젝트별 AI 개발 프롬프트·설계 문서 통합 보관)
