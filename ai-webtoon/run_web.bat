@@ -25,5 +25,4 @@ echo   ai-webtoon  Web Viewer
 echo   http://127.0.0.1:5350
 echo   Ctrl+C to stop
 echo ------------------------------------------
-start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep 2; Start-Process 'http://127.0.0.1:5350'"
 "%PY%" web_app.py

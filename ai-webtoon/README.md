@@ -4,7 +4,7 @@
 > 곡마다 BPM·장르·감정에 맞는 웹툰 패널 이미지 프롬프트를 자동 생성하는 CLI 도구.
 > **영상 AI 불필요 — 이미지만 생성하고 CapCut/DaVinci Resolve로 편집.**
 
-> **2026-06-07 기준 — 212곡 전체 검증 PASS(212/212, 아래 "검증 현황" 참고). ai_multi_agent 연동 완료.**
+> **2026-06-07 기준 — 212곡 전체 검증 PASS(212/212, 아래 "검증 현황" 참고).**
 
 > **실제 MV 제작 방법 (이미지 생성 → CapCut 편집 → 업로드):**
 > [MV_제작_가이드.md](MV_제작_가이드.md) 참조
@@ -22,7 +22,7 @@
 | 영상 프롬프트 | 있음 (09번) | **없음** |
 | 편집 방식 | AI 영상 생성 | **이미지 슬라이드쇼 편집** |
 | 독립 뷰어 | 포트 5100 | **포트 5350** |
-| api_multi_agent | 포트 5200 | **포트 5600** |
+| 이미지 생성 | 외부 실행기 | **내장 OpenAI 연결(포트 5350)** |
 
 ---
 
@@ -30,7 +30,7 @@
 
 ```powershell
 # 패키지 설치
-pip install flask
+pip install -r requirements.txt
 
 # 단일 곡 생성
 python main.py create --input "input\너는 완벽했어.txt"
@@ -41,11 +41,8 @@ python main.py create-all --input-dir input --force
 # 배치 파일 실행
 .\run_all.bat
 
-# 독립 웹 뷰어 (프롬프트 복사용)
+# 웹 뷰어 (프롬프트 복사 + 선택적 OpenAI 이미지 생성)
 .\실행_web.bat        # → http://127.0.0.1:5350
-
-# ai_multi_agent 뷰어 (이미지 자동 생성)
-ai_multi_agent\실행_web_webtoon.bat   # → http://127.0.0.1:5600
 ```
 
 ---
@@ -55,10 +52,12 @@ ai_multi_agent\실행_web_webtoon.bat   # → http://127.0.0.1:5600
 ```
 ai-webtoon/
 ├── main.py                   ← 핵심 엔진 (파싱 → 스타일 선택 → 패널 생성 → 검증)
-├── web_app.py                ← 독립 패널 뷰어 (포트 5350, 프롬프트 복사용)
+├── web_app.py                ← 패널 뷰어와 OpenAI 이미지 생성 API (포트 5350)
+├── image_client.py           ← gpt-image-2 호출 어댑터
+├── budget_guard.py           ← 월별 유료 호출 횟수 제한·사용량 기록
 ├── run_all.bat               ← input/ 전체 일괄 처리 + summarize-all
 ├── 실행_web.bat              ← 독립 웹 뷰어 실행
-├── requirements.txt          ← flask
+├── requirements.txt          ← flask, openai, pytest
 ├── MV_제작_가이드.md          ← 이미지 생성 → CapCut 편집 전체 흐름
 │
 ├── configs/                  ← 모든 스타일·타이밍·캐릭터 규칙 (코드 하드코딩 없음)
@@ -90,7 +89,8 @@ ai-webtoon/
         ├── 01_storyboard.md        ← 전체 패널 계획표 (섹션·타입·타이밍)
         └── panels/
             ├── panel_001_intro_wide.md
-            └── panel_NNN_[section]_[type].md
+            ├── panel_NNN_[section]_[type].md
+            └── panel_NNN_[section]_[type]/image.png
 ```
 
 ---
@@ -218,22 +218,19 @@ python main.py summarize-all --input-dir input --output-dir output
 
 ---
 
-## 웹 뷰어 2종
+## 웹 뷰어
 
-### 독립 뷰어 (프롬프트 복사용)
 ```powershell
-.\실행_web.bat   # → http://127.0.0.1:5350
+.\run_web.bat   # → http://127.0.0.1:5350
 ```
+- 웹 앱은 `../ai_agent/keyinfo/keys.env`에서 `OPENAI_API_KEY`만 프로세스 환경변수로 읽습니다. 키 원문을 이 프로젝트에 복사하거나 로그에 출력하지 않습니다.
 - 패널 카드 클릭 → GPT/Niji/FLUX.1/Gemini 탭 → 프롬프트 복사
 - 수동으로 AI 도구에 붙여넣어 이미지 생성
-
-### ai_multi_agent 뷰어 (API 자동 생성)
-```powershell
-ai_multi_agent\실행_web_webtoon.bat   # → http://127.0.0.1:5600
-```
-- [▶ 이미지 생성] 버튼 → OpenAI API 자동 호출 → 이미지 즉시 표시
-- `OPENAI_API_KEY` `.env` 설정 필요 (없어도 뷰어는 동작, 복사만 가능)
-- 결과: `ai_multi_agent/output/webtoon/[곡명]/panels/[패널]/image.png`
+- `OPENAI_API_KEY`가 설정된 경우 `이미지 생성` 버튼 → `gpt-image-2` 호출
+- 결과: `output/[곡명]/panels/[패널]/image.png`
+- 키가 없어도 프롬프트 조회와 복사는 정상 동작
+- 월 100회 로컬 호출 한도를 넘으면 유료 호출 전에 차단
+- 자동 호출은 텍스트 프롬프트만 전송합니다. `reference/` 이미지를 외부로 자동 전송하지 않습니다.
 
 ---
 
@@ -290,8 +287,8 @@ reference/
    → GPT/Niji/FLUX.1에 붙여넣기 + reference/ 이미지 첨부 → 이미지 저장
 
 3-B. API 자동 이미지 생성
-   ai_multi_agent\실행_web_webtoon.bat (5600)
-   → 곡 선택 → 패널 클릭 → [▶ 이미지 생성]
+   실행_web.bat (5350)
+   → 곡 선택 → 패널 클릭 → [이미지 생성]
    → OpenAI API → image.png 자동 저장
 
 4. CapCut / DaVinci Resolve
@@ -308,7 +305,7 @@ reference/
 | configs 7개 완성 | ✅ |
 | main.py 파이프라인 | ✅ |
 | 독립 웹 뷰어 (포트 5350) | ✅ |
-| ai_multi_agent 연동 (포트 5600) | ✅ |
+| 내장 OpenAI 연결 (포트 5350) | ✅ mock 검증 |
 | 전체 검증 (212곡 / 0 실패) | ✅ 212/212 PASS |
 | 파이프 구분자 지원 (`[Intro \| ...]`) | ✅ |
 | 감정 키워드 우선 스타일 선택 | ✅ |

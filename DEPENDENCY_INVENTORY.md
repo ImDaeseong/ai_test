@@ -26,7 +26,7 @@ The release guard normalizes CRLF to LF before hashing. Any added, removed, or c
 
 - `Analysis_music/requirements.txt` — `sha256:651a7e26356d4516a65116d54cf2a99fa447bef464386775b4a7a67d07ea6969`
 - `Pexels/requirements.txt` — `sha256:fbf1ce769602b57196ab6985f41396cc6886a9e9461d303a08ebd4b1676a1e9f`
-- `ai-webtoon/requirements.txt` — `sha256:29d747912fa04a9ba20ca24d303f991795b34209570706e76839406f9bd5c9a2`
+- `ai-webtoon/requirements.txt` — `sha256:9b8e21ee219b27e7c454d096fc2dc55a8c340936c8b04516e98bb100c12a7993`
 - `ai-webtoon_capcut/pyproject.toml` — `sha256:d3bca9539fd5b3fb8b110780b19918da5d132a28b71e3bde737e29db5b7e1f2a`
 - `ai-webtoon_capcut/remotion/package-lock.json` — `sha256:640f01d7677047f62c720767e613251e9aeaedde5f3f304f23b91a5e7e225b2f`
 - `ai-webtoon_capcut/remotion/package.json` — `sha256:32e00e069a54e5ea5d98cf57274a32b7d90180a05f1a7c1746a6a99d61cd3fc8`

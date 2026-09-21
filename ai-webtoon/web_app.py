@@ -1,16 +1,25 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 import sys
 import threading
 import webbrowser
 from pathlib import Path
 
+from budget_guard import BudgetExceededError, check_limit, record_call
+from credential_loader import load_openai_api_key
+from image_client import ImageClient
+
 if sys.platform == "win32":
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            try:
+                reconfigure(encoding="utf-8", errors="replace")
+            except (OSError, ValueError):
+                pass
 
 try:
     from flask import Flask, jsonify, request, render_template_string
@@ -23,6 +32,42 @@ OUTPUT_DIR = Path(__file__).parent / "output"
 PORT = 5350
 
 app = Flask(__name__)
+logger = logging.getLogger(__name__)
+
+
+def _gpt_image_prompt(content: str) -> str:
+    """Extract the fenced prompt under the panel's GPT Image heading."""
+    lines = content.splitlines()
+    heading_index = next(
+        (index for index, line in enumerate(lines) if line.strip().startswith("## GPT Image")),
+        None,
+    )
+    if heading_index is None:
+        raise ValueError("GPT Image prompt is missing")
+    fence_index = next(
+        (index for index in range(heading_index + 1, len(lines)) if lines[index].strip().startswith("```")),
+        None,
+    )
+    if fence_index is None:
+        raise ValueError("GPT Image prompt is missing")
+    closing_index = next(
+        (index for index in range(fence_index + 1, len(lines)) if lines[index].strip() == "```"),
+        None,
+    )
+    if closing_index is None:
+        raise ValueError("GPT Image prompt is missing")
+    prompt = "\n".join(lines[fence_index + 1:closing_index]).strip()
+    if not prompt:
+        raise ValueError("GPT Image prompt is missing")
+    return prompt
+
+
+def _panel_file(song_name: str, panel_key: str) -> Path | None:
+    """Resolve an existing panel without allowing path traversal."""
+    if Path(song_name).name != song_name or Path(panel_key).name != panel_key:
+        return None
+    panel = OUTPUT_DIR / song_name / "panels" / f"{panel_key}.md"
+    return panel if panel.is_file() and panel.name.startswith("panel_") else None
 
 
 def _panel_done(song_dir: Path, panel_stem: str) -> bool:
@@ -74,6 +119,7 @@ def get_song_detail(song_name: str) -> dict | None:
             "section": sec,
             "type": ptype,
             "done": _panel_done(song_dir, pf.stem),
+            "generated": (panels_dir / pf.stem / "image.png").is_file(),
             "content": content,
         })
 
@@ -116,6 +162,33 @@ def api_panel_done(song_name: str, panel_key: str):
     sf = panels_dir / f"{panel_key}.status.json"
     sf.write_text(json.dumps({"done": done}), encoding="utf-8")
     return jsonify({"ok": True, "done": done})
+
+
+@app.route("/api/song/<song_name>/panel/<panel_key>/generate", methods=["POST"])
+def api_generate_panel(song_name: str, panel_key: str):
+    """Generate and persist one panel image through OpenAI."""
+    panel_file = _panel_file(song_name, panel_key)
+    if panel_file is None:
+        return jsonify({"error": "not found"}), 404
+    try:
+        prompt = _gpt_image_prompt(panel_file.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    if not load_openai_api_key():
+        return jsonify({"error": "OpenAI API 키를 불러오지 못했습니다. ai_agent/keyinfo/keys.env를 확인하세요."}), 400
+    try:
+        check_limit()
+        image_bytes, usage = ImageClient().generate(prompt)
+        image_dir = panel_file.parent / panel_key
+        image_dir.mkdir(exist_ok=True)
+        (image_dir / "image.png").write_bytes(image_bytes)
+        record_call(usage)
+    except BudgetExceededError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        logger.exception("panel image generation failed (panel=%s)", panel_key)
+        return jsonify({"error": f"image generation failed ({type(exc).__name__})"}), 502
+    return jsonify({"ok": True, "image": f"panels/{panel_key}/image.png"})
 
 
 HTML = """<!DOCTYPE html>
@@ -189,6 +262,7 @@ body{font-family:'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;min-heig
     <div class="pbox" id="mcontent"></div>
     <div class="actions">
       <button class="act-copy" onclick="copyPrompt()">📋 프롬프트 복사</button>
+      <button class="act-copy" id="generate-btn" onclick="generateImage()">이미지 생성</button>
       <button class="act-done" id="done-btn" onclick="toggleDone()">✅ 완료 표시</button>
     </div>
   </div>
@@ -269,6 +343,9 @@ function openPanel(key) {
   ).join('');
 
   showPlatform(currentPlatform);
+  const generateBtn = document.getElementById('generate-btn');
+  generateBtn.textContent = currentPanel.generated ? '생성 완료' : '이미지 생성';
+  generateBtn.disabled = false;
   document.getElementById('done-btn').textContent = currentPanel.done ? '↩ 완료 취소' : '✅ 완료 표시';
   document.getElementById('overlay').classList.add('open');
 }
@@ -307,6 +384,24 @@ function copyPrompt() {
     btn.textContent = '✓ 복사됨!';
     setTimeout(()=>btn.textContent='📋 프롬프트 복사', 1500);
   });
+}
+
+async function generateImage() {
+  if (!currentPanel || !currentSong) return;
+  const btn = document.getElementById('generate-btn');
+  btn.disabled = true;
+  btn.textContent = '생성 중...';
+  try {
+    const res = await fetch(`/api/song/${encodeURIComponent(currentSong)}/panel/${encodeURIComponent(currentPanel.key)}/generate`, {method:'POST'});
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'image generation failed');
+    currentPanel.generated = true;
+    btn.textContent = '생성 완료';
+  } catch (err) {
+    btn.textContent = `실패: ${err.message}`;
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 async function toggleDone() {
@@ -354,8 +449,10 @@ def _open_browser() -> None:
 
 
 def main() -> None:
+    key_loaded = load_openai_api_key()
     threading.Thread(target=_open_browser, daemon=True).start()
     print(f"ai-webtoon 패널 뷰어 → http://127.0.0.1:{PORT}")
+    print(f"OpenAI API 키: {'설정됨' if key_loaded else '미설정'}")
     app.run(host="127.0.0.1", port=PORT, debug=False)
 
 
