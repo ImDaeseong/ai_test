@@ -20,3 +20,5 @@ Remotion uses its own source-available license with eligibility and use restrict
 ## Other installed dependencies and services
 
 Package managers download the other dependencies declared in `package.json`, lockfiles, `requirements*.txt`, `pyproject.toml`, and `go.mod`. Those packages remain under their own licenses. External APIs and downloaded content remain subject to their providers' terms and the rights attached to each item.
+
+The tracked manifest set, reproducibility gaps, and reviewed fingerprints are recorded in [`DEPENDENCY_INVENTORY.md`](DEPENDENCY_INVENTORY.md).
