@@ -1,3 +1,14 @@
+# Source-only public distribution: keep media and compiled programs local.
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp3
+*.wav
+*.mp4
+*.exe
+
 # Environment variables (API keys, secrets)
 .env
 .env.local

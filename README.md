@@ -83,3 +83,11 @@ copy weather_alarm\.env.example weather_alarm\.env
 - **`Doc/` 폴더**에 프로젝트별 AI 개발 프롬프트·설계 문서 통합 보관 (`{프로젝트명}_claude_Prompts` / `{프로젝트명}_codex_Prompts` 형식)
 - **`Doc/designs/`** — 5개 카테고리별 아키텍처 설계 문서 (영상 파이프라인·음악 도구·미디어 다운로더·시스템 도구·알림 봇). 인덱스: [`Doc/DESIGN_INDEX.md`](Doc/DESIGN_INDEX.md)
 - **`_ai_rules/` 폴더**에 신규 프로젝트 시작 시 참조할 공통 규칙·체크리스트 보관
+# Source-only public release
+
+This repository distributes source code only. Images, audio, video, and
+compiled executables are excluded. Supply your own files in the input,
+reference, assets, or static directories described by each subproject before
+running workflows that require them. A fresh clone contains no example media;
+some demonstrations and documented commands need local media to run.
+Run `python scripts/check_source_only.py` before committing.
