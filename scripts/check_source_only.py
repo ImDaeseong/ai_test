@@ -4,7 +4,11 @@ from pathlib import Path
 import subprocess
 import sys
 
-BLOCKED = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".mp3", ".wav", ".mp4", ".exe"}
+BLOCKED = {
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".svg",
+    ".mp3", ".wav", ".flac", ".mp4", ".lrc", ".srt",
+    ".exe", ".ncb", ".suo", ".aps",
+}
 ROOT = Path(__file__).resolve().parent.parent
 
 

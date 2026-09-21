@@ -160,9 +160,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\run_game.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="run_game.rc" />
   </ItemGroup>
   <ItemGroup>

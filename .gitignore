@@ -8,6 +8,14 @@
 *.wav
 *.mp4
 *.exe
+*.ico
+*.svg
+*.flac
+*.lrc
+*.srt
+*.ncb
+*.suo
+*.aps
 
 # Environment variables (API keys, secrets)
 .env

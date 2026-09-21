@@ -66,9 +66,6 @@ END
 // Icon
 //
 
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\run_game.ico"
 
 #endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
