@@ -36,7 +36,8 @@ class LicenseScopeTests(unittest.TestCase):
 
     def test_crlf_line_endings_do_not_change_the_license_text(self):
         license_file = self.root / LICENSE
-        license_file.write_bytes(license_file.read_bytes().replace(b"\n", b"\r\n"))
+        lf_bytes = license_file.read_bytes().replace(b"\r\n", b"\n")
+        license_file.write_bytes(lf_bytes.replace(b"\n", b"\r\n"))
         self.assertEqual(check(self.root, self.tracked), [])
 
     def test_unrelated_missing_readme_is_not_accepted_as_license_tampering(self):
