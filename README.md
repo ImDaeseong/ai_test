@@ -2,7 +2,7 @@
 
 **🤔 [쉬운 설명 보기](https://htmlpreview.github.io/?https://github.com/ImDaeseong/ai_test/blob/main/ELI5.html)** — 비개발자를 위한 한 페이지 요약
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-08-17 (간결화 — 프로젝트별 상세 내용은 각 프로젝트 `README.md`/`CLAUDE.md`로 이동)
+> 작성일: 2026-05-08 / 최종 수정: 2026-09-24 (공개 저장소를 소스 전용으로 정리하고 입력·출력 재유입 가드 추가)
 > 총 18개 소스 프로젝트 수록 (`Doc/` 폴더에 프로젝트별 AI 개발 프롬프트·설계 문서 통합 보관)
 > 설계 문서 인덱스: [`Doc/DESIGN_INDEX.md`](Doc/DESIGN_INDEX.md) — 5개 카테고리별 아키텍처·기술 스택·핵심 패턴 기록
 > 검증 현황·테스트 결과: [`PROJECT_STATUS.md`](PROJECT_STATUS.md)
