@@ -27,6 +27,7 @@ __pycache__/
 *.py[cod]
 *.pyd
 **/.pytest_tmp/
+.pytest_dependency_inventory/
 
 # Virtual environment
 .venv/
