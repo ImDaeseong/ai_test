@@ -85,11 +85,12 @@ copy weather_alarm\.env.example weather_alarm\.env
 - **`_ai_rules/` 폴더**에 신규 프로젝트 시작 시 참조할 공통 규칙·체크리스트 보관
 # Source-only public release
 
-This repository distributes source code only. Images, audio, video, and
-compiled executables are excluded. Supply your own files in the input,
-reference, assets, or static directories described by each subproject before
-running workflows that require them. A fresh clone contains no example media;
-some demonstrations and documented commands need local media to run.
+This repository distributes source code only. Images, audio, video, compiled
+executables, user-provided inputs, and generated outputs are excluded. Supply
+your own files in the input, reference, assets, or static directories described
+by each subproject before running workflows that require them. A fresh clone
+contains no example media; some demonstrations and documented commands need
+local media to run.
 Run `python scripts/check_source_only.py` before committing.
 
 ## License and third-party terms

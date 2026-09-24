@@ -78,4 +78,7 @@ Analysis_music/outputs/
 mp3_daw/inbox/
 mp3_daw/output/
 ai-webtoon/logs/
-ai-webtoon/output/*/panels/*/image.png
+ai-webtoon/input/*
+!ai-webtoon/input/.gitkeep
+ai-webtoon/output/*
+!ai-webtoon/output/.gitkeep
