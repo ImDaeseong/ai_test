@@ -204,6 +204,47 @@ def test_panel_resolution_rejects_traversal(tmp_path, monkeypatch):
     monkeypatch.setattr(web_app, "OUTPUT_DIR", tmp_path)
     assert web_app._panel_file("..", "panel_001_intro_wide") is None
     assert web_app._panel_file("song", "../secret") is None
+
+
+def test_get_song_detail_rejects_traversal(tmp_path, monkeypatch):
+    """2026-09-26 독립 리뷰 발견: get_song_detail에는 _panel_file과 같은 경계 검사가 전혀
+
+    없어서, song_name에 ".."을 넣으면 OUTPUT_DIR 밖 임의 디렉터리의 panel_*.md/
+    01_storyboard.md/00_style_reference.md 내용을 그대로 읽어 반환할 수 있었다."""
+    monkeypatch.setattr(web_app, "OUTPUT_DIR", tmp_path / "output")
+    web_app.OUTPUT_DIR.mkdir()
+    secret_dir = tmp_path / "evil_secret" / "panels"
+    secret_dir.mkdir(parents=True)
+    (secret_dir / "panel_001_intro_wide.md").write_text("secret content leaked", encoding="utf-8")
+
+    assert web_app.get_song_detail("../evil_secret") is None
+
+    with web_app.app.test_client() as client:
+        response = client.get("/api/song/..%5Cevil_secret")
+        assert response.status_code == 404
+        assert b"secret content leaked" not in response.data
+
+
+def test_api_panel_done_rejects_traversal_write(tmp_path, monkeypatch):
+    """2026-09-26 독립 리뷰 발견: api_panel_done은 song_name/panel_key를 검증하지 않고
+
+    그대로 write_text에 넘겨서, ".."을 넣으면 OUTPUT_DIR 밖 임의 경로에 파일을 쓸 수
+    있었다(임의 파일 쓰기)."""
+    monkeypatch.setattr(web_app, "OUTPUT_DIR", tmp_path / "output")
+    web_app.OUTPUT_DIR.mkdir()
+    escape_target = tmp_path / "evil_secret" / "panels"
+    escape_target.mkdir(parents=True)
+
+    with web_app.app.test_client() as client:
+        response = client.post(
+            "/api/song/..%5Cevil_secret/panel/pwned/done",
+            json={"done": True},
+        )
+        assert response.status_code == 404
+
+    assert not (escape_target / "pwned.status.json").exists()
+
+
 def test_prompt_parser_accepts_production_heading_and_unicode_dash():
     content = "## GPT Image (gpt-image-2) — 1792x1024\r\n\r\n```\r\npaint this panel\r\n```\r\n"
     assert web_app._gpt_image_prompt(content) == "paint this panel"

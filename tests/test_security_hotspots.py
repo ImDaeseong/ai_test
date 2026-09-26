@@ -39,6 +39,14 @@ class SecurityHotspotScannerTests(unittest.TestCase):
         findings = self._scan("client.py", 'BASE_URL = "http://api.example.org.kr/v1"\n')
         self.assertTrue(any("CWE-319" in f for f in findings))
 
+    def test_detects_cleartext_http_in_fstring_interpolation(self) -> None:
+        """2026-09-26 독립 리뷰 발견: 도메인 문자 클래스에 '{'가 빠져서, f-string으로
+
+        보간된 URL(f"http://{host}/api")은 http:// 뒤 첫 글자가 '{'라 매칭에서
+        빠져나갔다 — 하드코딩된 리터럴 도메인만 잡고 동적 URL은 놓쳤다."""
+        findings = self._scan("client.py", 'url = f"http://{host}/api"\n')
+        self.assertTrue(any("CWE-319" in f for f in findings))
+
     def test_example_domain_not_flagged(self) -> None:
         # Regression: RFC 2606 reserved domains are the standard test/doc
         # fixture -- found live flagging Pexels/mp4_tag/security_scanning

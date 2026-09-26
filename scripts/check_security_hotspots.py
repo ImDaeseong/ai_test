@@ -84,7 +84,7 @@ RULES = [
         "(RFC 2606 reserved for docs and tests) and www.w3.org (XML namespace URI, not a fetch) "
         "are excluded from this rule.",
         r"['\"]http://(?!localhost|127\.0\.0\.1|0\.0\.0\.0|example\.(?:com|org|net)|www\.w3\.org)"
-        r"[A-Za-z0-9.-]+",
+        r"[A-Za-z0-9.{}_-]+",
     ),
     Rule(
         "CWE-942", "CORS wide open",

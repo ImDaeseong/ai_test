@@ -62,9 +62,15 @@ def _gpt_image_prompt(content: str) -> str:
     return prompt
 
 
+def _is_safe_path_component(name: str) -> bool:
+    """Reject a path-traversal attempt disguised as a single URL path segment
+    (e.g. "..", "../secret", or a backslash-separated escape on Windows)."""
+    return name != "" and Path(name).name == name
+
+
 def _panel_file(song_name: str, panel_key: str) -> Path | None:
     """Resolve an existing panel without allowing path traversal."""
-    if Path(song_name).name != song_name or Path(panel_key).name != panel_key:
+    if not _is_safe_path_component(song_name) or not _is_safe_path_component(panel_key):
         return None
     panel = OUTPUT_DIR / song_name / "panels" / f"{panel_key}.md"
     return panel if panel.is_file() and panel.name.startswith("panel_") else None
@@ -99,6 +105,8 @@ def list_songs() -> list[dict]:
 
 
 def get_song_detail(song_name: str) -> dict | None:
+    if not _is_safe_path_component(song_name):
+        return None
     song_dir = OUTPUT_DIR / song_name
     if not song_dir.exists():
         return None
@@ -155,6 +163,8 @@ def api_song(song_name: str):
 
 @app.route("/api/song/<song_name>/panel/<panel_key>/done", methods=["POST"])
 def api_panel_done(song_name: str, panel_key: str):
+    if not _is_safe_path_component(song_name) or not _is_safe_path_component(panel_key):
+        return jsonify({"error": "not found"}), 404
     panels_dir = OUTPUT_DIR / song_name / "panels"
     if not panels_dir.exists():
         return jsonify({"error": "not found"}), 404
