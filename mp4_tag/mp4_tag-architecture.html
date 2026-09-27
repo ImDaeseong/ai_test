@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mp4_tag 아키텍처</title><style>
+:root{--ink:#172033;--muted:#61708a;--paper:#f6f8fc;--card:#fff;--line:#dce3ef;
+--blue:#2764db;--cyan:#0585a7;--green:#16845b;--orange:#bd6414;--red:#ba3b4b;--purple:#7357c7}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;line-height:1.65}
+main{max-width:1120px;margin:auto;padding:42px 22px 80px}.eyebrow{color:var(--blue);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:clamp(2rem,5vw,3.8rem);line-height:1.12;margin:.25rem 0 1rem}h2{margin:2.4rem 0 1rem;font-size:1.5rem}h3{margin:.1rem 0 .45rem;font-size:1.05rem}
+.lead{max-width:850px;color:var(--muted);font-size:1.08rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.card,.flow-step,.metric,.notice{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 24px #1720330b}
+.card{border-top:4px solid var(--accent,var(--blue))}.flow{display:grid;gap:12px}.flow-step{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}.n{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;font-weight:800}
+code{background:#edf2fa;border-radius:5px;padding:.12rem .35rem;color:#174f9d}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:#e8eef9;color:#315079;border-radius:999px;padding:5px 10px;font-size:.82rem}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:block;overflow-x:auto}th,td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eaf0fa;white-space:nowrap}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.metric strong{display:block;font-size:1.8rem;color:var(--blue)}.muted{color:var(--muted)}.hold{border-left:5px solid var(--orange);background:#fff9ee}.danger{border-left:5px solid var(--red);background:#fff5f6}
+.links a{color:var(--blue);font-weight:700;text-decoration:none;margin-right:14px}footer{margin-top:42px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.86rem}
+@media(max-width:640px){main{padding:28px 16px 55px}.flow-step{grid-template-columns:42px 1fr}th,td{min-width:160px}}
+</style></head><body><main>
+<div class="eyebrow">Subproject architecture</div><h1>mp4_tag 아키텍처</h1><p class="lead">Streamlit UI + yt-dlp + Playwright 기반 웹 미디어 다운로드 도구. YouTube 등 지원 사이트는 yt-dlp 직접 다운로드, 그 외 사이트는 Playwright 브라우저 분석으로 미디어 URL 추출.</p>
+<h2>대표 실행 흐름</h2><section class="flow"><div class="flow-step"><span class="n">1</span><div><h3>app.py / run_app.py # Streamlit UI 진입점</h3></div></div><div class="flow-step"><span class="n">2</span><div><h3>main.py # CLI 진입점</h3></div></div><div class="flow-step"><span class="n">3</span><div><h3>downloader_core.py # yt-dlp + Playwright 다운로드 코어</h3></div></div><div class="flow-step"><span class="n">4</span><div><h3>job_manager.py # 다운로드 작업 큐 관리</h3></div></div><div class="flow-step"><span class="n">5</span><div><h3>server_limits.py # 동시 요청 제한</h3></div></div><div class="flow-step"><span class="n">6</span><div><h3>build_exe.py # PyInstaller 빌드 스크립트</h3></div></div><div class="flow-step"><span class="n">7</span><div><h3>tests/ # pytest 테스트 (50개)</h3></div></div></section>
+<h2>구현 경계와 주요 진입점</h2><section class="card"><div class="chips"><span class="chip"><code>tests/</code></span><span class="chip"><code>app.py</code></span><span class="chip"><code>build_exe.py</code></span><span class="chip"><code>CLAUDE.md</code></span><span class="chip"><code>downloader_core.py</code></span><span class="chip"><code>job_manager.py</code></span><span class="chip"><code>main.py</code></span><span class="chip"><code>mp4_tag-architecture.html</code></span><span class="chip"><code>README.md</code></span><span class="chip"><code>requirements.txt</code></span><span class="chip"><code>run.bat</code></span><span class="chip"><code>run_app.py</code></span><span class="chip"><code>run_cli.bat</code></span><span class="chip"><code>server_limits.py</code></span></div></section>
+<h2>보안·판단 경계</h2><section class="grid"></section>
+<h2>검증</h2><section class="notice"><ul><li>프로젝트 README/SPEC의 검증 절차를 실행합니다.</li></ul></section>
+<h2>사람 검토 HOLD</h2><section class="notice hold"><ul><li>외부 전송·비용·공개·주관적 판단은 사람 검토 후 진행합니다.</li></ul></section>
+<p class="links"><a href="README.md">README</a></p>
+<footer>근거: 저장소 <code>DESIGN.md</code>, 실제 루트 구조, <code>qa_manager</code> 등록 체크리스트 · 생성일 2026-09-27 · 자동 PASS는 공개·배포·법률·개인정보·주관적 품질 승인이 아닙니다.</footer>
+</main></body></html>
