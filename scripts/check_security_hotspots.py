@@ -83,7 +83,9 @@ RULES = [
         "switch to https://; localhost/127.0.0.1/0.0.0.0/example.com/example.org/example.net "
         "(RFC 2606 reserved for docs and tests) and www.w3.org (XML namespace URI, not a fetch) "
         "are excluded from this rule.",
-        r"['\"]http://(?!localhost|127\.0\.0\.1|0\.0\.0\.0|example\.(?:com|org|net)|www\.w3\.org)"
+        # Each excluded host must end at a host boundary, or "http://localhost.evil.com" and
+        # "http://www.w3.org.evil.com" would slip through as if they were the excluded host.
+        r"['\"]http://(?!(?:localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|example\.(?:com|org|net)|www\.w3\.org)(?![\w-]|\.\w))"
         r"[A-Za-z0-9.{}_-]+",
     ),
     Rule(
