@@ -85,7 +85,7 @@ RULES = [
         "are excluded from this rule.",
         # Each excluded host must end at a host boundary, or "http://localhost.evil.com" and
         # "http://www.w3.org.evil.com" would slip through as if they were the excluded host.
-        r"['\"]http://(?!(?:localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|example\.(?:com|org|net)|www\.w3\.org)(?![\w-]|\.\w|(?::[^/'\"\s@]*)?@))"
+        r"['\"]http://(?!(?:localhost|127(?:\.\d{1,3}){3}|0\.0\.0\.0|example\.(?:com|org|net)|www\.w3\.org)(?![\w-]|\.\w|\.?(?::[^/?#'\"\s@]*)?@))"
         r"[A-Za-z0-9.{}_-]+",
     ),
     Rule(

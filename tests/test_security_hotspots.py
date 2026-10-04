@@ -77,11 +77,12 @@ class SecurityHotspotScannerTests(unittest.TestCase):
             return self._scan("client.py", c)
 
         for host in ("www.w3.org.evil.com", "localhost.evil.com", "example.com.evil.com",
-                     "localhost@evil.com", "127.0.0.1:80@evil.com"):
+                     "localhost@evil.com", "127.0.0.1:80@evil.com", "localhost.@evil.com"):
             with self.subTest(host=host):
                 findings = scan(f'URL = "http://{host}/x"\n')
                 self.assertTrue(any("CWE-319" in f for f in findings))
         self.assertEqual(scan('URL = "http://127.0.0.2:8000/x"\n'), [])
+        self.assertEqual(scan('URL = "http://localhost:8000?u=x@y"\n'), [])
 
     def test_javascript_regexp_exec_not_flagged(self) -> None:
         # Regression: `.exec(` is RegExp.prototype.exec() in JS/TS, not the
