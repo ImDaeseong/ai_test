@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+# A path-limited commit exports GIT_INDEX_FILE to the pre-commit hook; these tests run `git add -A` in
+# scratch repos, which would otherwise write into the caller's real index ("invalid object" at commit).
+for _var in ("GIT_INDEX_FILE", "GIT_DIR", "GIT_WORK_TREE"):
+    os.environ.pop(_var, None)
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
