@@ -70,7 +70,8 @@ class SecurityHotspotScannerTests(unittest.TestCase):
             c = content
             return self._scan("client.py", c)
 
-        for host in ("www.w3.org.evil.com", "localhost.evil.com", "example.com.evil.com"):
+        for host in ("www.w3.org.evil.com", "localhost.evil.com", "example.com.evil.com",
+                     "localhost@evil.com", "127.0.0.1:80@evil.com"):
             with self.subTest(host=host):
                 findings = scan(f'URL = "http://{host}/x"\n')
                 self.assertTrue(any("CWE-319" in f for f in findings))
