@@ -4,11 +4,11 @@ import {MusicVideo} from './compositions/MusicVideo';
 import {SceneOnly} from './compositions/SceneOnly';
 import {DEFAULT_BPM, RenderManifest, RenderScene, defaultManifest} from './data/manifest';
 
-const calcMusicVideo: CalculateMetadataFunction<{manifest: RenderManifest}> = ({props}) => ({
-  fps: props.manifest.fps,
-  width: props.manifest.width,
-  height: props.manifest.height,
-  durationInFrames: props.manifest.duration_frames,
+const calcMusicVideo: CalculateMetadataFunction<RenderManifest> = ({props}) => ({
+  fps: props.fps,
+  width: props.width,
+  height: props.height,
+  durationInFrames: props.duration_frames,
 });
 
 const calcSceneOnly: CalculateMetadataFunction<{
@@ -34,7 +34,7 @@ export const Root: React.FC = () => {
         height={defaultManifest.height}
         durationInFrames={defaultManifest.duration_frames}
         calculateMetadata={calcMusicVideo}
-        defaultProps={{manifest: defaultManifest satisfies RenderManifest}}
+        defaultProps={defaultManifest satisfies RenderManifest}
       />
       <Composition
         id="SceneOnly"

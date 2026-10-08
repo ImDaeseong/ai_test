@@ -128,6 +128,8 @@ test('import_input prefers measured audio beats over prompt BPM', () => {
     );
     assert.equal(source.bpm_source, 'audio-analysis');
     assert.ok(Math.abs(source.bpm - 120) <= 1);
+    assert.match(run.stdout, /BPM: 120\.00 \(audio-analysis\)/);
+    assert.doesNotMatch(run.stdout, /BPM: 90(?:\.00)? \(prompt\)/);
     assert.equal(source.audio_files[0].file, 'song.wav');
     assert.ok(source.audio_analysis.beat_times_seconds.length >= 14);
     assert.equal(manifest.bpm_source, 'audio-analysis');

@@ -222,4 +222,7 @@ if (result.status !== 0) process.exit(result.status ?? 1);
 console.log(
   `\ninput/ import complete: ${input.scenes.length} scene(s), total ${totalDuration.toFixed(1)}s`,
 );
-if (projectBpm) console.log(`BPM: ${projectBpm}`);
+const effectiveBpm = audioAnalysis?.bpm ?? projectBpm;
+if (effectiveBpm) {
+  console.log(`BPM: ${effectiveBpm.toFixed(2)} (${audioAnalysis ? 'audio-analysis' : 'prompt'})`);
+}
