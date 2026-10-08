@@ -29,12 +29,13 @@ export const LYRIC_STYLE = {
   currentFontWeight: 700,
   currentColor: '#ffffff',
   currentTextShadow: '0 0 14px rgba(198, 232, 224, 0.22), 0 7px 24px rgba(0, 0, 0, 0.6)',
+  panelBackground: 'rgba(4, 10, 16, 0.82)',
 
   // 이전/다음 가사 줄
   contextFontSize: 'clamp(15px, 1.7vw, 26px)',
   contextFontWeight: 400,
-  prevColor: 'rgba(255, 255, 255, 0.36)',
-  nextColor: 'rgba(255, 255, 255, 0.28)',
+  prevColor: 'rgba(255, 255, 255, 0.72)',
+  nextColor: 'rgba(255, 255, 255, 0.64)',
   contextTextShadow: '0 2px 8px rgba(0,0,0,0.5)',
 
   // 3줄 컨테이너 위치 (화면 세로 기준 %)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 import {
   AbsoluteFill,
   Html5Audio,
@@ -14,6 +14,8 @@ import {
 import {useAudioData, visualizeAudio} from '@remotion/media-utils';
 import type {LyricLine} from './parsers';
 import {FONT_FAMILY, LYRIC_STYLE, TIMING_CONFIG, WAVEFORM_STYLE} from './config';
+import {validateLayoutRects} from './layoutValidation';
+import {validateLyricReadability} from './readabilityValidation';
 
 export type BackgroundKind = 'none' | 'image' | 'video';
 
@@ -68,8 +70,30 @@ const LyricDisplay: React.FC<{
   readonly current: LyricLine | undefined;
   readonly next: LyricLine | undefined;
   readonly vertical?: boolean;
-}> = ({prev, current, next, vertical = false}) => {
+  readonly canvasRef: React.RefObject<HTMLDivElement | null>;
+}> = ({prev, current, next, vertical = false, canvasRef}) => {
   const currentStyle = useCurrentLineStyle(current);
+  const previousRef = useRef<HTMLDivElement>(null);
+  const currentRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const lines = [
+      prev ? {role: 'previous', element: previousRef.current} : null,
+      current ? {role: 'current', element: currentRef.current} : null,
+      next ? {role: 'next', element: nextRef.current} : null,
+    ].filter((line): line is {role: string; element: HTMLDivElement} => line?.element != null);
+    const canvas = canvasRef.current?.getBoundingClientRect();
+    if (canvas === undefined) return;
+    const diagnostics = validateLayoutRects(
+      canvas,
+      lines.map(({role, element}) => ({role, ...element.getBoundingClientRect().toJSON()})),
+    );
+
+    if (diagnostics.length > 0) {
+      throw new Error(`Lyric layout validation failed: ${diagnostics.join('; ')}`);
+    }
+  }, [canvasRef, current, next, prev]);
 
   const sharedBase: React.CSSProperties = {
     width: 'min(1260px, 90vw)',
@@ -90,9 +114,14 @@ const LyricDisplay: React.FC<{
         flexDirection: 'column',
         alignItems: 'center',
         gap: LYRIC_STYLE.lineGap,
+        boxSizing: 'border-box',
+        padding: vertical ? '28px 36px' : '24px 48px',
+        borderRadius: 24,
+        background: LYRIC_STYLE.panelBackground,
       }}
     >
       <div
+        ref={previousRef}
         style={{
           ...sharedBase,
           fontSize: vertical ? 'clamp(18px, 3vw, 36px)' : LYRIC_STYLE.contextFontSize,
@@ -105,6 +134,7 @@ const LyricDisplay: React.FC<{
         {prev?.text ?? ''}
       </div>
       <div
+        ref={currentRef}
         style={{
           ...sharedBase,
           fontSize: vertical ? 'clamp(30px, 5.5vw, 60px)' : LYRIC_STYLE.currentFontSize,
@@ -118,6 +148,7 @@ const LyricDisplay: React.FC<{
         {current?.text ?? ''}
       </div>
       <div
+        ref={nextRef}
         style={{
           ...sharedBase,
           fontSize: vertical ? 'clamp(18px, 3vw, 36px)' : LYRIC_STYLE.contextFontSize,
@@ -498,14 +529,21 @@ export const LyricVideo: React.FC<LyricVideoProps> = ({
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const canvasRef = useRef<HTMLDivElement>(null);
   const timeSeconds = frame / fps;
   const activeIndex = findActiveIndex(lyrics, timeSeconds);
   const prevLine = activeIndex > 0 ? lyrics[activeIndex - 1] : undefined;
   const activeLine = activeIndex >= 0 ? lyrics[activeIndex] : undefined;
   const nextLine = activeIndex >= 0 ? lyrics[activeIndex + 1] : undefined;
+  const readabilityDiagnostics = validateLyricReadability(lyrics);
+
+  if (readabilityDiagnostics.length > 0) {
+    throw new Error(`Lyric readability validation failed: ${readabilityDiagnostics.join('; ')}`);
+  }
 
   return (
     <AbsoluteFill
+      ref={canvasRef}
       style={{
         fontFamily: FONT_FAMILY,
         overflow: 'hidden',
@@ -514,7 +552,13 @@ export const LyricVideo: React.FC<LyricVideoProps> = ({
       <Html5Audio src={staticFile(audioSrc)} />
       <AnimatedBackground backgroundKind={backgroundKind} backgroundSrc={backgroundSrc} />
       <MusicWaveform audioSrc={audioSrc} vertical={vertical} />
-      <LyricDisplay prev={prevLine} current={activeLine} next={nextLine} vertical={vertical} />
+      <LyricDisplay
+        prev={prevLine}
+        current={activeLine}
+        next={nextLine}
+        vertical={vertical}
+        canvasRef={canvasRef}
+      />
       <OutroFade />
       {title !== null && (
         <Sequence durationInFrames={Math.ceil(TIMING_CONFIG.introSeconds * fps)}>

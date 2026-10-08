@@ -20,7 +20,9 @@ remotion.config.ts  # Remotion 설정
 ```bash
 npm install
 npm run dev       # 미리보기 (Remotion Studio)
-npm run render    # 렌더링 출력
+npm run build     # 가로 영상 렌더링 출력
+npm run build:vertical
+npm run verify:render  # 가로·세로 대표 프레임 5장씩 렌더 및 레이아웃 검사
 ```
 
 ## 주의사항
@@ -28,5 +30,6 @@ npm run render    # 렌더링 출력
 - `src/LyricVideo.tsx:165`: 배경 영상은 반드시 `<Video loop>` (HTML5) 사용 — `<OffthreadVideo>`는 `loop` 미지원으로 영상 종료 후 검은 화면 발생
 - Remotion v4 API 준수: `<Html5Video>`, `<Html5Audio>`, `trimBefore`/`trimAfter` 사용 (`<Video deprecated>`, `startFrom`/`endAt` deprecated)
 - `useCurrentFrame()` + `interpolate()`로만 애니메이션 처리
-- Remotion 렌더링 자체의 통합 테스트는 없음 (HOLD) — 타입 체크로 기본 검증: `npx tsc --noEmit`
-- `src/parsers.ts`(가사 파싱 순수함수)는 16개 단위 테스트로 자동 검증됨: `npm test`
+- `npm run verify:render`는 실제 브라우저 레이아웃에서 가사 박스의 캔버스 이탈·상호 겹침을 검사하고 가로·세로 대표 프레임을 `out/verification/`에 남긴다. 입력 미디어나 Chrome이 없으면 HOLD다.
+- 대비와 읽기 속도는 자동 검사하며, 의미·번역·배경과의 정서적 적합성은 `RENDER_REVIEW.md`의 인간 검토 항목으로 확인한다.
+- `src/parsers.ts`와 레이아웃 판정 순수함수는 `npm test`로 자동 검증한다.

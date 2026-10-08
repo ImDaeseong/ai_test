@@ -4,16 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --import tsx/esm --test src/parsers.test.ts",
+    "test": "node --import tsx/esm --test src/*.test.ts",
     "predev": "node scripts/write-media-manifest.mjs",
     "dev": "remotion studio src/index.ts",
     "prebuild": "node scripts/write-media-manifest.mjs",
     "build": "remotion render src/index.ts lyric-video out/lyric-video.mp4 --codec h264 --crf 18 --pixel-format yuv420p --browser-executable \"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\"",
     "build:vertical": "remotion render src/index.ts lyric-video-vertical out/lyric-video-vertical.mp4 --codec h264 --crf 18 --pixel-format yuv420p --browser-executable \"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\"",
+    "preverify:render": "node scripts/write-media-manifest.mjs",
+    "verify:render": "node scripts/verify-render.mjs",
     "pretypecheck": "node scripts/write-media-manifest.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@remotion/bundler": "4.0.500",
     "@remotion/cli": "4.0.500",
     "@remotion/media-utils": "4.0.500",
     "@remotion/renderer": "4.0.500",
