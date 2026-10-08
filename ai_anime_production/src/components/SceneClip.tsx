@@ -14,9 +14,10 @@ type Props = {
   scene: RenderScene;
   fps: number;
   bpm: number;
+  beatTimesSeconds?: number[];
 };
 
-export const SceneClip: React.FC<Props> = ({scene, fps, bpm}) => {
+export const SceneClip: React.FC<Props> = ({scene, fps, bpm, beatTimesSeconds = []}) => {
   const frame = useCurrentFrame();
   const promptText = scene.selected_video_prompt || '';
   const visual = getVirtualShot({
@@ -29,6 +30,8 @@ export const SceneClip: React.FC<Props> = ({scene, fps, bpm}) => {
     durationInFrames: scene.duration_frames,
     fps,
     bpm,
+    beatTimesSeconds,
+    sceneStartSeconds: scene.start,
     prompt: promptText,
     movement: scene.movement,
     cameraDirection: scene.camera_direction,

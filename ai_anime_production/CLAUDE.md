@@ -16,9 +16,9 @@ const duration = 30;      // ❌ 특정 곡 길이 하드코딩
 const intensity = 'low';  // ❌ 특정 곡 강도 하드코딩
 ```
 
-**허용 — 프롬프트에서 동적 추출한 값 사용:**
+**허용 — 오디오 분석 또는 프롬프트에서 동적 추출한 값 사용:**
 ```ts
-const bpm = manifest.bpm ?? 120;          // ✅ 추출 실패 시 120은 안전 기본값
+const bpm = manifest.bpm ?? 120;          // ✅ 오디오가 없고 프롬프트 BPM도 없을 때만 안전 기본값
 const duration = scene.duration_seconds;   // ✅ 씬 프롬프트에서 추출
 const intensity = scene.intensity;         // ✅ 씬 프롬프트에서 추출
 ```
@@ -35,20 +35,22 @@ borderTop: '58px solid rgba(0,0,0,0.58)'    // ✅ 레터박스 높이 (디자�
 
 | 확인 항목 | 관련 파일 | 점검 내용 |
 |----------|----------|---------|
-| BPM 추출 | `scripts/import_input.mjs:extractBpm()` | 새 프롬프트 형식에서 BPM이 올바르게 추출되는가 |
+| BPM·박자 그리드 추출 | `scripts/audio_analysis.mjs`, `scripts/import_input.mjs` | 오디오가 있으면 측정 BPM·첫 박으로 만든 그리드가 프롬프트 BPM보다 우선하는가 |
+| 오디오 신뢰도·길이 | 같은 파일 | 비주기 입력을 거부하고 오디오와 씬 합계가 0.25초 이내로 일치하는가 |
 | 길이 추출 | `scripts/import_input.mjs:extractDuration()` | duration 패턴이 프롬프트와 일치하는가 |
 | intensity 추출 | `scripts/import_input.mjs:extractIntensity()` | 키워드가 프롬프트 표현과 일치하는가 |
 | camera 추출 | `scripts/import_input.mjs:extractCameraDirection()` | "Camera motion:" 패턴이 유지되는가 |
 | 키워드 매핑 | `src/lib/promptMotion.ts` | push-in/pullback/beat 등 키워드가 프롬프트 텍스트와 일치하는가 |
 | 하드코딩 여부 | 모든 파일 | 특정 BPM·초·강도 숫자가 코드에 직접 들어가 있지 않은가 |
-| 기본값 타당성 | `scripts/render_scenes.mjs`, `src/lib/promptMotion.ts` | `?? 120` 같은 fallback이 곡에 관계없이 안전한가 |
+| 기본값 타당성 | `scripts/render_scenes.mjs`, `src/lib/promptMotion.ts` | 오디오가 없을 때만 `?? 120` fallback을 사용하는가 |
 
 ### 프롬프트 → 코드 추출 체인
 
 모든 음악·씬 값은 아래 경로로만 코드에 전달된다. 이 흐름을 우회하면 안 된다.
 
 ```
-input/scene_NN_name.md
+input/song.wav (선택) + input/scene_NN_name.md
+  ├─ analyzeAudioFile()      → song_master.audio_analysis → manifest.beat_times_seconds
   │
   ├─ extractTitle()         → song_master.title
   ├─ extractBpm()           → song_master.bpm → manifest.bpm → getPromptMotion(bpm)

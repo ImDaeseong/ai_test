@@ -16,6 +16,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {ensureDir, paths, projectRoot, slugify, writeJson} from './lib.mjs';
+import {analyzeAudioFile} from './audio_analysis.mjs';
 import {
   SCENE_BASENAME_RE,
   DEFAULT_DURATION_SECONDS,
@@ -30,6 +31,7 @@ import {
 
 const INPUT_DIR = path.join(projectRoot, 'input');
 const IMAGE_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp']);
+const AUDIO_EXTS = new Set(['.mp3', '.wav', '.m4a', '.flac', '.ogg', '.aac']);
 
 function fail(message) {
   console.error(message);
@@ -62,18 +64,22 @@ function scanInput() {
   const scenePrompts = files.filter(
     (f) => f.ext === '.md' && SCENE_BASENAME_RE.test(f.base),
   );
-  const accepted = new Set([...characterImages, ...sceneImages, ...scenePrompts]);
+  const audioFiles = files.filter((f) => AUDIO_EXTS.has(f.ext));
+  const accepted = new Set([...characterImages, ...sceneImages, ...scenePrompts, ...audioFiles]);
   const unexpected = files.filter((f) => !accepted.has(f));
 
   if (unexpected.length > 0) {
     fail(
       'Unexpected input file(s):\n' +
         unexpected.map((f) => `  - ${f.name}`).join('\n') +
-        '\n\nAllowed: character_reference_prompt.png, scene_NN_name.png, scene_NN_name.md',
+        '\n\nAllowed: character_reference_prompt.png, scene_NN_name.png, scene_NN_name.md, and one audio file',
     );
   }
   if (characterImages.length > 1) {
     fail('Only one character_reference_prompt image is allowed.');
+  }
+  if (audioFiles.length > 1) {
+    fail('Only one input audio file is allowed.');
   }
   if (sceneImages.length === 0) {
     fail('At least one scene image is required: scene_NN_name.png');
@@ -102,11 +108,36 @@ function scanInput() {
   // Sort scenes by scene number
   scenePairs.sort((a, b) => sceneNum(a.image.base) - sceneNum(b.image.base));
 
-  return {character: characterImages[0] ?? null, scenes: scenePairs};
+  return {character: characterImages[0] ?? null, audio: audioFiles[0] ?? null, scenes: scenePairs};
 }
 
 // --- Main ---
 const input = scanInput();
+const plannedSceneDuration = input.scenes.reduce(
+  (total, pair) => total + extractDuration(fs.readFileSync(pair.prompt.fullPath, 'utf8')),
+  0,
+);
+
+let audioAnalysis = null;
+let importedAudioName = null;
+if (input.audio) {
+  ensureDir(path.join(paths.publicAssets, 'audio'));
+  importedAudioName = input.audio.name;
+  try {
+    audioAnalysis = analyzeAudioFile(input.audio.fullPath);
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+  }
+  if (Math.abs(audioAnalysis.duration_seconds - plannedSceneDuration) > 0.25) {
+    fail(
+      `Audio duration ${audioAnalysis.duration_seconds.toFixed(2)}s does not match scene duration ${plannedSceneDuration.toFixed(2)}s (tolerance 0.25s).`,
+    );
+  }
+  fs.copyFileSync(input.audio.fullPath, path.join(paths.publicAssets, 'audio', importedAudioName));
+  console.log(
+    `Audio analysis: ${audioAnalysis.bpm.toFixed(2)} BPM, first beat ${audioAnalysis.first_beat_seconds.toFixed(3)}s`,
+  );
+}
 
 ensureDir(path.join(paths.publicAssets, 'images'));
 const characterTarget = path.join(paths.publicAssets, 'images', 'character_reference.png');
@@ -161,9 +192,11 @@ const finalTitle = projectTitle || 'AI Anime Scene';
 
 const songMaster = {
   title: finalTitle,
-  duration_seconds: totalDuration,
-  bpm: projectBpm,
-  audio_files: [],
+  duration_seconds: audioAnalysis?.duration_seconds ?? totalDuration,
+  bpm: audioAnalysis?.bpm ?? projectBpm,
+  bpm_source: audioAnalysis ? 'audio-analysis' : projectBpm ? 'prompt' : null,
+  audio_analysis: audioAnalysis,
+  audio_files: importedAudioName ? [{file: importedAudioName}] : [],
   timed_lyrics: [],
   character_reference_enabled: Boolean(input.character),
   subtitle_enabled: false,

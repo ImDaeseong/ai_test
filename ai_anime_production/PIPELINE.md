@@ -27,7 +27,8 @@
 
 | 확인 항목 | 관련 위치 | 점검 내용 |
 |----------|----------|---------|
-| BPM 추출 | `import_input.mjs:extractBpm()` | 새 프롬프트 형식에서 BPM이 올바르게 추출되는가 |
+| BPM·박자 그리드 추출 | `audio_analysis.mjs`, `import_input.mjs` | 오디오가 있으면 측정 BPM·첫 박으로 만든 그리드가 프롬프트 BPM보다 우선하는가 |
+| 오디오 신뢰도·길이 | 같은 파일 | 정규화 주기 신뢰도 0.2 이상이며 오디오와 씬 합계 차이가 0.25초 이하인가 |
 | 길이 추출 | `import_input.mjs:extractDuration()` | duration 패턴이 프롬프트와 일치하는가 |
 | intensity 추출 | `import_input.mjs:extractIntensity()` | 키워드가 프롬프트 표현과 일치하는가 |
 | camera 추출 | `import_input.mjs:extractCameraDirection()` | "Camera motion:" 패턴이 유지되는가 |
@@ -40,7 +41,8 @@
 ```
 input/scene_NN_name.md
   ├─ extractTitle()          → song_master.title
-  ├─ extractBpm()            → manifest.bpm          → getPromptMotion(bpm)
+  ├─ analyzeAudioFile()      → manifest.bpm + beat_times_seconds → getPromptMotion()
+  ├─ extractBpm()            → 오디오가 없을 때 manifest.bpm fallback
   ├─ extractDuration()       → scene.duration_seconds → scene.duration_frames
   ├─ extractIntensity()      → scene.intensity        → intensityAmount() → amount
   ├─ extractCameraDirection()→ scene.camera_direction → pushIn/pullback/lateral
@@ -500,10 +502,14 @@ Root.tsx
 #### BPM 동기 계산
 
 ```typescript
-const beatHz = bpm / 60;
-const beatPulse = beat
-  ? Math.max(0, Math.sin((frame / fps) * Math.PI * 2 * beatHz))
-  : 0;
+const absoluteTime = sceneStartSeconds + frame / fps;
+const measuredBeatDistance = beatTimesSeconds.reduce(
+  (closest, beatTime) => Math.min(closest, Math.abs(beatTime - absoluteTime)),
+  Number.POSITIVE_INFINITY,
+);
+const beatPulse = beatTimesSeconds.length > 0
+  ? Math.max(0, 1 - measuredBeatDistance / Math.min(0.12, 15 / bpm))
+  : Math.max(0, Math.sin((frame / fps) * Math.PI * 2 * (bpm / 60)));
 const fadeDuration = Math.max(6, Math.round((60 / bpm) * fps));
 ```
 

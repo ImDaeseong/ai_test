@@ -20,6 +20,8 @@ type Options = {
   durationInFrames: number;
   fps: number;
   bpm: number;
+  beatTimesSeconds?: number[];
+  sceneStartSeconds?: number;
   prompt: string;
   movement: string;
   cameraDirection: string;
@@ -67,6 +69,8 @@ export const getPromptMotion = ({
   durationInFrames,
   fps,
   bpm,
+  beatTimesSeconds = [],
+  sceneStartSeconds = 0,
   prompt,
   movement,
   cameraDirection,
@@ -108,7 +112,17 @@ export const getPromptMotion = ({
   const fadeDuration = Math.max(6, Math.round((60 / bpm) * fps));
 
   const jitter = handheld ? Math.sin(frame * 1.7) * 2.2 * amount : 0;
-  const rawBeatPulse = beat ? Math.max(0, Math.sin((frame / fps) * Math.PI * 2 * beatHz)) : 0;
+  const absoluteTime = sceneStartSeconds + frame / fps;
+  const measuredBeatDistance = beatTimesSeconds.reduce(
+    (closest, beatTime) => Math.min(closest, Math.abs(beatTime - absoluteTime)),
+    Number.POSITIVE_INFINITY,
+  );
+  const measuredBeatPulse = Math.max(0, 1 - measuredBeatDistance / Math.min(0.12, 15 / bpm));
+  const rawBeatPulse = beat
+    ? beatTimesSeconds.length > 0
+      ? measuredBeatPulse
+      : Math.max(0, Math.sin((frame / fps) * Math.PI * 2 * beatHz))
+    : 0;
   const beatPulse = rawBeatPulse * rawBeatPulse * beatStrength;
   const fadeIn = interpolate(frame, [0, Math.min(fadeDuration, endFrame)], [0, 1], {
     extrapolateLeft: 'clamp',

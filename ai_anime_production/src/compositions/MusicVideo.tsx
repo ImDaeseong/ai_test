@@ -19,7 +19,12 @@ export const MusicVideo: React.FC<Props> = ({manifest}) => {
           from={scene.start_frame}
           durationInFrames={scene.duration_frames}
         >
-          <SceneClip scene={scene} fps={manifest.fps} bpm={manifest.bpm ?? DEFAULT_BPM} />
+          <SceneClip
+            scene={scene}
+            fps={manifest.fps}
+            bpm={manifest.bpm ?? DEFAULT_BPM}
+            beatTimesSeconds={manifest.beat_times_seconds}
+          />
         </Sequence>
       ))}
 

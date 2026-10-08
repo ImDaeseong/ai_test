@@ -39,6 +39,7 @@ if (renderableScenes.length === 0) {
 
 const fps = manifest.fps ?? 30;
 const bpm = manifest.bpm ?? 120; // 120 = safe neutral default when prompt has no BPM
+const beatTimesSeconds = manifest.beat_times_seconds ?? [];
 const failed = [];
 
 console.log('Resolution: 1920x1080 (16:9 HD)');
@@ -52,7 +53,7 @@ for (const scene of renderableScenes) {
 
   fs.writeFileSync(
     propsFile,
-    JSON.stringify({scene, fps, bpm}, null, 2),
+    JSON.stringify({scene, fps, bpm, beatTimesSeconds}, null, 2),
     'utf8',
   );
 

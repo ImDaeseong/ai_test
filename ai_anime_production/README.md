@@ -9,6 +9,7 @@
 ```text
 input/
   character_reference_prompt.png  # 선택: 캐릭터 메인 참고 이미지 (1개)
+  song.wav                         # 선택: 실제 박자 분석용 오디오 (1개)
   scene_01_intro.png              # 씬 이미지
   scene_01_intro.md               # 영상 생성 프롬프트
   scene_02_verse.png              # 추가 씬 (선택)
@@ -79,10 +80,12 @@ output/clips/
 | 항목 | 추출 방법 | 기본값 |
 | --- | --- | --- |
 | 프로젝트 제목 | 프롬프트 첫 번째 `# 제목` 줄 | `AI Anime Scene` |
-| BPM | `174 BPM` 같은 패턴 | `null` |
+| BPM·박자 그리드 | 오디오가 있으면 파형에서 BPM·첫 박을 측정해 고정 템포 그리드 추정, 없으면 `174 BPM` 같은 프롬프트 패턴 | `null` |
 | 씬 길이 | `duration_seconds: 30` 같은 패턴 | 30초 |
 | 카메라 방향 | `Camera motion: ...` | 빈 문자열 |
 | 강도 | `intensity low` 같은 패턴 | 빈 문자열 |
+
+오디오가 있으면 `ffmpeg`로 mono PCM을 읽어 BPM과 첫 박을 측정하고 고정 템포 박자 그리드를 추정합니다. 정규화된 주기 신뢰도가 0.2 미만이거나 오디오 길이와 씬 길이 합계가 0.25초보다 다르면 import를 중단합니다. 분석 실패 시 프롬프트 BPM으로 조용히 대체하지 않으며, 오디오가 없을 때만 기존 프롬프트 BPM 경로를 사용합니다. 변속 곡의 time-varying tempo map과 마디의 첫 박 판별은 지원하지 않습니다.
 
 
 ## 개선 이력 (2026-06-02)

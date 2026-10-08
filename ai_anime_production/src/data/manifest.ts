@@ -39,6 +39,9 @@ export type RenderManifest = {
   duration_seconds: number;
   duration_frames: number;
   bpm: number | null;
+  bpm_source?: 'audio-analysis' | 'prompt' | null;
+  beat_times_seconds: number[];
+  first_beat_seconds?: number | null;
   audio: string | null;
   subtitles: string | null;
   subtitle_note?: string;
@@ -55,6 +58,9 @@ export const defaultManifest: RenderManifest = {
   duration_seconds: 30,
   duration_frames: 900,
   bpm: null,
+  bpm_source: null,
+  beat_times_seconds: [],
+  first_beat_seconds: null,
   audio: null,
   subtitles: null,
   character_image: null,

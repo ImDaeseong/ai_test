@@ -15,6 +15,7 @@ const calcSceneOnly: CalculateMetadataFunction<{
   scene: RenderScene;
   fps: number;
   bpm: number;
+  beatTimesSeconds?: number[];
 }> = ({props}) => ({
   fps: props.fps,
   width: 1920,
@@ -47,6 +48,7 @@ export const Root: React.FC = () => {
           scene: defaultManifest.scenes[0],
           fps: defaultManifest.fps,
           bpm: DEFAULT_BPM,
+          beatTimesSeconds: [],
         }}
       />
     </>
