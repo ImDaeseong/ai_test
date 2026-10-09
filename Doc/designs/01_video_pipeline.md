@@ -106,6 +106,20 @@ WAVEFORM_STYLE = { numSpikes: 56, numParticles: 10, topPercent: 82.7 }
 - **Motion Canvas** 3.17.2 + TypeScript (선택, 고급 애니메이션)
 - **ASS** 자막 형식 (Karaoke 하이라이트)
 
+### 출시 게이트
+
+```text
+전체 파이프라인 렌더
+  → ffprobe 기술 검사(H.264/AAC·해상도·길이)
+  → 자산별 출처·권리·상업 이용 증빙
+  → 사람 창작 품질·저작권·최종 공개 승인
+```
+
+- `npm run audit:baseline`: Motion Canvas 전이 취약점의 신규 패키지·권고·심각도 증가 차단
+- `npm run validate:media`: 실제 최종 MP4 기술 계약 검사
+- `npm run validate:release`: `release-review.json`의 증빙과 사람 판정 검사
+- 자동 기술 PASS는 창작 품질이나 저작권 승인으로 승격되지 않는다.
+
 ### 4단계 파이프라인
 ```
 Phase 1: generateProductionPlan.js

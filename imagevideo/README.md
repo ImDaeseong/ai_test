@@ -151,6 +151,27 @@ output/logs/render.log     Phase 3 상세 로그
 output/logs/ffmpeg.log     Phase 4 상세 로그
 ```
 
+## 검증과 출시 승인
+
+```bash
+npm test                         # 파서·계획·MP4 계약·릴리스 판정 음성 테스트
+npm run audit:baseline           # 검토된 npm 취약점보다 증가·악화되면 실패
+npm run validate:media           # 실제 MP4를 ffprobe로 검사
+npm run validate:release-template # 예제가 PASS가 아닌 HOLD인지 확인
+```
+
+실제 공개 전에는 `release-review.example.json`을 `release-review.json`으로
+복사하고 자산별 출처 근거, 권리 근거, 상업 이용 가능 여부를 기록합니다.
+그다음 `npm run validate:release`를 실행합니다. 기술 검사, 창작 품질,
+저작권, 최종 공개가 모두 승인되기 전에는 종료 코드가 성공이 아니며,
+`release-review.json`은 개인 증빙이 들어갈 수 있어 Git에서 제외됩니다.
+
+`audit-baseline.json`은 취약점을 안전하다고 선언하지 않습니다. 현재 검토된
+Motion Canvas 전이 패키지와 권고 ID, 심각도 상한만 기록하며 신규 패키지·권고,
+critical 발생, high 6건 또는 moderate 3건 초과를 자동 차단합니다.
+
+구조와 실제 렌더 증거는 [UPDATE_2026-10-09_RELEASE_GATES.md](UPDATE_2026-10-09_RELEASE_GATES.md)에 정리되어 있습니다.
+
 
 ## 개선 이력 (2026-06-02)
 
@@ -160,4 +181,6 @@ output/logs/ffmpeg.log     Phase 4 상세 로그
 | src/pipeline/runLyricVideoPipeline.js:388 | Windows에서 cmd.exe /c npm run script -- extraArgs 형태로 인수 전달 시 npm 7 미만에서 누락되던 문제 수정 — args를 단일 문자열로 합쳐 전달하도록 변경 |
 
 ### 빌드 검증
-- node --check 주요 파일 전체 통과
+- `npm test`: 43개 통과
+- 실제 곡·가사·이미지 전체 파이프라인: 1920×1080, H.264/AAC, 195.967초 기술 검사 통과(2026-10-09)
+- 창작 품질·권리·최종 공개: `release-review.json` 사람 승인 전까지 HOLD

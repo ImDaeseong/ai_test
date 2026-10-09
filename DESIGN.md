@@ -1,6 +1,6 @@
 # ai_test Design
 
-Updated: 2026-09-27
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -41,7 +41,9 @@ This is a portfolio of independent utilities rather than one runtime. The major 
 project-specific input
   -> that subproject's parser/service/CLI
   -> project-local output directory
-  -> project-local tests or documented manual review
+  -> deterministic technical validation
+  -> provenance and rights evidence
+  -> human creative/copyright/publish decision
 ```
 
 There is no shared production data plane. Cross-project coupling is limited to repository policy, dependency inventory, and status documentation. Network credentials, generated media review, and destructive filesystem actions stay within the selected subproject's trust boundary.
@@ -50,10 +52,11 @@ There is no shared production data plane. Cross-project coupling is limited to r
 
 - Independent subproject ownership limits blast radius but permits some repeated setup.
 - Repository-level status aggregates evidence without turning the projects into one runtime.
+- Media release uses three separate states: automated technical PASS, evidence completeness, and explicit human approval. A pending or rejected human gate cannot be flattened into automated PASS.
 
 ## Verification and human review
 
-Use each subproject's documented command and the repository QA checklist. Generated media quality, external delivery, credentials, and destructive file operations remain human-review HOLD conditions.
+Use each subproject's documented command and the repository QA checklist. `imagevideo` implements this boundary as `validate:media` → `release-review.json` → explicit creative/copyright/final-publish decisions. Automated checks validate technical properties and evidence completeness; subjective quality and legal/publication judgment remain human-review HOLD conditions.
 
 ## Evidence basis and limits
 

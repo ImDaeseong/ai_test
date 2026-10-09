@@ -9,7 +9,7 @@
 | 프로젝트 | 실제 AI/API 경계 | 이번 검증 |
 |---|---|---|
 | `Analysis_music` | 규칙 기반 음악 분석과 이미지 프롬프트 산출; 생성형 API 호출 없음 | pytest 67개 통과 |
-| `imagevideo` | 사람이 준비한 이미지·가사·오디오를 소비; 생성형 API 호출 없음 | Node 테스트 33개 통과 |
+| `imagevideo` | 사람이 준비한 이미지·가사·오디오를 소비; 생성형 API 호출 없음 | Node 테스트 43개, npm 기준선 가드, 실제 195.967초 렌더 기술 검사 통과 |
 | `Pexels` | Gemini 장면 계획 + Pexels 검색 API | 구조화 JSON, 입력 신뢰 경계, 선택적 재시도 회귀 포함 pytest 27개 통과 |
 | `lyrics_tag` | 수동 가사 타이밍 도구; 생성형 API 호출 없음 | pytest 18개 통과 |
 | `lyricvideo` | Remotion 렌더러; 생성형 API 호출 없음 | Node 테스트 23개와 TypeScript 검사 통과 |
@@ -32,7 +32,7 @@
 ## 의존성 결정
 
 - `imagevideo`, `lyricvideo`, `ai_anime_production`은 선언된 호환 범위 안에서 lockfile을 갱신했다. 후자의 두 프로젝트는 `npm audit` 취약점 0이다.
-- `imagevideo`는 Motion Canvas 플러그인이 고정한 개발 도구 계보 때문에 `npm audit` high 6/moderate 3이 남으며 자동 수정 경로가 없다. 개발 서버는 루프백에서 신뢰 입력만 사용하고, Motion Canvas가 호환 Vite 계보를 올릴 때 재검증한다. Vite 8 강제 override는 현재 HOLD다.
+- `imagevideo`는 Motion Canvas 플러그인이 고정한 개발 도구 계보 때문에 `npm audit` high 6/moderate 3이 남으며 자동 수정 경로가 없다. `audit-baseline.json` 가드는 신규 패키지·권고·심각도 증가를 차단한다. 개발 서버는 루프백에서 신뢰 입력만 사용하고, Motion Canvas가 호환 Vite 계보를 올릴 때 재검증한다. Vite 8 강제 override는 현재 HOLD다.
 - TypeScript 7, Vite 8, Gin 1.12 등 메이저 또는 런타임 기준 변경은 별도 마이그레이션에서 테스트한다. 최신이라는 이유만으로 일괄 적용하지 않는다.
 - Python 요구사항의 비정확 핀과 전체 생태계 취약점 검수는 `DEPENDENCY_INVENTORY.md`의 출시 HOLD를 유지한다.
 
@@ -41,4 +41,5 @@
 1. 이 문서의 12개 명령을 `qa_manager` 체크리스트로 실행한다.
 2. manifest가 바뀌면 `DEPENDENCY_INVENTORY.md` 해시와 생태계 감사를 갱신한다.
 3. AI 모델을 바꾸면 합성 입력 1건으로 응답 형식·비용·안전 오류를 확인한다.
-4. 실제 음악·이미지의 창작 품질, 저작권, 최종 공개 여부는 사람 검토로 남긴다.
+4. 실제 MP4는 `validate:media`로 검사하고 자산 증빙은 `release-review.json`에 기록한다.
+5. 창작 품질, 저작권, 최종 공개 여부는 각각 사람 판정으로 남긴다.

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "project": "imagevideo",
+  "technicalValidation": "pending",
+  "assets": [
+    {
+      "label": "replace-with-local-audio-or-image-name",
+      "sourceEvidence": "replace-with-receipt-license-or-creation-record",
+      "rightsBasis": "pending",
+      "commercialUse": "pending",
+      "attributionRequired": false,
+      "attributionText": ""
+    }
+  ],
+  "humanReview": {
+    "creativeQuality": "pending",
+    "copyright": "pending",
+    "finalPublish": "pending",
+    "reviewer": "",
+    "reviewedAt": "",
+    "notes": ""
+  }
+}

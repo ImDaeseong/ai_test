@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test src/utils/timecode.test.js src/utils/lyricParsers.test.js src/utils/validation.test.js",
+    "test": "node --test src/utils/*.test.js scripts/*.test.js",
+    "audit:baseline": "node scripts/checkAuditBaseline.js",
     "plan": "node src/planner/generateProductionPlan.js",
     "lyric-video:plan": "node src/planner/generateProductionPlan.js",
     "subtitles": "node src/subtitles/generateAssSubtitles.js",
@@ -16,6 +17,8 @@
     "render:typography": "node src/render/renderTypographyVideo.js",
     "compose": "node src/ffmpeg/composeFinalVideo.js",
     "validate:media": "node src/validate/validateMediaOutput.js",
+    "validate:release": "node scripts/validateReleaseReview.js release-review.json",
+    "validate:release-template": "node scripts/validateReleaseReview.js --allow-hold release-review.example.json",
     "lyric-video": "node src/pipeline/runLyricVideoPipeline.js"
   },
   "engines": {

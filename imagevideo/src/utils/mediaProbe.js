@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import {spawn} from 'node:child_process';
 
-export async function validateFinalMediaOutput({mediaPath, planPath}) {
+/** Validate the final container against the production plan and delivery codecs. */
+export async function validateFinalMediaOutput({mediaPath, planPath, probeMedia = ffprobe}) {
   const stat = await fs.stat(mediaPath).catch(() => null);
   if (!stat || !stat.isFile()) {
     throw new Error(`Final media file is missing: ${mediaPath}`);
@@ -13,7 +14,7 @@ export async function validateFinalMediaOutput({mediaPath, planPath}) {
   const plan = JSON.parse(await fs.readFile(planPath, 'utf8'));
   const expectedResolution = parseResolution(plan?.project?.resolution);
   const expectedDuration = timestampToSeconds(plan?.project?.duration_total);
-  const probe = await ffprobe(mediaPath);
+  const probe = await probeMedia(mediaPath);
   const video = probe.streams.find((stream) => stream.codec_type === 'video');
   const audio = probe.streams.find((stream) => stream.codec_type === 'audio');
   const durationSeconds = Number(probe.format?.duration ?? video?.duration ?? 0);

@@ -37,7 +37,7 @@ The release guard normalizes CRLF to LF before hashing. Any added, removed, or c
 - `extensions/suno-lyric-downloader/package-lock.json` — `sha256:ada34cbb0ac03bc38260ae4f4f2a10786ea55a53a878924b4d39754710fadf80`
 - `extensions/suno-lyric-downloader/package.json` — `sha256:bff46ca3c07a720e52c16784e124a394a7ec38ebc76e8c4faffd3d82e2f2d357`
 - `imagevideo/package-lock.json` — `sha256:bfe7bb6925f0d5ab9c8496cb877d4ceec01d69d08f404c00414e1644623d62a5`
-- `imagevideo/package.json` — `sha256:21653f508a303ae77b5d92c41123971e5b3f0dc3ae63cbb8ca0c4dcb595dcc1e`
+- `imagevideo/package.json` — `sha256:3f9828f00314cb87b6c1c37a2d483681f5eb73c6187f4ea270861ee798973afc`
 - `lyrics_tag/requirements.txt` — `sha256:05b055cad237ae3212058d5a2f632537c5bc4a0a6b4d67927778fd11382dd4f8`
 - `lyricvideo/package-lock.json` — `sha256:f53ad212a0d183bb748641491e2e5492999acf4ea42f3061627edff80a4702b6`
 - `lyricvideo/package.json` — `sha256:a111f2307b644bdd83db80b5eb9a3cca8ce4a532cd45e19e304421526ad632d5`

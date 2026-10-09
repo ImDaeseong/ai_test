@@ -35,7 +35,9 @@ npm start
 
 ## 주의사항
 
-- 파이프라인 전체 통합 테스트는 없음 (HOLD) — 신규 기능 추가 시 `src/validate/` 검증 로직 우선 확인
-- `src/utils/`의 순수함수(lyricParsers/timecode/validation)는 33개 단위 테스트로 자동 검증됨(2026-06-28 작성 완료): `node src/utils/lyricParsers.test.js && node src/utils/timecode.test.js && node src/utils/validation.test.js`
+- `npm test`는 파서·타임코드·계획·최종 MP4 계약·공급망 기준선·릴리스 승인 경계 43개를 검증한다.
+- 실제 전체 파이프라인은 2026-10-09 로컬 곡으로 FFmpeg 렌더와 H.264/AAC·해상도·길이 검사를 통과했다. 실제 자산은 소스 저장소에 포함하지 않는다.
+- `npm run audit:baseline`은 검토된 취약점의 증가·악화를 차단하지만 현재 9건을 해소했다고 주장하지 않는다.
+- 창작 품질·저작권·최종 공개는 `release-review.json`의 사람 승인 전까지 HOLD다.
 - FFmpeg PATH 미등록 시 렌더 단계에서 실패 — 에러 메시지 `ffmpeg not found` 확인
 - `input/` 폴더 내 파일 형식이 지원 목록과 다르면 `validate/` 단계에서 차단됨

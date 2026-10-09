@@ -14,7 +14,7 @@
 | 20% | ✅ | 목적·보안 경계·검증 명령·HOLD 조건 정의됨 |
 | 40% | ✅ | 18개 프로젝트 구조 파악, 위험 요소 파악 완료 |
 | 60% | ✅ | 구현 완료, README·설계 문서 체계화 |
-| 80% | ✅ | CLAUDE.md 18개 완료, 테스트 완료 (ai-webtoon 71, imagevideo 33, lyricvideo 23 포함), 특수 환경 HOLD 분리 |
+| 80% | ✅ | CLAUDE.md 18개 완료, 테스트 완료 (ai-webtoon 71, imagevideo 43, lyricvideo 23 포함), 특수 환경 HOLD 분리 |
 | 90% | ✅ | ai_anime_production 30개·extensions 26개 테스트 PASS, run_game은 명시적 검증 범위 예외 |
 | 100% | ✅ | run_game MFC 빌드는 기존 검증 데이터로 인정하고 로컬 PASS/HOLD 판정에서 제외 — 나머지 17개 프로젝트 전량 완성 |
 
@@ -80,7 +80,7 @@
 | check_FileEncoding | 파일 인코딩 검사 | Go | ✅ | ✅ ok | ✅ 완성 |
 | extensions | Chrome 확장 (Suno 자동화) | JS | ✅ | ✅ 26 | ✅ 완성 (순수함수) |
 | findstring_foldfiles | 폴더 내 문자열 검색 | Python | ✅ | ✅ 5 | ✅ 완성 |
-| imagevideo | 이미지→영상 변환 | Node.js | ✅ | ✅ 33 | ✅ 완성 |
+| imagevideo | 이미지→영상 변환 | Node.js | ✅ | ✅ 43 + 실제 전체 렌더 | 🟡 기술 PASS, 권리·창작·공개 승인 HOLD |
 | lyrics_tag | 가사 태그 관리 | Python | ✅ | ✅ 18 | ✅ 완성 |
 | lyricvideo | 가사 영상 생성 | Node.js | ✅ | ✅ 23 | ✅ 완성 |
 | master_tag | 마스터 오디오 태그 | Python | ✅ | ✅ 18 | ✅ 완성 |
@@ -120,3 +120,4 @@
 | 2026-09-06 | 로컬 자동 검증 대상 17개 하위 프로젝트 PASS. weather_alarm import 시 로그 쓰기·stdout 교체 부작용을 시작 시 초기화로 변경하고 subprocess 회귀 검사 추가: 56 PASS. Python 나머지 10개·Go 2개·Node 4개 통과, anime/lyricvideo 타입 검사 및 확장 빌드 통과. 실제 API·전체 렌더·사람 검토는 기존 범위 유지. |
 | 2026-09-24 | 소스 전용 공개 정책에 맞춰 `ai-webtoon/input`의 사용자 입력 214개를 Git 추적에서 제외하고 로컬 파일은 보존. 생성 출력도 전체 비추적 대상으로 통일하고 `.gitkeep`만 허용. 재유입 방지 음성 테스트 3개, 루트 가드 20개(+subtest 3개), ai-webtoon 67개 및 보안·라이선스·의존성 가드 PASS. |
 | 2026-10-09 | 지정 12개 프로젝트의 AI/API 경계를 재분류. Pexels Gemini 구조화 출력·비신뢰 입력·선택적 재시도, ai-webtoon OpenAI 모델·품질 명시 설정을 추가했다. 12개 실제 프로젝트 명령과 qa_manager 23개 등록 검사가 모두 통과했고 OpenAI Images 합성 실호출 1회가 PASS했다. Gemini 실호출은 키 미설정 HOLD, imagevideo의 Motion Canvas 전이 npm 감사 항목은 호환 상위 버전 대기 HOLD다. |
+| 2026-10-09 | imagevideo에 npm 취약점 증가 가드, 최종 MP4 계약 테스트, 자산 권리·창작 품질·저작권·공개 승인 JSON 게이트를 추가했다. 실제 로컬 곡 전체 렌더는 1920×1080 H.264/AAC 195.967초로 기술 PASS; 9구간 표본의 단일 배경 반복과 권리·공개 결정은 사람 HOLD다. |

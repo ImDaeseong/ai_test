@@ -1,4 +1,5 @@
 node_modules/
+release-review.json
 output/*.mp4
 output/*.mov
 output/*.wav
