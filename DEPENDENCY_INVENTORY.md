@@ -1,7 +1,7 @@
 # Dependency inventory
 
-Baseline: `ai_test@f361f8c` plus the current uncommitted `ai_anime_production` manifest changes
-Audit date: 2026-10-08
+Baseline: reviewed `ai_test` working tree after compatible-range dependency refresh
+Audit date: 2026-10-09
 
 This inventory covers every Git-tracked dependency manifest and build manifest. It is release evidence, not a claim that every dependency license or vulnerability has been approved.
 
@@ -31,15 +31,15 @@ The release guard normalizes CRLF to LF before hashing. Any added, removed, or c
 - `ai-webtoon_capcut/remotion/package-lock.json` — `sha256:a58010d24258428e449f4044f7ec2b7f3a8794ac6e94735cb22859ae1ca5a1c7`
 - `ai-webtoon_capcut/remotion/package.json` — `sha256:6d4f0e948b410b04a5a0c6e67a9704253458f44b930fa9d3f22d199065969671`
 - `ai-webtoon_capcut/requirements-alignment.txt` — `sha256:4cb247ebbbdc7d70c7402e76a2003ba6153190c06e4794f0c2dff94ec12d1fc5`
-- `ai_anime_production/package-lock.json` — `sha256:3e9602262ede6c52688e1c66ba1321efeddb2536c800d7ae8507825941619cbf`
+- `ai_anime_production/package-lock.json` — `sha256:9d88814932f4a1153edffb442a0d65b81f6e7161ad977690e35a4cb663c69443`
 - `ai_anime_production/package.json` — `sha256:474122468242f14e4ee278177cbd5c67239bee97b9ce4750a916f40e8aad736d`
 - `check_FileEncoding/go.mod` — `sha256:47ef67dfba053fabda8b14dc0083f98288b4eb9d947dc8b99d8c6885c2e0b94e`
 - `extensions/suno-lyric-downloader/package-lock.json` — `sha256:ada34cbb0ac03bc38260ae4f4f2a10786ea55a53a878924b4d39754710fadf80`
 - `extensions/suno-lyric-downloader/package.json` — `sha256:bff46ca3c07a720e52c16784e124a394a7ec38ebc76e8c4faffd3d82e2f2d357`
-- `imagevideo/package-lock.json` — `sha256:4b22e870a061ce014275d9590c76a131b30a7674222c634e4388610d4e6c598c`
+- `imagevideo/package-lock.json` — `sha256:bfe7bb6925f0d5ab9c8496cb877d4ceec01d69d08f404c00414e1644623d62a5`
 - `imagevideo/package.json` — `sha256:21653f508a303ae77b5d92c41123971e5b3f0dc3ae63cbb8ca0c4dcb595dcc1e`
 - `lyrics_tag/requirements.txt` — `sha256:05b055cad237ae3212058d5a2f632537c5bc4a0a6b4d67927778fd11382dd4f8`
-- `lyricvideo/package-lock.json` — `sha256:34179fe2e253a7066a48ac38ca212e80c13ed23bc32a7c184b71b4a5f15a9a2e`
+- `lyricvideo/package-lock.json` — `sha256:f53ad212a0d183bb748641491e2e5492999acf4ea42f3061627edff80a4702b6`
 - `lyricvideo/package.json` — `sha256:a111f2307b644bdd83db80b5eb9a3cca8ce4a532cd45e19e304421526ad632d5`
 - `master_tag/requirements.txt` — `sha256:bfecd982bc85580cc8d449856addf660b4239dd6f11196c869a19952ca64911e`
 - `mp3_daw/go.mod` — `sha256:4b1f226fd923b39d5c3a90181b35247c771cbb6e6f2666f2b49325e7a17d3e08`

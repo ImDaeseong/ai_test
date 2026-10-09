@@ -14,8 +14,8 @@
 | 20% | ✅ | 목적·보안 경계·검증 명령·HOLD 조건 정의됨 |
 | 40% | ✅ | 18개 프로젝트 구조 파악, 위험 요소 파악 완료 |
 | 60% | ✅ | 구현 완료, README·설계 문서 체계화 |
-| 80% | ✅ | CLAUDE.md 18개 완료, 테스트 완료 (ai-webtoon 52, imagevideo 33, lyricvideo 16 포함), HOLD 3개 (extensions/run_game/ai_anime_production — 특수 환경 필요) |
-| 90% | ✅ | ai_anime_production 22개·extensions 26개 순수함수 단위 테스트 PASS, run_game은 명시적 검증 범위 예외 |
+| 80% | ✅ | CLAUDE.md 18개 완료, 테스트 완료 (ai-webtoon 71, imagevideo 33, lyricvideo 23 포함), 특수 환경 HOLD 분리 |
+| 90% | ✅ | ai_anime_production 30개·extensions 26개 테스트 PASS, run_game은 명시적 검증 범위 예외 |
 | 100% | ✅ | run_game MFC 빌드는 기존 검증 데이터로 인정하고 로컬 PASS/HOLD 판정에서 제외 — 나머지 17개 프로젝트 전량 완성 |
 
 ---
@@ -27,15 +27,15 @@
 | 프로젝트 | 언어 | 테스트 수 | 상태 |
 |---------|------|---------|------|
 | Analysis_music | Python | 67 | PASS |
-| weather_alarm | Python | 55 | PASS |
+| weather_alarm | Python | 56 | PASS |
 | security_scanning | Python | 53 | PASS |
 | mp4_tag | Python | 50 | PASS |
 | lyrics_tag | Python | 18 | PASS |
-| ai-webtoon_capcut | Python | 14 | PASS |
+| ai-webtoon_capcut | Python | 26 | PASS |
 | findstring_foldfiles | Python | 5 | PASS |
 | mp3_daw | Go | ok | PASS |
 | check_FileEncoding | Go | ok | PASS |
-| Pexels | Python | 23 | PASS |
+| Pexels | Python | 27 | PASS |
 | master_tag | Python | 18 | PASS |
 | windows-port-monitor | Python | 7 | PASS |
 
@@ -74,22 +74,22 @@
 | 프로젝트 | 목적 | 언어 | CLAUDE.md | 테스트 | 상태 |
 |---------|------|------|-----------|--------|------|
 | Analysis_music | 음악 분석 자동화 | Python | ✅ | ✅ 67 | ✅ 완성 |
-| ai-webtoon | 웹툰 생성 Flask 앱 | Python | ✅ | ✅ 52 | ✅ 완성 |
-| ai-webtoon_capcut | 웹툰 CapCut 타임라인 생성 | Python | ✅ | ✅ 14 | 🟡 부분완성 (CLI 완료, Remotion 렌더러·CapCut 패키징 미구현 HOLD — README.md 참고) |
-| ai_anime_production | 애니메이션 영상 제작 | Node.js | ✅ | ✅ 22 | ✅ 완성 (순수함수) |
+| ai-webtoon | 웹툰 생성 Flask 앱 | Python | ✅ | ✅ 71 | ✅ 완성 |
+| ai-webtoon_capcut | 웹툰 영상·편집 전달 묶음 생성 | Python + Remotion | ✅ | ✅ 26 | 🟡 자동 무결성 완료, 실제 곡·CapCut 사람 검토 HOLD |
+| ai_anime_production | 애니메이션 영상 제작 | Node.js | ✅ | ✅ 30 | ✅ 완성 (실제 Remotion 계약 포함) |
 | check_FileEncoding | 파일 인코딩 검사 | Go | ✅ | ✅ ok | ✅ 완성 |
 | extensions | Chrome 확장 (Suno 자동화) | JS | ✅ | ✅ 26 | ✅ 완성 (순수함수) |
 | findstring_foldfiles | 폴더 내 문자열 검색 | Python | ✅ | ✅ 5 | ✅ 완성 |
 | imagevideo | 이미지→영상 변환 | Node.js | ✅ | ✅ 33 | ✅ 완성 |
 | lyrics_tag | 가사 태그 관리 | Python | ✅ | ✅ 18 | ✅ 완성 |
-| lyricvideo | 가사 영상 생성 | Node.js | ✅ | ✅ 16 | ✅ 완성 |
+| lyricvideo | 가사 영상 생성 | Node.js | ✅ | ✅ 23 | ✅ 완성 |
 | master_tag | 마스터 오디오 태그 | Python | ✅ | ✅ 18 | ✅ 완성 |
 | mp3_daw | MP3 DAW 연동 | Go | ✅ | ✅ ok | ✅ 완성 |
 | mp4_tag | MP4 메타태그 관리 | Python | ✅ | ✅ 50 | ✅ 완성 |
-| Pexels | Pexels API 이미지 수집 | Python | ✅ | ✅ 23 | ✅ 완성 |
+| Pexels | Gemini 장면 계획 + Pexels 영상 수집 | Python | ✅ | ✅ 27 | ✅ 완성 |
 | run_game | 게임 런처 | C++/MFC | ✅ | 범위 제외 | 기존 빌드 검증 데이터 인정; 관련 파일 변경 시 재검토 |
 | security_scanning | 보안 취약점 스캔 | Python | ✅ | ✅ 53 | ✅ 완성 |
-| weather_alarm | 날씨 알림 봇 | Python | ✅ | ✅ 55 | ✅ 완성 |
+| weather_alarm | 날씨 알림 봇 | Python | ✅ | ✅ 56 | ✅ 완성 |
 | windows-port-monitor | 포트 모니터링 | Python | ✅ | ✅ 7 | ✅ 완성 |
 
 ---
@@ -99,7 +99,7 @@
 | 프로젝트 | 이슈 | 우선순위 |
 |---------|------|---------|
 | run_game | 로컬 MFC 빌드는 검증 범위 제외; C++ 소스·프로젝트 설정 변경 시 사람 검토 재개 | P3 예외 |
-| ai-webtoon_capcut | Remotion 렌더러·CapCut 패키징 미구현 (HOLD, 설계 범위 밖 대형 기능 — README.md 참고) | HOLD |
+| ai-webtoon_capcut | 실제 곡의 창작 품질·싱크와 CapCut 가져오기 사람 검토 | HOLD |
 
 ---
 
@@ -119,3 +119,4 @@
 | 2026-08-17 | ai-webtoon_capcut 문서 허위 완료 표시 정정. `HANDOFF.md`·`HERMES_REVIEW.md`·`TESTING_DONE_CRITERIA.md`가 Remotion 렌더(full 1080p PASS)·WhisperX/Demucs 정렬·CapCut handoff 자동 검증 스크립트·테스트 45개를 "완료"로 기록하고 있었으나, 코드 확인 결과 `remotion/`에 컴포지션 소스가 없고 CLI에 `render`/`align` 명령이 없고 검증 스크립트가 없고 테스트는 14개임을 확인(`git log`상 이 문서들은 2026-06-07 단일 import 커밋 이후 미변경 — 다른 환경 작업 기록이 코드 없이 문서만 넘어온 것으로 추정). 4개 문서와 `README.md`의 실행 예제(`render`/`align` 명령)를 코드 기준으로 정정, 원문은 삭제 대신 스테일 표시로 보존. |
 | 2026-09-06 | 로컬 자동 검증 대상 17개 하위 프로젝트 PASS. weather_alarm import 시 로그 쓰기·stdout 교체 부작용을 시작 시 초기화로 변경하고 subprocess 회귀 검사 추가: 56 PASS. Python 나머지 10개·Go 2개·Node 4개 통과, anime/lyricvideo 타입 검사 및 확장 빌드 통과. 실제 API·전체 렌더·사람 검토는 기존 범위 유지. |
 | 2026-09-24 | 소스 전용 공개 정책에 맞춰 `ai-webtoon/input`의 사용자 입력 214개를 Git 추적에서 제외하고 로컬 파일은 보존. 생성 출력도 전체 비추적 대상으로 통일하고 `.gitkeep`만 허용. 재유입 방지 음성 테스트 3개, 루트 가드 20개(+subtest 3개), ai-webtoon 67개 및 보안·라이선스·의존성 가드 PASS. |
+| 2026-10-09 | 지정 12개 프로젝트의 AI/API 경계를 재분류. Pexels Gemini 구조화 출력·비신뢰 입력·선택적 재시도, ai-webtoon OpenAI 모델·품질 명시 설정을 추가했다. 12개 실제 프로젝트 명령과 qa_manager 23개 등록 검사가 모두 통과했고 OpenAI Images 합성 실호출 1회가 PASS했다. Gemini 실호출은 키 미설정 HOLD, imagevideo의 Motion Canvas 전이 npm 감사 항목은 호환 상위 버전 대기 HOLD다. |

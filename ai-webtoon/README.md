@@ -6,6 +6,11 @@
 
 > **2026-06-07 기준 — 212곡 전체 검증 PASS(212/212, 아래 "검증 현황" 참고).**
 
+웹 UI의 내장 이미지 생성은 OpenAI Images API를 직접 호출합니다. 기본값은
+`gpt-image-2`, `1536x1024`, `medium`이며 `OPENAI_IMAGE_MODEL`과
+`OPENAI_IMAGE_QUALITY`(`low`/`medium`/`high`)로 명시적으로 바꿀 수 있습니다.
+유료 요청은 중복 과금을 피하기 위해 자동 재시도하지 않습니다.
+
 > **실제 MV 제작 방법 (이미지 생성 → CapCut 편집 → 업로드):**
 > [MV_제작_가이드.md](MV_제작_가이드.md) 참조
 

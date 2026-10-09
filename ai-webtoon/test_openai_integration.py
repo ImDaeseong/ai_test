@@ -36,8 +36,37 @@ def test_image_client_disables_retry_and_decodes_png(mock_openai):
         api_key="test-key", timeout=image_client.IMAGE_TIMEOUT_SECONDS, max_retries=0
     )
     sdk.images.generate.assert_called_once_with(
-        model="gpt-image-2", prompt="prompt", size="1536x1024", n=1
+        model="gpt-image-2",
+        prompt="prompt",
+        size="1536x1024",
+        quality="medium",
+        n=1,
     )
+
+
+@patch("image_client.OpenAI")
+def test_image_client_allows_explicit_model_and_low_cost_quality(mock_openai, monkeypatch):
+    sdk = MagicMock()
+    sdk.images.generate.return_value = _response(b"png")
+    mock_openai.return_value = sdk
+    monkeypatch.setenv("OPENAI_IMAGE_MODEL", "gpt-image-2-2026-04-21")
+    monkeypatch.setenv("OPENAI_IMAGE_QUALITY", "low")
+
+    image_client.ImageClient(api_key="test-key").generate("prompt")
+
+    sdk.images.generate.assert_called_once_with(
+        model="gpt-image-2-2026-04-21",
+        prompt="prompt",
+        size="1536x1024",
+        quality="low",
+        n=1,
+    )
+
+
+def test_image_client_rejects_unknown_quality_before_network(monkeypatch):
+    monkeypatch.setenv("OPENAI_IMAGE_QUALITY", "auto")
+    with pytest.raises(ValueError, match="low, medium, high"):
+        image_client.ImageClient(api_key="test-key")
 
 
 def test_missing_key_fails_before_network(monkeypatch):

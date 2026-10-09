@@ -9,7 +9,9 @@
 
 `ai-webtoon`은 Suno AI 곡을 입력받아 **웹툰/만화 스틸컷 방식 MV**에 사용할 이미지 프롬프트 파일을 자동 생성하는 프롬프트 생성기다.
 
-프롬프트 **실행**은 이 프로젝트가 담당하지 않는다. 실행은 상위 폴더의 `ai_multi_agent`가 담당한다.
+기본 기능은 프롬프트 파일 생성이다. 웹 UI의 패널 생성 버튼은 예외적으로
+OpenAI Images API를 직접 호출하며, 호출 횟수 가드와 비밀정보 비기록 경계를 거친다.
+외부 일괄 실행기는 생성된 프롬프트 파일 계약을 계속 사용할 수 있다.
 
 ### 입력
 - `input/[곡명].txt` — ai_anime와 동일한 형식의 Suno 곡 데이터
@@ -22,6 +24,12 @@
 ### ai_multi_agent 연결
 - 출력 구조는 `ai_multi_agent/docs/OUTPUT_PROMPT_STRUCTURES.md`의 계약을 따른다.
 - 미래에 `ai_multi_agent/web_app_webtoon.py`가 이 출력을 읽고 이미지 생성 API를 실행한다.
+
+### 직접 이미지 생성 설정
+
+- 기본 모델: `gpt-image-2` (`OPENAI_IMAGE_MODEL`로 명시적 버전 교체 가능)
+- 기본 품질: `medium` (`OPENAI_IMAGE_QUALITY`: `low`, `medium`, `high`)
+- 유료 호출은 자동 재시도하지 않으며 성공한 호출만 월별 가드에 기록한다.
 
 ---
 

@@ -4,7 +4,9 @@
 
 **설계 진입점:** [DESIGN.md](DESIGN.md) · 상세 설계 인덱스: [Doc/DESIGN_INDEX.md](Doc/DESIGN_INDEX.md)
 
-> 작성일: 2026-05-08 / 최종 수정: 2026-09-24 (공개 저장소를 소스 전용으로 정리하고 입력·출력 재유입 가드 추가)
+**AI/API 유지보수 기준:** [AI_API_VERSION_AUDIT.md](AI_API_VERSION_AUDIT.md) — 12개 음악·영상 프로젝트의 실제 AI 호출 여부, 모델 계약, 의존성 검증 범위
+
+> 작성일: 2026-05-08 / 최종 수정: 2026-10-09 (12개 음악·영상 프로젝트의 AI/API·의존성 검수 기준 갱신)
 > 총 18개 소스 프로젝트 수록 (`Doc/` 폴더에 프로젝트별 AI 개발 프롬프트·설계 문서 통합 보관)
 > 설계 문서 인덱스: [`Doc/DESIGN_INDEX.md`](Doc/DESIGN_INDEX.md) — 5개 카테고리별 아키텍처·기술 스택·핵심 패턴 기록
 > 검증 현황·테스트 결과: [`PROJECT_STATUS.md`](PROJECT_STATUS.md)
@@ -67,7 +69,8 @@ copy weather_alarm\.env.example weather_alarm\.env
 
 ### 주요 미완성/HOLD 항목
 
-- **ai-webtoon_capcut**: Remotion 렌더러·CapCut 패키징 미구현 (HOLD, 설계 범위 밖 대형 기능). Python CLI 계층(타임라인 생성)은 완성.
+- **imagevideo**: Motion Canvas의 현재 개발 도구 계보에서 자동 수정 불가능한 npm 감사 항목이 남아 있다. 로컬 신뢰 입력만 사용하며 호환 상위 버전 전환은 별도 HOLD다.
+- **ai-webtoon_capcut**: Remotion 렌더와 범용 편집기 전달 묶음은 구현·검증됐다. 실제 곡의 창작 품질과 CapCut 가져오기는 사람 검토 HOLD다.
 - **run_game**: 로컬 MFC 빌드는 정기 검증 범위에서 제외 — 2026-05-28 검증 데이터를 인정하되 C++ 소스·프로젝트 설정 변경 시 사람 검토 재개.
 
 검증 이력·테스트 통과 수·의존성 설치 기록의 전체 목록은 [`PROJECT_STATUS.md`](PROJECT_STATUS.md)를 참조하세요.

@@ -37,6 +37,13 @@ PEXELS_API_KEY=...
 
 FFmpeg must be installed and available in `PATH`.
 
+Gemini scene planning uses JSON structured output and treats lyrics/script text as
+untrusted source material rather than instructions. The default stable model is
+`gemini-2.5-flash`; set `GEMINI_MODEL` to test a newer stable model before changing
+the project baseline. Only timeouts, transport failures, HTTP 429, and HTTP 5xx
+responses are retried. Provider response bodies and API keys are not surfaced in
+saved project errors.
+
 ## Developer Tools
 
 ```bat
