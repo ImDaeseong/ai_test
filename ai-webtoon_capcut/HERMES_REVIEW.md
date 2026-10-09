@@ -2,6 +2,8 @@
 
 검수일: 2026-06-06
 
+> **2026-10-09 갱신**: Python CLI→Remotion 30초 1080p fixture 렌더는 PASS다. 실제 곡 입력과 사람 검수, CapCut handoff는 HOLD다.
+>
 > **2026-08-17 정정**: 아래 "남은 검증"의 Remotion/WhisperX/Demucs 항목과 "렌더·정렬 추가
 > 검증" 절은 현재 저장소 코드로 재현할 수 없다 — `remotion/`에 컴포지션 소스가 없고 CLI에
 > `render`/`align` 명령이 없다. `git log`상 이 문서는 2026-06-07 단일 import 커밋 이후
@@ -72,7 +74,8 @@
 
 ## 남은 검증
 
-- [ ] Remotion 실제 preview와 음원 종료 프레임 검수 (현재 코드에 렌더러 없음)
+- [x] Remotion fixture preview와 음원 종료 프레임 검수
+- [ ] 실제 곡 preview와 음원 종료 프레임 사람 검수
 - [ ] WhisperX 실제 곡 강제 정렬 (현재 코드에 `align` 명령 없음)
 - [ ] Demucs 짧은 샘플 보컬 분리 (현재 코드에 없음)
 - [ ] full 1080p 실제 곡 렌더

@@ -10,6 +10,9 @@ Subcommands:
     plan        Generate edit timeline for a song.
     build       Normalise + plan for a single song.
     build-all   Batch build all (or ready-only) songs under an output root.
+    render      Render a validated timeline through the local Remotion project.
+    handoff     Create a portable editor handoff bundle.
+    verify-handoff  Verify handoff membership and SHA-256 values.
 
 Exit codes:
     0  Success, no issues requiring review.
@@ -24,9 +27,14 @@ import logging
 import sys
 from pathlib import Path
 
+from webtoon_capcut.application.create_handoff import (
+    create_editor_handoff,
+    verify_editor_handoff,
+)
 from webtoon_capcut.application.inspect_song import inspect_song
 from webtoon_capcut.application.normalize_song import normalize_song
 from webtoon_capcut.application.plan_song import plan_song
+from webtoon_capcut.application.render_video import render_timeline
 from webtoon_capcut.application.batch_build import build_all
 from webtoon_capcut.discovery.song_discovery import discover_songs
 from webtoon_capcut.infrastructure.logging import get_logger
@@ -300,6 +308,50 @@ def _cmd_build_all(args: argparse.Namespace) -> int:
     return 2 if _has_review_issues(result) else 0
 
 
+def _cmd_render(args: argparse.Namespace) -> int:
+    """Render a validated timeline with explicitly supplied local audio."""
+    try:
+        result = render_timeline(
+            timeline_path=args.timeline,
+            audio_path=args.audio,
+            output_path=args.output,
+            remotion_dir=args.remotion_dir,
+            timeout_seconds=args.timeout,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    _output(result, use_json=args.json)
+    return 0
+
+
+def _cmd_handoff(args: argparse.Namespace) -> int:
+    """Create a generic editor handoff bundle without source paths."""
+    try:
+        result = create_editor_handoff(
+            video_path=args.video,
+            timeline_path=args.timeline,
+            output_dir=args.output,
+            subtitles_path=args.subtitles,
+        )
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    _output(result, use_json=args.json)
+    return 2
+
+
+def _cmd_verify_handoff(args: argparse.Namespace) -> int:
+    """Verify a handoff bundle without approving its creative quality."""
+    try:
+        result = verify_editor_handoff(args.bundle)
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    _output(result, use_json=args.json)
+    return 0
+
+
 # ---------------------------------------------------------------------------
 # Argument parser
 # ---------------------------------------------------------------------------
@@ -425,6 +477,50 @@ def _build_parser() -> argparse.ArgumentParser:
         metavar="LEVEL",
     )
 
+    # --- render ---
+    p_render = subparsers.add_parser(
+        "render",
+        help="Render a validated timeline with the local Remotion project.",
+    )
+    p_render.add_argument("--timeline", required=True, metavar="PATH")
+    p_render.add_argument("--audio", required=True, metavar="PATH")
+    p_render.add_argument("--output", required=True, metavar="MP4")
+    p_render.add_argument(
+        "--remotion-dir",
+        default=str(Path(__file__).resolve().parents[2] / "remotion"),
+        metavar="PATH",
+    )
+    p_render.add_argument("--timeout", type=int, default=900, metavar="SECONDS")
+    p_render.add_argument("--json", action="store_true")
+    p_render.add_argument(
+        "--log-level", default="INFO", choices=_LOG_LEVELS, metavar="LEVEL"
+    )
+
+    # --- handoff ---
+    p_handoff = subparsers.add_parser(
+        "handoff",
+        help="Create a portable generic-editor bundle from a completed render.",
+    )
+    p_handoff.add_argument("--video", required=True, metavar="MP4")
+    p_handoff.add_argument("--timeline", required=True, metavar="PATH")
+    p_handoff.add_argument("--output", required=True, metavar="DIRECTORY")
+    p_handoff.add_argument("--subtitles", default=None, metavar="SRT")
+    p_handoff.add_argument("--json", action="store_true")
+    p_handoff.add_argument(
+        "--log-level", default="INFO", choices=_LOG_LEVELS, metavar="LEVEL"
+    )
+
+    # --- verify-handoff ---
+    p_verify_handoff = subparsers.add_parser(
+        "verify-handoff",
+        help="Verify a generic-editor handoff bundle.",
+    )
+    p_verify_handoff.add_argument("--bundle", required=True, metavar="DIRECTORY")
+    p_verify_handoff.add_argument("--json", action="store_true")
+    p_verify_handoff.add_argument(
+        "--log-level", default="INFO", choices=_LOG_LEVELS, metavar="LEVEL"
+    )
+
     return parser
 
 
@@ -446,6 +542,9 @@ def main() -> None:
         "plan": _cmd_plan,
         "build": _cmd_build,
         "build-all": _cmd_build_all,
+        "render": _cmd_render,
+        "handoff": _cmd_handoff,
+        "verify-handoff": _cmd_verify_handoff,
     }
 
     handler = _HANDLERS.get(args.command)

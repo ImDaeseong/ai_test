@@ -1,13 +1,7 @@
 # HANDOFF - ai-webtoon_capcut
 
-> **2026-08-17 정정**: 이 문서의 이전 버전은 Remotion 렌더, WhisperX/Demucs 정렬, CapCut
-> handoff 자동 검증 스크립트, 테스트 45개 통과를 "완료"로 기록했으나, 실제 저장소 코드로
-> 확인한 결과 해당 기능은 존재하지 않는다 — `remotion/`에는 `package.json`뿐이고 렌더
-> 컴포지션 소스가 없고, CLI에 `render`/`align` 명령이 없고, `scripts/validate-capcut-handoff.ps1`
-> 파일이 없고, 테스트는 14개다(`git log`상 이 문서와 `remotion/`은 2026-06-07 단일 import
-> 커밋 이후 변경 이력이 없음 — 다른 환경의 작업 기록이 코드 없이 문서만 넘어온 것으로 보임).
-> 아래는 코드 기준으로 정정한 내용이다. 향후 이 문서를 실제 진행 상황의 근거로 쓰지 말고,
-> 항상 코드·테스트 실행 결과로 재확인한다.
+> **이력**: 2026-08-17에는 Remotion 소스가 없다는 정정이 맞았다. 2026-10-09에 Python CLI `render`와 범용 편집기 `handoff`를 구현해 30초 1080p fixture로 검증했다. `align`과 CapCut 실제 import 검수는 아직 없다.
+> 완료 판정은 항상 현재 코드와 검증 결과로 다시 확인한다.
 
 ## 현재 목표
 
@@ -35,15 +29,15 @@
 - Suno 밀집 섹션 태그 연쇄의 일반화된 경계 재분배
 - 기본 경로 `input/{노래명}` → `output/{노래명}/{run_id}`
 - 더블클릭 메뉴와 명령 전달을 지원하는 `webtoon-capcut.bat`
-- 단위 테스트 14개 (`tests/unit/`) 전량 PASS
+- Python 단위 테스트 26개, Remotion typecheck, Python CLI→Remotion 30초 1080p 렌더와 범용 편집기 handoff 생성·무결성 검증 PASS
 
 ## 미완료 (설계 범위 밖, 착수 전)
 
-- Remotion 렌더러: `remotion/`에 `package.json`만 있고 컴포지션 소스·CLI `render` 명령 없음
-- CapCut 패키징/handoff 자동화: 관련 코드·검증 스크립트 없음
+- 실제 곡 1080p 검수: CLI `render` 통합은 PASS지만 실제 음원·전체 패널·라이선스 미디어 입력이 없음
+- 범용 편집기 handoff: 생성·SHA-256·구성·경로 검증 완료. CapCut 전용 프로젝트 포맷과 실제 import 사람 검수는 없음
 - WhisperX/Demucs 자막 정렬: CLI `align` 명령 없음, `requirements-alignment.txt`는 있으나
   이를 사용하는 소스 코드 없음
-- 위 셋 모두 사람 Q3/Q4 검수 이전 단계가 아니라 **구현 자체가 시작 전**
+- WhisperX/Demucs 정렬과 CapCut 전용 자동화는 구현 시작 전이며, Remotion·범용 handoff는 실제 곡 사람 검수 단계
 
 ## 검증 명령
 
@@ -55,11 +49,10 @@
 
 ## 다음 단계
 
-착수 순서는 정해진 바 없음. Remotion 렌더러/CapCut 패키징을 시작하려면 먼저 스펙(입출력
-계약, 실패 처리, 검증 기준)을 잡고 `docs/`에 설계 문서를 추가한 뒤 진행한다.
+실제 음원·전체 패널·라이선스 미디어를 준비한 뒤 Python `render`로 1080p 렌더하고, 음악 싱크·크롭·자막·편집을 사람이 검수한다.
 
 ## 알려진 판정
 
 - 분석/계획 CLI: PASS
-- Remotion 렌더러·CapCut 패키징: 착수 전 (HOLD)
+- Python CLI→Remotion 1080p fixture·범용 handoff: PASS / 실제 곡 검수·CapCut import: HOLD
 - 공개/배포: HOLD

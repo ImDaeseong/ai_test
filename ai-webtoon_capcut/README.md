@@ -9,9 +9,9 @@
 
 - 설계: `IMPLEMENTATION READY`
 - 분석·계획 MVP: `IMPLEMENTED`
-- 전체 영상 자동화: `HOLD`
+- 전체 영상 자동화: `PARTIAL` — Python CLI→Remotion 1080p 합성과 범용 편집기 handoff는 검증, 실제 곡·CapCut 사람 검수는 HOLD
 - 실제 분석: 3곡
-- end-to-end 렌더 검증: 미실행
+- end-to-end 렌더 검증: Python CLI→Remotion 30초 fixture MP4 PASS (1920×1080, H.264/AAC, 30fps)
 - 최종 재사용성 판정: `HOLD`
 - 출시 기준: 서로 다른 실제 곡 최소 5개를 동일 코드와 명령으로 처리
 
@@ -167,9 +167,7 @@ webtoon-capcut.bat build-all --ready-only
 webtoon-capcut.bat discover
 ```
 
-`render`(Remotion)와 `align`(WhisperX/Demucs 자막 보정)은 아직 구현되지 않았다 — CLI에
-해당 명령이 없다. `scripts\install-renderer.ps1`·`scripts\install-alignment.ps1`은 그 기능을
-구현할 때 쓸 의존성 설치 스크립트를 미리 준비해 둔 것뿐이다.
+Remotion 합성기는 `remotion/src/`에 구현되어 있다. Python CLI의 `render`는 검증된 `timeline.json`과 로컬 미디어를 임시 staging하고 props로 전달한 뒤, MP4를 원자적으로 교체하고 staging을 삭제한다. `handoff`는 MP4·선택 SRT·경로 제거 타임라인·해시 manifest·한글 안내를 원자적 폴더로 만든다. `verify-handoff --bundle <폴더>`는 구성 파일의 누락·추가, 경로 탈출, SHA-256 불일치를 검사한다. 이는 CapCut 비공개 프로젝트 포맷이 아니며, `align`(WhisperX/Demucs), 실제 곡과 CapCut 사람 검수는 아직 완료되지 않았다.
 
 `--song-dir`, `--input-root`, `--output-root`로 다른 위치도 지정할 수 있다.
 원본 `input/`은 읽기 전용으로 취급하고 생성 결과는 `output/`에만 기록한다.

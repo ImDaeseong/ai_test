@@ -76,28 +76,27 @@ if (-not $AbsPathPass) { $OverallPass = $false }
 Write-CheckResult -Label '절대 경로 검사 (C:\\ / D:\\ / E:\\)' -Passed $AbsPathPass -Hits $AbsPathHits
 
 # ---------------------------------------------------------------------------
-# 3. 하드코딩 검사 — 특정 곡명 (fixture 폴더 제외)
+# 3. 하드코딩 검사 — 실행 가능한 Python 문자열만 AST로 검사
 # ---------------------------------------------------------------------------
-$HardcodedSongs = @('UPGRADE', '디저트', '떠나고')
-$HardcodePattern = ($HardcodedSongs | ForEach-Object { [regex]::Escape($_) }) -join '|'
-
-$HardcodeHits = @(
-    Get-ChildItem -Path $ProjectRoot -Recurse -File |
-    Where-Object {
-        # fixture 폴더, .git, __pycache__, .pytest_cache, output, workspace 제외
-        $RelPath = $_.FullName.Substring($ProjectRoot.Length)
-        $RelPath -notmatch '(\\fixtures?\\|\\\.git\\|\\__pycache__\\|\\\.pytest_cache\\|\\output\\|\\workspace\\)'
-    } |
-    Where-Object { $_.Extension -match '\.(py|json|yaml|yml|toml|bat|ps1|txt|md)$' } |
-    ForEach-Object {
-        $File = $_
-        Select-String -Path $File.FullName -Pattern $HardcodePattern |
-        ForEach-Object { "$($File.FullName):$($_.LineNumber): $($_.Line.Trim())" }
-    }
-)
-$HardcodePass = $HardcodeHits.Count -eq 0
+$PythonLauncher = (Get-Command py.exe -ErrorAction Stop).Source
+$GuardScript = Join-Path $PSScriptRoot 'check_song_hardcoding.py'
+$GuardRoot = Join-Path $ProjectRoot 'src'
+$GuardStartInfo = New-Object System.Diagnostics.ProcessStartInfo
+$GuardStartInfo.FileName = $PythonLauncher
+$GuardStartInfo.Arguments = '-3.12 "{0}" --root "{1}"' -f $GuardScript, $GuardRoot
+$GuardStartInfo.UseShellExecute = $false
+$GuardStartInfo.RedirectStandardOutput = $true
+$GuardStartInfo.RedirectStandardError = $true
+$GuardStartInfo.CreateNoWindow = $true
+$GuardProcess = [System.Diagnostics.Process]::Start($GuardStartInfo)
+$GuardStdout = $GuardProcess.StandardOutput.ReadToEnd()
+$GuardStderr = $GuardProcess.StandardError.ReadToEnd()
+$GuardProcess.WaitForExit()
+$HardcodeOutput = @(($GuardStdout + $GuardStderr).Trim() -split "\r?\n" | Where-Object { $_ })
+$HardcodePass = $GuardProcess.ExitCode -eq 0
+$HardcodeHits = if ($HardcodePass) { @() } else { @($HardcodeOutput | ForEach-Object { $_.ToString() }) }
 if (-not $HardcodePass) { $OverallPass = $false }
-Write-CheckResult -Label "하드코딩 곡명 검사 ($($HardcodedSongs -join ' / '))" -Passed $HardcodePass -Hits $HardcodeHits
+Write-CheckResult -Label '하드코딩 곡명 검사 (실행 Python AST)' -Passed $HardcodePass -Hits $HardcodeHits
 
 # ---------------------------------------------------------------------------
 # 최종 결과

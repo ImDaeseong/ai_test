@@ -57,15 +57,13 @@ Then 실패하지 않고 PROMPTS_ONLY로 분류한다
 
 ## DoD
 
-> **2026-08-17 정정**: Remotion/WhisperX/Demucs 3개 항목은 현재 코드에 해당 기능이 없어
-> [ ]로 되돌렸다. 자동 테스트 수는 2026-08-17 재확인 기준 14개다 (`AI_CODING_REVIEW.md`
-> 참고).
+> **상태 갱신**: 2026-10-09에 Python CLI→Remotion 30초 1080p fixture 렌더와 원자적 출력·staging 정리를 검증했다. WhisperX/Demucs와 실제 곡 렌더는 여전히 미검증이다.
 
-- [x] 자동 테스트 (2026-08-17 기준 14개)
+- [x] 자동 테스트 (2026-10-09 기준 Python 26개 + Remotion typecheck)
 - [x] 세 곡 타임라인 연속성 확인
 - [x] 214곡 discover 예외 없음
-- [x] 하드코딩·절대 경로·비밀값 검사
-- [ ] Remotion 실제 preview 렌더 (현재 코드에 렌더러 없음)
+- [x] AST 하드코딩·절대 경로·비밀값 검사와 변이 탐지
+- [x] Python CLI→Remotion 30초 fixture 렌더 (1920×1080, H.264/AAC, 30fps)
 - [ ] WhisperX 실제 곡 정렬 (현재 코드에 `align` 명령 없음)
 - [ ] Demucs 짧은 샘플 보컬 분리 (현재 코드에 없음)
 - [ ] full 1080p 실제 곡 렌더
@@ -76,6 +74,6 @@ Then 실패하지 않고 PROMPTS_ONLY로 분류한다
 
 현재 테스트 종료 판정: `HOLD`
 
-자동 checking은 완료됐지만 사람 testing과 렌더 검증이 남아 있다.
+합성 fixture와 범용 편집기 handoff 생성·변조 검출은 완료됐지만 실제 곡의 사람 검수와 CapCut import 검증이 남아 있다.
 
 최종 자동 검수 결과와 실제 3곡 수치는 `HERMES_REVIEW.md`를 기준으로 한다.

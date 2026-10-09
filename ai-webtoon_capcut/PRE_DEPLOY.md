@@ -14,7 +14,8 @@
 - [x] 자동 테스트 통과
 - [x] 세 곡 build 회귀 통과
 - [x] 214곡 discover 통과
-- [ ] Remotion 렌더 통과
+- [x] Python CLI→Remotion 30초 1080p fixture 렌더 통과
+- [ ] 실제 곡 Remotion 렌더와 사람 검수 통과
 - [ ] WhisperX/Demucs 통합 통과
 
 ## 운영

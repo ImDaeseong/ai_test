@@ -18,13 +18,12 @@
 - stderr JSON Lines 구조화 로그
 - Hermes 문서·하드코딩·비밀값·절대 경로 자동 검사
 
-## 아직 구현되지 않은 범위 (착수 전, HOLD)
+## 남은 구현·검수 범위 (HOLD)
 
-- Remotion 렌더러: `remotion/`에 의존성 매니페스트만 있고 컴포지션 소스·CLI `render` 명령 없음
+- 실제 곡 1080p 사람 검수: Python CLI→Remotion 30초 합성 fixture는 PASS지만 실제 음원·라이선스 미디어 입력이 없음
 - WhisperX/Demucs 자막 정렬: CLI `align` 명령 없음
-- CapCut 패키징: 관련 코드 없음
-- `scripts/install-renderer.ps1`, `install-alignment.ps1`는 위 기능을 실제로 구현하기 시작할 때
-  쓸 의존성 설치 스크립트로 미리 준비해 둔 것이며, 아직 이를 사용하는 구현은 없다
+- CapCut 전용 프로젝트 생성: 비공개 포맷에 의존하지 않으므로 미구현. 범용 편집기 handoff 생성·무결성 검증은 구현됨
+- `scripts/install-alignment.ps1`는 정렬 기능의 의존성 설치 준비만 제공한다
 
 ## 실행
 
@@ -70,5 +69,4 @@ python -m unittest discover -s tests -v
 .\scripts\validate-project.ps1
 ```
 
-Remotion 렌더러·WhisperX/Demucs 정렬·CapCut 패키징은 착수 전이므로 전체 프로젝트
-상태는 `HOLD`다. Python 분석/타임라인 생성 CLI는 PASS.
+Python CLI→Remotion 30초 1080p fixture 렌더, 원자적 출력·임시 미디어 정리, 경로 안전한 범용 편집기 handoff 생성과 전달 후 무결성 검증은 PASS다. 실제 곡 검수, WhisperX/Demucs 정렬, CapCut 실제 import는 HOLD다.

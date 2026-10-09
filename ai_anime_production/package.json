@@ -20,17 +20,17 @@
     "build": "npm run import:input && npm run typecheck && npm run render:scenes"
   },
   "dependencies": {
-    "@remotion/cli": "4.0.500",
-    "@remotion/captions": "4.0.500",
-    "@remotion/media-utils": "4.0.500",
+    "@remotion/captions": "4.0.534",
+    "@remotion/cli": "4.0.534",
+    "@remotion/media-utils": "4.0.534",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "remotion": "4.0.500"
+    "remotion": "4.0.534"
   },
   "devDependencies": {
+    "@types/node": "^22.15.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@types/node": "^22.15.0",
     "typescript": "^5.8.3"
   }
 }
