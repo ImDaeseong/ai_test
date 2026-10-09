@@ -1,11 +1,24 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "project": "imagevideo",
   "technicalValidation": "pending",
+  "media": {
+    "path": "output/lyric_video.mp4",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "qualityReport": {
+    "path": "output/quality-report.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "status": "pending",
+    "overrideReason": ""
+  },
   "assets": [
     {
       "label": "replace-with-local-audio-or-image-name",
-      "sourceEvidence": "replace-with-receipt-license-or-creation-record",
+      "path": "input/replace-with-local-asset",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "evidencePath": "evidence/replace-with-receipt-license-or-creation-record",
+      "evidenceSha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "rightsBasis": "pending",
       "commercialUse": "pending",
       "attributionRequired": false,

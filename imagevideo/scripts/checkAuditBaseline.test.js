@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {evaluateAudit} from './checkAuditBaseline.js';
+import {evaluateAudit, evaluateRuntimeAudit} from './checkAuditBaseline.js';
 
 const baseline = {
+  runtimeMustBeClean: true,
   maximumSeverityCounts: {critical: 0, high: 1, moderate: 0, low: 0},
   allowedPackages: ['vite'],
   allowedAdvisorySources: [123]
@@ -30,4 +31,11 @@ test('audit baseline detects a new advisory on an allowed package', () => {
 
 test('audit baseline detects severity growth', () => {
   assert.match(evaluateAudit(report({high: 2}), baseline).join('\n'), /high vulnerabilities increased/);
+});
+
+test('runtime audit must remain free of known vulnerabilities', () => {
+  const clean = {metadata: {vulnerabilities: {total: 0}}};
+  const vulnerable = {metadata: {vulnerabilities: {total: 1}}};
+  assert.deepEqual(evaluateRuntimeAudit(clean, baseline), []);
+  assert.match(evaluateRuntimeAudit(vulnerable, baseline).join('\n'), /Runtime dependencies contain 1/);
 });

@@ -157,6 +157,7 @@ output/logs/ffmpeg.log     Phase 4 상세 로그
 npm test                         # 파서·계획·MP4 계약·릴리스 판정 음성 테스트
 npm run audit:baseline           # 검토된 npm 취약점보다 증가·악화되면 실패
 npm run validate:media           # 실제 MP4를 ffprobe로 검사
+npm run analyze:quality          # 검은 화면·무음·장시간 정지 구간을 실제 MP4에서 측정
 npm run validate:release-template # 예제가 PASS가 아닌 HOLD인지 확인
 ```
 
@@ -166,9 +167,15 @@ npm run validate:release-template # 예제가 PASS가 아닌 HOLD인지 확인
 저작권, 최종 공개가 모두 승인되기 전에는 종료 코드가 성공이 아니며,
 `release-review.json`은 개인 증빙이 들어갈 수 있어 Git에서 제외됩니다.
 
-`audit-baseline.json`은 취약점을 안전하다고 선언하지 않습니다. 현재 검토된
-Motion Canvas 전이 패키지와 권고 ID, 심각도 상한만 기록하며 신규 패키지·권고,
-critical 발생, high 6건 또는 moderate 3건 초과를 자동 차단합니다.
+`audit-baseline.json`은 취약점을 안전하다고 선언하지 않습니다. 기본 FFmpeg 배포
+경로는 `npm audit --omit=dev` 취약점 0건을 강제합니다. Motion Canvas GUI 도구는
+개발 의존성으로 격리했으며, 호환 가능한 xmldom 0.9.12를 고정해 잔여 항목을
+high 5건·moderate 2건으로 줄였습니다. 신규 패키지·권고 또는 심각도 증가는 차단됩니다.
+
+`npm run analyze:quality`는 결과 MP4와 연결된 SHA-256, 검은 화면·무음·정지 비율을
+`output/quality-report.json`에 기록합니다. 현재 정책은 정지 비율 60% 초과를 HOLD로
+분류합니다. 실제 공개용 `release-review.json`은 최종 MP4, 품질 보고서, 모든 입력
+자산과 권리 증빙 파일의 SHA-256을 요구하므로 승인 뒤 파일이 바뀌면 검증에 실패합니다.
 
 구조와 실제 렌더 증거는 [UPDATE_2026-10-09_RELEASE_GATES.md](UPDATE_2026-10-09_RELEASE_GATES.md)에 정리되어 있습니다.
 
@@ -181,6 +188,6 @@ critical 발생, high 6건 또는 moderate 3건 초과를 자동 차단합니다
 | src/pipeline/runLyricVideoPipeline.js:388 | Windows에서 cmd.exe /c npm run script -- extraArgs 형태로 인수 전달 시 npm 7 미만에서 누락되던 문제 수정 — args를 단일 문자열로 합쳐 전달하도록 변경 |
 
 ### 빌드 검증
-- `npm test`: 43개 통과
+- `npm test`: 48개 통과
 - 실제 곡·가사·이미지 전체 파이프라인: 1920×1080, H.264/AAC, 195.967초 기술 검사 통과(2026-10-09)
 - 창작 품질·권리·최종 공개: `release-review.json` 사람 승인 전까지 HOLD

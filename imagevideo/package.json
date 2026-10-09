@@ -17,6 +17,7 @@
     "render:typography": "node src/render/renderTypographyVideo.js",
     "compose": "node src/ffmpeg/composeFinalVideo.js",
     "validate:media": "node src/validate/validateMediaOutput.js",
+    "analyze:quality": "node scripts/analyzeMediaQuality.js output/lyric_video.mp4 output/quality-report.json",
     "validate:release": "node scripts/validateReleaseReview.js release-review.json",
     "validate:release-template": "node scripts/validateReleaseReview.js --allow-hold release-review.example.json",
     "lyric-video": "node src/pipeline/runLyricVideoPipeline.js"
@@ -24,16 +25,17 @@
   "engines": {
     "node": ">=20"
   },
-  "dependencies": {
+  "devDependencies": {
     "@motion-canvas/2d": "^3.17.2",
     "@motion-canvas/core": "^3.17.2",
     "@motion-canvas/ffmpeg": "^3.17.2",
     "@motion-canvas/ui": "^3.17.2",
     "@motion-canvas/vite-plugin": "^3.17.2",
     "typescript": "^6.0.3",
-    "vite": "^5.4.21"
-  },
-  "devDependencies": {
+    "vite": "^5.4.21",
     "tsx": "^4.21.0"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "0.9.12"
   }
 }

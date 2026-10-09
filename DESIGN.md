@@ -56,7 +56,7 @@ There is no shared production data plane. Cross-project coupling is limited to r
 
 ## Verification and human review
 
-Use each subproject's documented command and the repository QA checklist. `imagevideo` implements this boundary as `validate:media` → `release-review.json` → explicit creative/copyright/final-publish decisions. Automated checks validate technical properties and evidence completeness; subjective quality and legal/publication judgment remain human-review HOLD conditions.
+Use each subproject's documented command and the repository QA checklist. `imagevideo` implements this boundary as runtime dependency audit → `validate:media` → `analyze:quality` → hash-bound `release-review.json` → explicit creative/copyright/final-publish decisions. Automated checks validate technical properties, objective black/silence/freeze signals, and evidence-file integrity; subjective quality and legal/publication judgment remain human-review HOLD conditions.
 
 ## Evidence basis and limits
 

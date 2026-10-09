@@ -32,3 +32,11 @@
 - 상업 이용 가능 여부와 필요한 저작자 표시
 - 가사 싱크, 장면 다양성, 감정 적합성, 최종 미학
 - 실제 게시 채널과 최종 공개 승인
+
+## 2026-10-09 후속 강화
+
+- Motion Canvas 전체를 개발 의존성으로 격리하고 기본 FFmpeg 배포 경로의 npm audit 0건을 강제했다.
+- 호환 범위 안의 `@xmldom/xmldom` 0.9.12 override로 감사 결과를 high 6/moderate 3에서 high 5/moderate 2로 줄였다.
+- `analyze:quality`가 검은 화면·무음·정지 비율과 최종 MP4 SHA-256을 기록한다.
+- 실제 렌더는 black 0%, silence 0%, freeze 72.0%로 자동 품질 HOLD다. 실패가 아니라 장면 다양성 검토를 요구하는 신호다.
+- 릴리스 승인은 MP4·품질 보고서·입력 자산·권리 증빙 파일의 SHA-256과 결속된다. 품질 HOLD를 승인하려면 사람이 override 사유를 기록해야 한다.

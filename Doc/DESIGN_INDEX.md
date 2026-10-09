@@ -11,7 +11,7 @@
 
 | 문서 | 대상 프로젝트 | 핵심 기술 |
 |------|-------------|---------|
-| [01_video_pipeline.md](designs/01_video_pipeline.md) | lyricvideo, imagevideo, ai_anime_production, Pexels, ai-webtoon, ai-webtoon_capcut | Remotion, FFmpeg, Motion Canvas |
+| [01_video_pipeline.md](designs/01_video_pipeline.md) | lyricvideo, imagevideo, ai_anime_production, Pexels, ai-webtoon, ai-webtoon_capcut | Remotion, FFmpeg, Motion Canvas, 품질·권리 해시 게이트 |
 | [02_music_tools.md](designs/02_music_tools.md) | Analysis_music, mp3_daw, master_tag, lyrics_tag | librosa, pedalboard, Flask |
 | [03_media_downloader.md](designs/03_media_downloader.md) | mp4_tag | yt-dlp, Playwright, Streamlit |
 | [04_system_tools.md](designs/04_system_tools.md) | windows-port-monitor, run_game, security_scanning, check_FileEncoding, findstring_foldfiles | Python, Go, C++/MFC |

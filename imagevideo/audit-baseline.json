@@ -1,20 +1,18 @@
 {
   "schemaVersion": 1,
-  "maximumSeverityCounts": {"critical": 0, "high": 6, "moderate": 3, "low": 0},
+  "runtimeMustBeClean": true,
+  "reviewedScope": "development-only Motion Canvas tooling; the default FFmpeg pipeline does not import or execute it",
+  "maximumSeverityCounts": {"critical": 0, "high": 5, "moderate": 2, "low": 0},
   "allowedPackages": [
     "@motion-canvas/ffmpeg",
     "@motion-canvas/vite-plugin",
-    "@xmldom/xmldom",
     "braces",
     "esbuild",
     "fast-glob",
     "micromatch",
-    "speech-rule-engine",
     "vite"
   ],
   "allowedAdvisorySources": [
-    1102341, 1116229, 1120784, 1123525, 1158517, 1193671,
-    1193687, 1193690, 1193693, 1193695, 1193699, 1193701,
-    1193702, 1193704, 1193707, 1193711, 1193714, 1240992
+    1102341, 1116229, 1120784, 1123525, 1240992
   ]
 }

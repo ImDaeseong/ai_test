@@ -69,7 +69,7 @@ copy weather_alarm\.env.example weather_alarm\.env
 
 ### 주요 미완성/HOLD 항목
 
-- **imagevideo**: Motion Canvas의 자동 수정 불가능한 npm 감사 항목은 기준선 가드로 증가·악화를 차단한다. 실제 렌더 기술 검사는 통과했으며 자산 권리·창작 품질·최종 공개는 `release-review.json` 사람 승인 HOLD다.
+- **imagevideo**: 기본 FFmpeg 배포 경로는 npm audit 0건이며 Motion Canvas GUI 의존성은 개발 전용으로 격리했다. 잔여 개발 도구 감사 항목은 high 5/moderate 2 기준선으로 증가·악화를 차단한다. 실제 렌더는 black 0%·silence 0%·freeze 72.0%로 자동 품질 HOLD이며, 자산·증빙·영상·품질 보고서 해시와 사람의 권리·창작·최종 공개 승인을 함께 요구한다.
 - **ai-webtoon_capcut**: Remotion 렌더와 범용 편집기 전달 묶음은 구현·검증됐다. 실제 곡의 창작 품질과 CapCut 가져오기는 사람 검토 HOLD다.
 - **run_game**: 로컬 MFC 빌드는 정기 검증 범위에서 제외 — 2026-05-28 검증 데이터를 인정하되 C++ 소스·프로젝트 설정 변경 시 사람 검토 재개.
 

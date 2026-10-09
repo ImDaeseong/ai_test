@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "warningRatios": {"black": 0.01, "silence": 0.05, "freeze": 0.6},
+  "failureRatios": {"black": 0.5, "silence": 0.9}
+}
