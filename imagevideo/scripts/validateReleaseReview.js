@@ -129,6 +129,18 @@ export function verifyReferencedFiles(review, root = process.cwd()) {
   return errors;
 }
 
+/** Load a local release decision with a stable action-oriented missing-file diagnostic. */
+export function readReleaseReview(filename) {
+  try {
+    return JSON.parse(fs.readFileSync(path.resolve(filename), 'utf8'));
+  } catch (error) {
+    if (error && typeof error === 'object' && error.code === 'ENOENT') {
+      throw new Error(`Release review BLOCKED: create ${filename} from release-review.example.json and attach rights evidence.`);
+    }
+    throw new Error(`Cannot read release review: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
 function main() {
   const args = process.argv.slice(2);
   const allowHold = args.includes('--allow-hold');
@@ -140,9 +152,9 @@ function main() {
   }
   let review;
   try {
-    review = JSON.parse(fs.readFileSync(path.resolve(filename), 'utf8'));
+    review = readReleaseReview(filename);
   } catch (error) {
-    console.error(`Cannot read release review: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;
     return;
   }

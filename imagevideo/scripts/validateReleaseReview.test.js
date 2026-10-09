@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import {evaluateReleaseReview, verifyReferencedFiles} from './validateReleaseReview.js';
+import {evaluateReleaseReview, readReleaseReview, verifyReferencedFiles} from './validateReleaseReview.js';
 
 const HASH = 'a'.repeat(64);
 
@@ -91,4 +91,11 @@ test('publishing a quality hold requires an explicit human override reason', () 
   review.qualityReport.status = 'hold';
   const result = evaluateReleaseReview(review);
   assert.match(result.errors.join('\n'), /overrideReason/);
+});
+
+test('missing local release review reports an actionable BLOCKED diagnostic', () => {
+  assert.throws(
+    () => readReleaseReview('definitely-missing-release-review.json'),
+    /Release review BLOCKED: create definitely-missing-release-review\.json/
+  );
 });

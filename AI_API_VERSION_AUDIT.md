@@ -9,7 +9,7 @@
 | 프로젝트 | 실제 AI/API 경계 | 이번 검증 |
 |---|---|---|
 | `Analysis_music` | 규칙 기반 음악 분석과 이미지 프롬프트 산출; 생성형 API 호출 없음 | pytest 67개 통과 |
-| `imagevideo` | 사람이 준비한 이미지·가사·오디오를 소비; 생성형 API 호출 없음 | Node 테스트 48개, 런타임 npm audit 0, 실제 195.967초 렌더·품질 분석 |
+| `imagevideo` | 사람이 준비한 이미지·가사·오디오를 소비; 생성형 API 호출 없음 | Node 테스트 50개, 런타임 npm audit 0, 실제 재렌더 freeze 11.24%; 권리 증빙 부재로 공개 불승인 |
 | `Pexels` | Gemini 장면 계획 + Pexels 검색 API | 구조화 JSON, 입력 신뢰 경계, 선택적 재시도 회귀 포함 pytest 27개 통과 |
 | `lyrics_tag` | 수동 가사 타이밍 도구; 생성형 API 호출 없음 | pytest 18개 통과 |
 | `lyricvideo` | Remotion 렌더러; 생성형 API 호출 없음 | Node 테스트 23개와 TypeScript 검사 통과 |

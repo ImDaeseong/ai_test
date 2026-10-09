@@ -178,6 +178,7 @@ high 5건·moderate 2건으로 줄였습니다. 신규 패키지·권고 또는 
 자산과 권리 증빙 파일의 SHA-256을 요구하므로 승인 뒤 파일이 바뀌면 검증에 실패합니다.
 
 구조와 실제 렌더 증거는 [UPDATE_2026-10-09_RELEASE_GATES.md](UPDATE_2026-10-09_RELEASE_GATES.md)에 정리되어 있습니다.
+현재 실제 자산의 공개 판정은 [RELEASE_DECISION_2026-10-09.md](RELEASE_DECISION_2026-10-09.md)에 기록되어 있으며, 권리 증빙 부재로 `NOT APPROVED FOR PUBLICATION`입니다.
 
 
 ## 개선 이력 (2026-06-02)
@@ -188,6 +189,7 @@ high 5건·moderate 2건으로 줄였습니다. 신규 패키지·권고 또는 
 | src/pipeline/runLyricVideoPipeline.js:388 | Windows에서 cmd.exe /c npm run script -- extraArgs 형태로 인수 전달 시 npm 7 미만에서 누락되던 문제 수정 — args를 단일 문자열로 합쳐 전달하도록 변경 |
 
 ### 빌드 검증
-- `npm test`: 48개 통과
+- `npm test`: 50개 통과
 - 실제 곡·가사·이미지 전체 파이프라인: 1920×1080, H.264/AAC, 195.967초 기술 검사 통과(2026-10-09)
-- 창작 품질·권리·최종 공개: `release-review.json` 사람 승인 전까지 HOLD
+- 주기형 줌·팬 재렌더: freeze 72.0% → 11.24%, black·silence 0%, 자동 품질 PASS
+- 권리·최종 공개: 증빙 파일 0건으로 공개 불승인

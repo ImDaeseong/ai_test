@@ -121,6 +121,8 @@ WAVEFORM_STYLE = { numSpikes: 56, numParticles: 10, topPercent: 82.7 }
 - `npm run analyze:quality`: 검은 화면·무음·정지 비율과 MP4 해시 기록
 - `npm run validate:release`: 영상·품질 보고서·자산·권리 증빙의 해시와 사람 판정 검사
 - 자동 기술 PASS는 창작 품질이나 저작권 승인으로 승격되지 않는다.
+- 정지 이미지 모션은 최대 확대에 포화되지 않는 주기형 줌·팬을 사용한다. 실제 재렌더에서 freeze 비율은 72.0%에서 11.24%로 감소했다.
+- 기술·품질 PASS 후에도 자산 권리 증빙이 없으면 최종 상태는 `NOT APPROVED FOR PUBLICATION`이다.
 
 ### 4단계 파이프라인
 ```

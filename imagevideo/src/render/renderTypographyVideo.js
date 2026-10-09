@@ -4,6 +4,7 @@ import process from 'node:process';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {discoverInputFiles} from '../utils/inputDiscovery.js';
+import {continuousZoompanFilter} from '../utils/continuousMotion.js';
 
 const DEFAULT_PLAN = 'output/production_plan.json';
 const DEFAULT_SUBTITLES = 'output/subtitles.ass';
@@ -225,7 +226,7 @@ function buildFfmpegCommand(paths, settings) {
         ? `scale=${settings.width}:${settings.height}:force_original_aspect_ratio=increase,crop=${settings.width}:${settings.height}`
         : [
             `scale=${Math.ceil(settings.width * motion.scale)}:${Math.ceil(settings.height * motion.scale)}:force_original_aspect_ratio=increase`,
-            `zoompan=z='min(zoom+${motion.zoomIncrement},${motion.maxZoom})':x='iw/2-(iw/zoom/2)+sin(on/${motion.panSlow})*${motion.panPixels}':y='ih/2-(ih/zoom/2)+cos(on/${motion.panSlow * 1.25})*${motion.panPixels * 0.6}':d=1:s=${settings.width}x${settings.height}:fps=${settings.fps}`
+            continuousZoompanFilter(settings, motion)
           ].join(','),
       'setsar=1',
       segmentTints,
@@ -301,10 +302,8 @@ function motionSettings(strength, noMotion) {
   if (noMotion) {
     return {
       scale: 1,
-      zoomIncrement: 0,
-      maxZoom: 1,
-      panPixels: 0,
-      panSlow: 999999,
+      zoomAmplitude: 0,
+      zoomPeriodSeconds: 999999,
       vignetteStrength: 0.28,
       grainStrength: 0,
       darkOverlay: 0.22
@@ -314,30 +313,24 @@ function motionSettings(strength, noMotion) {
   const settings = {
     low: {
       scale: 1.08,
-      zoomIncrement: 0.00008,
-      maxZoom: 1.04,
-      panPixels: 10,
-      panSlow: 95,
+      zoomAmplitude: 0.04,
+      zoomPeriodSeconds: 36,
       vignetteStrength: 0.33,
       grainStrength: 7,
       darkOverlay: 0.24
     },
     medium: {
       scale: 1.12,
-      zoomIncrement: 0.00014,
-      maxZoom: 1.08,
-      panPixels: 22,
-      panSlow: 70,
+      zoomAmplitude: 0.08,
+      zoomPeriodSeconds: 28,
       vignetteStrength: 0.38,
       grainStrength: 10,
       darkOverlay: 0.29
     },
     high: {
       scale: 1.18,
-      zoomIncrement: 0.00022,
-      maxZoom: 1.13,
-      panPixels: 38,
-      panSlow: 52,
+      zoomAmplitude: 0.13,
+      zoomPeriodSeconds: 22,
       vignetteStrength: 0.44,
       grainStrength: 13,
       darkOverlay: 0.34
