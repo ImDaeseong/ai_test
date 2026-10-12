@@ -1,6 +1,8 @@
 # 소스 설명
 
-**🤔 [쉬운 설명 보기](https://htmlpreview.github.io/?https://github.com/ImDaeseong/ai_test/blob/main/ELI5.html)** — 비개발자를 위한 한 페이지 요약
+> **핵심:** 음악·영상·자동화 도구를 독립 실행 단위로 관리하며 소스와 사용자 산출물을 분리합니다.
+
+[쉬운 설명](ELI5.html) · [구조와 설계](DESIGN.md)
 
 **설계 진입점:** [DESIGN.md](DESIGN.md) · 상세 설계 인덱스: [Doc/DESIGN_INDEX.md](Doc/DESIGN_INDEX.md)
 
