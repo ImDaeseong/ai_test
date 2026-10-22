@@ -54,9 +54,9 @@ async function main() {
     await writeGeneratedPlan(plan);
 
     if (args.render) {
-      await renderWithMotionCanvas(renderOutput);
+      await renderWithTypography(renderOutput);
     } else {
-      console.log(`Motion Canvas scene data written to ${path.resolve(process.cwd(), GENERATED_PLAN)}`);
+      console.log(`Motion scene data written to ${path.resolve(process.cwd(), GENERATED_PLAN)}`);
     }
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
@@ -264,14 +264,10 @@ async function writeProjectMeta(resolution: string, fps: number) {
   await fs.writeFile(metaPath, `${JSON.stringify(meta, null, 2)}\n`, 'utf8');
 }
 
-async function renderWithMotionCanvas(renderOutput: string) {
+async function renderWithTypography(renderOutput: string) {
   await fs.mkdir(path.dirname(renderOutput), {recursive: true});
-  console.log('Motion Canvas source generated.');
-  // Motion Canvas headless CLI export is not yet stable in v3.
-  // Tip: run `npm run motion:dev` → open editor → Video (FFmpeg) exporter for full MC animation.
-  // For automated pipelines, we use the FFmpeg typography renderer below.
-  console.log('Note: Motion Canvas GUI export is interactive-only. Falling back to FFmpeg typography renderer.');
-  console.log(`To use Motion Canvas animations: npm run motion:dev → render to ${renderOutput}`);
+  console.log('Motion scene data generated.');
+  console.log(`Rendering the verified FFmpeg typography path to ${renderOutput}`);
   await runCommand('node', ['src/render/renderTypographyVideo.js', '--output', renderOutput]);
 }
 
@@ -316,7 +312,7 @@ function parseTimestampToMs(timestamp: unknown) {
 }
 
 function printHelp() {
-  console.log('Usage: tsx src/motion/renderLyricsScene.ts --input output/production_plan.json --output output/rendered_typography_video.mp4 --generate-only');
+  console.log('Usage: tsx src/motion/renderLyricsScene.ts --input output/production_plan.json --output output/rendered_typography_video.mp4 [--generate-only | --render]');
 }
 
 const currentFilePath = fileURLToPath(import.meta.url);

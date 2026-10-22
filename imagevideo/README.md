@@ -117,22 +117,21 @@ npm run lyric-video -- --skip-plan --skip-subtitles
 | `9:16` | 1080×1920 | YouTube Shorts / Instagram Reels |
 | `1:1` | 1080×1080 | Instagram 피드 |
 
-## Motion Canvas (고급)
+## 모션 렌더
 
-FFmpeg 렌더 대신 Motion Canvas 애니메이션을 사용하려면:
+자동화 경로는 FFmpeg 타이포그래피 렌더러를 사용합니다.
 
 ```bash
 # 씬 데이터만 생성
 npm run motion:generate
 
-# Motion Canvas 개발 서버 실행 (GUI에서 렌더)
-npm run motion:dev
+# 검증된 FFmpeg 렌더러 실행
+npm run motion:render
 ```
 
-→ 브라우저에서 `Video (FFmpeg)` exporter 선택 → `output/rendered_typography_video.mp4` 저장  
-→ `npm run lyric-video -- --skip-plan --skip-subtitles --skip-motion` 으로 최종 합성만 실행
-
-**보안 참고:** `@motion-canvas/vite-plugin`이 vite를 `4.x || 5.x`로 제한해 vite 6.4.3의 dev-server 취약점 패치를 아직 받을 수 없다(업스트림 대기 중, `vite.config.ts`에 `server.host: '127.0.0.1'`로 로컬호스트 바인딩 명시). `npm run motion:dev` 실행 중에는 다른 브라우저 탭에서 신뢰할 수 없는 사이트를 열지 않는 것을 권장한다.
+Motion Canvas GUI 경로는 실제 자동 렌더에 사용되지 않으면서 보안 패치가 불가능한
+Vite 5 개발 서버를 설치하므로 활성 의존성과 명령에서 제거했습니다. 기존 장면 소스는
+참고용으로 남아 있지만 배포·개발 설치 경로에서는 실행되지 않습니다.
 
 ## 개별 Phase 실행
 
@@ -155,7 +154,7 @@ output/logs/ffmpeg.log     Phase 4 상세 로그
 
 ```bash
 npm test                         # 파서·계획·MP4 계약·릴리스 판정 음성 테스트
-npm run audit:baseline           # 검토된 npm 취약점보다 증가·악화되면 실패
+npm run audit:baseline           # 운영·개발 의존성에서 알려진 취약점이 하나라도 있으면 실패
 npm run validate:media           # 실제 MP4를 ffprobe로 검사
 npm run analyze:quality          # 검은 화면·무음·장시간 정지 구간을 실제 MP4에서 측정
 npm run validate:release-template # 예제가 PASS가 아닌 HOLD인지 확인
@@ -167,10 +166,9 @@ npm run validate:release-template # 예제가 PASS가 아닌 HOLD인지 확인
 저작권, 최종 공개가 모두 승인되기 전에는 종료 코드가 성공이 아니며,
 `release-review.json`은 개인 증빙이 들어갈 수 있어 Git에서 제외됩니다.
 
-`audit-baseline.json`은 취약점을 안전하다고 선언하지 않습니다. 기본 FFmpeg 배포
-경로는 `npm audit --omit=dev` 취약점 0건을 강제합니다. Motion Canvas GUI 도구는
-개발 의존성으로 격리했으며, 호환 가능한 xmldom 0.9.12를 고정해 잔여 항목을
-high 5건·moderate 2건으로 줄였습니다. 신규 패키지·권고 또는 심각도 증가는 차단됩니다.
+`audit-baseline.json`은 운영·개발 의존성 모두 알려진 취약점 0건을 강제합니다.
+패치할 수 없던 Motion Canvas GUI/Vite 도구를 활성 설치 경로에서 제거했으며,
+새로운 패키지나 권고가 하나라도 발견되면 검사가 실패합니다.
 
 `npm run analyze:quality`는 결과 MP4와 연결된 SHA-256, 검은 화면·무음·정지 비율을
 `output/quality-report.json`에 기록합니다. 현재 정책은 정지 비율 60% 초과를 HOLD로

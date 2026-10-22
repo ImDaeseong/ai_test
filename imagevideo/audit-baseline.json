@@ -1,18 +1,8 @@
 {
   "schemaVersion": 1,
   "runtimeMustBeClean": true,
-  "reviewedScope": "development-only Motion Canvas tooling; the default FFmpeg pipeline does not import or execute it",
-  "maximumSeverityCounts": {"critical": 0, "high": 5, "moderate": 2, "low": 0},
-  "allowedPackages": [
-    "@motion-canvas/ffmpeg",
-    "@motion-canvas/vite-plugin",
-    "braces",
-    "esbuild",
-    "fast-glob",
-    "micromatch",
-    "vite"
-  ],
-  "allowedAdvisorySources": [
-    1102341, 1116229, 1120784, 1123525, 1240992
-  ]
+  "reviewedScope": "all installed production and development dependencies",
+  "maximumSeverityCounts": {"critical": 0, "high": 0, "moderate": 0, "low": 0},
+  "allowedPackages": [],
+  "allowedAdvisorySources": []
 }

@@ -80,7 +80,7 @@ async function main() {
   }
 }
 
-function parseArgs(args) {
+export function parseArgs(args) {
   const parsed = {};
 
   for (let index = 0; index < args.length; index += 1) {
@@ -92,7 +92,7 @@ function parseArgs(args) {
     } else if (arg === '--subtitles') {
       parsed.subtitles = args[index + 1];
       index += 1;
-    } else if (arg === '--out') {
+    } else if (arg === '--out' || arg === '--output') {
       parsed.output = args[index + 1];
       index += 1;
     } else if (arg === '--log') {
@@ -543,7 +543,7 @@ function printHelp() {
     'Options:',
     '  --plan <path>             Defaults to output/production_plan.json.',
     '  --subtitles <path>        Defaults to output/subtitles.ass.',
-    '  --out <path>              Defaults to output/rendered_typography_video.mp4.',
+    '  --out, --output <path>    Defaults to output/rendered_typography_video.mp4.',
     '  --log <path>              Defaults to output/logs/render.log.',
     '  --background <path>       Background image. Defaults to first image under input/.',
     '  --background-video <path> Background video (loops). Defaults to first .mp4/.mov under input/.',
