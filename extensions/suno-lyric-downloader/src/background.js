@@ -14,7 +14,7 @@ function notifySongChange(tabId, rawUrl) {
     action: 'URL_CHANGED',
     url: rawUrl,
     songId: match[1],
-  }).catch(() => {});
+  }).catch(() => {}); // qa:allow CWE-390 - tab may have no listener; a failed notification is expected and harmless
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {

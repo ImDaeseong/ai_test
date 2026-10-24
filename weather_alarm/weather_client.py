@@ -215,6 +215,6 @@ class WeatherClient:
             logger.error(f"기상청 API 네트워크 오류: {e}")
         except (WeatherApiError, ValueError) as e:
             logger.error(f"기상청 API 응답 파싱 오류: {e}")
-        except Exception as e:
+        except Exception as e:  # qa:allow CWE-390 - failure is logged and None is returned, which callers treat as no weather data
             logger.error(f"날씨 데이터 조회 실패: {e}")
         return None

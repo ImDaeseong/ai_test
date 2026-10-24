@@ -278,7 +278,7 @@ function resolveFontParam() {
       const fsPath = p.replace('\\:', ':').replace(/\//g, '\\');
       accessSync(fsPath);
       return `fontfile='${p}':`;
-    } catch {
+    } catch { // qa:allow CWE-390 - font candidate not accessible; the loop tries the next candidate and returns empty when none
       // try next
     }
   }
@@ -336,11 +336,11 @@ function runFfmpeg(args, logPath) {
     });
 
     child.stdout.on('data', (chunk) => {
-      appendLog(logPath, chunk.toString()).catch(() => {});
+      appendLog(logPath, chunk.toString()).catch(() => {}); // qa:allow CWE-390 - a failed log append must not interrupt the render
     });
 
     child.stderr.on('data', (chunk) => {
-      appendLog(logPath, chunk.toString()).catch(() => {});
+      appendLog(logPath, chunk.toString()).catch(() => {}); // qa:allow CWE-390 - a failed log append must not interrupt the render
     });
 
     child.on('error', (error) => {

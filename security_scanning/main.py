@@ -77,7 +77,7 @@ def _is_admin() -> bool:
     """Return True when the process is running with administrator privileges."""
     try:
         return bool(ctypes.windll.shell32.IsUserAnAdmin())
-    except Exception:
+    except Exception:  # qa:allow CWE-390 - IsUserAnAdmin unavailable (non-Windows) is treated as not administrator
         return False
 
 # ---------------------------------------------------------------------------

@@ -82,7 +82,7 @@ def _panel_done(song_dir: Path, panel_stem: str) -> bool:
         return False
     try:
         return json.loads(sf.read_text(encoding="utf-8")).get("done", False)
-    except Exception:
+    except Exception:  # qa:allow CWE-390 - unreadable or malformed status file is treated as not done
         return False
 
 

@@ -112,7 +112,7 @@ function setAudioFile(file) {
     const dt = new DataTransfer();
     dt.items.add(file);
     audioInput.files = dt.files;
-  } catch(_) { /* DataTransfer not supported in all browsers */ }
+  } catch(_) { /* DataTransfer not supported in all browsers */ } // qa:allow CWE-390 - DataTransfer is not supported in all browsers; the file name is still shown
   fileNameText.textContent = file.name;
   show(fileBadge);
 }
@@ -128,7 +128,7 @@ loadSampleBtn.addEventListener('click', async () => {
       promptInput.focus();
       updatePromptHint();
     }
-  } catch(e) { /* ignore */ }
+  } catch(e) { /* ignore */ } // qa:allow CWE-390 - a failed sample load leaves the input unchanged; the button is re-enabled right after
   loadSampleBtn.textContent = '샘플 불러오기';
   loadSampleBtn.disabled = false;
 });

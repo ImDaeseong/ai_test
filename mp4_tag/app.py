@@ -28,7 +28,7 @@ def _is_ytdlp_site(url: str) -> bool:
     try:
         host = urlparse(url).hostname or ""
         return any(host == d or host.endswith("." + d) for d in _YTDLP_DOMAINS)
-    except Exception:
+    except Exception:  # qa:allow CWE-390 - an unparsable URL is treated as not a yt-dlp domain
         return False
 from job_manager import (
     MAX_DOWNLOAD_WORKERS,

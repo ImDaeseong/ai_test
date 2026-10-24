@@ -320,9 +320,9 @@ function runCommand(command, args, logs) {
 }
 
 function appendToLogs(logs, text) {
-  appendLog(logs.pipelineLog, text).catch(() => {});
+  appendLog(logs.pipelineLog, text).catch(() => {}); // qa:allow CWE-390 - a failed log append must not interrupt the pipeline
   if (logs.dedicatedLog) {
-    appendLog(logs.dedicatedLog, text).catch(() => {});
+    appendLog(logs.dedicatedLog, text).catch(() => {}); // qa:allow CWE-390 - a failed log append must not interrupt the pipeline
   }
 }
 
@@ -380,7 +380,7 @@ async function safeLogFailure(logPath, message, startedAt) {
     await logLine(logPath, '');
     await logLine(logPath, `[FAILURE] ${message}`);
     await logLine(logPath, `[FAILURE] Pipeline stopped after ${formatDuration(Date.now() - startedAt)}`);
-  } catch {
+  } catch { // qa:allow CWE-390 - if logging itself fails the original failure is still surfaced
     // If logging itself is broken, still surface the original failure.
   }
 }

@@ -34,5 +34,5 @@ class JsonExporter:
                         handle.write(json.dumps(payload, ensure_ascii=False, sort_keys=True))
                         handle.write("\n")
             logger.debug("json_export_complete", extra={"records": len(batch), "path": str(self.path)})
-        except Exception:
+        except Exception:  # qa:allow CWE-390 - export failure is logged with traceback; the collector continues with the next batch
             logger.exception("json_export_failed", extra={"records": len(batch), "path": str(self.path)})

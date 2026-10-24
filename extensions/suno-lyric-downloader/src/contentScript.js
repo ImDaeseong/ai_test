@@ -535,7 +535,7 @@
     const ret = orig.apply(this, args);
     if (location.href !== _lastHref) {
       _lastHref = location.href;
-      chrome.runtime.sendMessage({ action: 'URL_NAVIGATE', url: location.href }).catch(() => {});
+      chrome.runtime.sendMessage({ action: 'URL_NAVIGATE', url: location.href }).catch(() => {}); // qa:allow CWE-390 - message to the service worker can fail while it sleeps; navigation tracking is best-effort
     }
     return ret;
   };
@@ -544,7 +544,7 @@
   window.addEventListener('popstate', () => {
     if (location.href !== _lastHref) {
       _lastHref = location.href;
-      chrome.runtime.sendMessage({ action: 'URL_NAVIGATE', url: location.href }).catch(() => {});
+      chrome.runtime.sendMessage({ action: 'URL_NAVIGATE', url: location.href }).catch(() => {}); // qa:allow CWE-390 - message to the service worker can fail while it sleeps; navigation tracking is best-effort
     }
   });
 

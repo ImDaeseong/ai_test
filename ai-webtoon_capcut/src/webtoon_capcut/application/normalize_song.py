@@ -63,7 +63,7 @@ def normalize_song(
                 lrc_cues = parse_lrc(candidate.path)
             elif candidate.fmt == SubtitleFormat.srt and srt_cues is None:
                 srt_cues = parse_srt(candidate.path)
-        except Exception:  # noqa: BLE001
+        except Exception:  # noqa: BLE001  # qa:allow CWE-390 - a subtitle that fails to parse is skipped; the other format may still succeed
             # Parsing failure is non-fatal; the other format may succeed.
             pass
 

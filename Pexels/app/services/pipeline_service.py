@@ -63,7 +63,7 @@ class VideoPipeline:
             output = Path(request.output_path) if request.output_path else settings.output_dir / f"final_{project_id}.mp4"
             try:
                 self.ffmpeg.cleanup_processed_for_output(output)
-            except Exception:
+            except Exception:  # qa:allow CWE-390 - cleanup of partial output after a failed render; the original error is re-raised right after
                 pass
             self.project_store.save(ProjectStatusResponse(status="failed", project_id=project_id, error=str(exc)))
             raise

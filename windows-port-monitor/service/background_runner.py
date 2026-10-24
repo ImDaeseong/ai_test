@@ -45,7 +45,7 @@ class BackgroundRunner:
         for sig in (signal.SIGINT, signal.SIGTERM):
             try:
                 signal.signal(sig, _handler)
-            except Exception:
+            except Exception:  # qa:allow CWE-390 - signal handlers can only be installed from the main thread; logged at debug
                 logger.debug("signal_handler_not_installed", extra={"signal": getattr(sig, "name", sig)}, exc_info=True)
 
     def start(self, blocking: bool = True) -> None:
@@ -118,7 +118,7 @@ class BackgroundRunner:
     def _clear_stop_file(self) -> None:
         try:
             self._stop_file_path.unlink(missing_ok=True)
-        except Exception:
+        except Exception:  # qa:allow CWE-390 - stale stop-file removal failure is logged with traceback; the service keeps running
             logger.warning("stop_file_clear_failed", extra={"path": str(self._stop_file_path)}, exc_info=True)
 
     def _check_stop_file(self) -> None:
@@ -126,21 +126,21 @@ class BackgroundRunner:
             if self._stop_file_path.exists():
                 logger.info("stop_file_detected", extra={"path": str(self._stop_file_path)})
                 self.stop()
-        except Exception:
+        except Exception:  # qa:allow CWE-390 - stop-file check failure is logged with traceback and retried on the next loop
             logger.warning("stop_file_check_failed", extra={"path": str(self._stop_file_path)}, exc_info=True)
 
     def _open_backends(self) -> None:
         if self.config.storage.sqlite_enabled:
             try:
                 self.sqlite_store.open()
-            except Exception:
+            except Exception:  # qa:allow CWE-390 - sqlite open failure is logged with traceback; the service keeps running
                 logger.exception("sqlite_open_failed")
 
     def _close_backends(self) -> None:
         if self.config.storage.sqlite_enabled:
             try:
                 self.sqlite_store.close()
-            except Exception:
+            except Exception:  # qa:allow CWE-390 - sqlite close failure is logged with traceback during shutdown
                 logger.exception("sqlite_close_failed")
 
     def _write_all(self, records, stats) -> None:

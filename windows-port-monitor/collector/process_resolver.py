@@ -84,7 +84,7 @@ class ProcessResolver:
             return func()
         except (psutil.AccessDenied, psutil.NoSuchProcess, psutil.ZombieProcess):
             return None
-        except Exception:
+        except Exception:  # qa:allow CWE-390 - per-process attribute lookup can fail on any process; logged at debug with traceback
             logger.debug("process_attribute_failed", exc_info=True)
             return None
 

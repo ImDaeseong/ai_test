@@ -424,13 +424,13 @@ function runFfmpeg(args, logPath, totalSeconds) {
     });
 
     child.stdout.on('data', (chunk) => {
-      appendLog(logPath, chunk.toString()).catch(() => {});
+      appendLog(logPath, chunk.toString()).catch(() => {}); // qa:allow CWE-390 - a failed log append must not interrupt the render
     });
 
     let stderrBuf = '';
     child.stderr.on('data', (chunk) => {
       const text = chunk.toString();
-      appendLog(logPath, text).catch(() => {});
+      appendLog(logPath, text).catch(() => {}); // qa:allow CWE-390 - a failed log append must not interrupt the render; stderr is still captured in stderrBuf
       stderrBuf += text;
       const parts = stderrBuf.split('\r');
       stderrBuf = parts.pop();

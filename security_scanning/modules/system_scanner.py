@@ -358,7 +358,7 @@ class BaseCheck(ABC):
                 timeout=self.timeout, encoding="utf-8", errors="replace",
             )
             return r.stdout.strip() or None
-        except Exception:
+        except Exception:  # qa:allow CWE-390 - a failing or timed-out probe yields None; callers handle None (some fall back, some report unavailable)
             return None
 
     def _cmd(self, args: List[str]) -> Optional[str]:
@@ -369,7 +369,7 @@ class BaseCheck(ABC):
                 timeout=self.timeout, encoding="utf-8", errors="replace",
             )
             return r.stdout.strip() or None
-        except Exception:
+        except Exception:  # qa:allow CWE-390 - a failing or timed-out probe yields None; callers handle None (some fall back, some report unavailable)
             return None
 
     @staticmethod
@@ -1040,7 +1040,7 @@ class SecuritySoftwareCheck(BaseCheck):
                 if isinstance(profiles, dict):
                     profiles = [profiles]
                 return self._evaluate_firewall_profiles(profiles)
-            except Exception:
+            except Exception:  # qa:allow CWE-390 - parse or evaluation of the PowerShell firewall output failed; falls back to the netsh check right after
                 pass
 
         # Fallback: netsh advfirewall

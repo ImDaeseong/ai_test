@@ -24,7 +24,7 @@ if hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(errors="replace")
         sys.stderr.reconfigure(errors="replace")
-    except Exception:
+    except Exception:  # qa:allow CWE-390 - stream reconfigure is unsupported on some consoles; output keeps the default
         pass
 
 try:
@@ -144,7 +144,7 @@ def _bar(n: int, of: int, width: int = 22) -> str:
 def _safe_hostname() -> str:
     try:
         return socket.gethostname()
-    except Exception:
+    except Exception:  # qa:allow CWE-390 - hostname lookup failure is shown as unknown in the report
         return "unknown"
 
 

@@ -284,7 +284,7 @@ def separate_stems(file_path: str, output_dir: str = None, model: str = "htdemuc
         model_dir = out_path / model
         if model_dir.exists() and not any(model_dir.iterdir()):
             model_dir.rmdir()
-    except Exception as e:
+    except Exception as e:  # qa:allow CWE-390 - temp directory cleanup is best-effort; the failure is logged as a warning
         log.warning("  ⚠️  임시 디렉토리 정리 실패: %s", e)
 
     log.info("✅ [Stem 분리 완료] 총 %d 트랙", len(stems))
