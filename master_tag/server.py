@@ -356,4 +356,4 @@ if __name__ == "__main__":
     print(f"  동시 처리 작업 수: {MAX_WORKERS}")
     print(f"  최대 활성 작업 수: {MAX_ACTIVE_JOBS}")
     print("=" * 50)
-    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+    app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
