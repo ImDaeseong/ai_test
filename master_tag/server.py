@@ -356,4 +356,7 @@ if __name__ == "__main__":
     print(f"  동시 처리 작업 수: {MAX_WORKERS}")
     print(f"  최대 활성 작업 수: {MAX_ACTIVE_JOBS}")
     print("=" * 50)
-    app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
+    host = os.environ.get("MASTER_TAG_HOST", "127.0.0.1")  # set to 0.0.0.0 to reach this app from a phone or another PC on the LAN
+    if host != "127.0.0.1":
+        print(f"[주의] {host} 로 열렸습니다. 같은 네트워크의 누구나 접속할 수 있고 요청 속도 제한이 없습니다.")
+    app.run(host=host, port=5000, debug=False, threaded=True)
